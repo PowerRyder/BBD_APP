@@ -1,0 +1,77 @@
+{
+    "register": {
+        "path" : "join",
+        "url" : "/join",
+        "title": "Join"
+    },
+    "login": {
+        "path": "view",
+        "url": "/view",
+        "title": "View"
+    },
+    "admin_login":{
+        "path": "admin-login",
+        "url": "/admin-login",
+        "title": "Admin Login"
+    },
+    "user_dashboard":{
+        "path": "dashboard",
+        "url": "/u/dashboard",
+        "title": "Dashboard"
+    },
+    "directs":{
+        "path": "directs",
+        "url": "/u/directs",
+        "title": "Directs"
+    },
+    "level_income":{
+        "path": "level-income",
+        "url": "/u/level-income",
+        "title": "Level Income"
+    },
+    "withdrawal_level_income":{
+        "path": "withdrawal-level-income",
+        "url": "/u/withdrawal-level-income",
+        "title": "Withdrawal Level Income"
+    },
+    "deposit":{
+        "path": "deposit",
+        "url": "/u/deposit",
+        "title": "Deposit"
+    },
+    "sell_tokens":{
+        "path": "sell-tokens",
+        "url": "/u/sell-tokens",
+        "title": "Sell Tokens"
+    },
+    "withdraw":{
+        "path": "withdraw",
+        "url": "/u/withdraw",
+        "title": "Withdraw"
+    },
+    "admin_dashboard":{
+        "path": "dashboard",
+        "url": "/a/dashboard",
+        "title": "Dashboard"
+    },
+    "admin_mint_burn_internal_tokens":{
+        "path": "mint-burn",
+        "url": "/a/mint-burn",
+        "title": "Mint | Burn"
+    },
+    "admin_credit_debit_amount":{
+        "path": "credit-debit",
+        "url": "/a/credit-debit",
+        "title": "Credit | Debit"
+    },
+    "admin_block_unblock_user":{
+        "path": "block-unblock",
+        "url": "/a/block-unblock",
+        "title": "Block | Unblock"
+    },
+    "admin_withdraw_funds":{
+        "path": "withdraw-funds",
+        "url": "/a/withdraw-funds",
+        "title": "Withdraw Funds"
+    }
+}

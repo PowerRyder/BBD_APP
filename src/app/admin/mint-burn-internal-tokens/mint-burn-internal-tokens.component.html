@@ -1,0 +1,21 @@
+<div class="offset-md-3 offset-sm-0 col-md-6">
+    <mat-card>
+        <mat-card-title class="text-align-center">Mint | Burn</mat-card-title>
+        <mat-card-content class="card-pad">
+            <mat-form-field>
+                <mat-label>User Address</mat-label>
+                <input matInput [(ngModel)]="userAddress" />
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>{{internalTokenName}} Amount</mat-label>
+                <input matInput [(ngModel)]="internalTokenAmount" type="number" />
+            </mat-form-field>
+
+            <div class="d-flex justify-content-center">
+                <button mat-raised-button color="primary" (click)="onMintClick()">Mint</button>
+                <button mat-raised-button color="warn" (click)="onBurnClick()">Burn</button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

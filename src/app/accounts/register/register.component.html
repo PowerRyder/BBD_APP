@@ -1,0 +1,21 @@
+<h3><b>View ID</b></h3>
+<form [formGroup]=registerForm #formDir="ngForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field>
+        <mat-label>Sponsor Id or Wallet</mat-label>
+        <input matInput formControlName="sponsorId" />
+        <mat-error>
+            <app-text-validation-message fieldName="sponsorId"
+                [formGroupDirective]="formDir"></app-text-validation-message>
+        </mat-error>
+    </mat-form-field>
+
+    <app-package (packageCallback)="packageCallback($event)" (accountCallback)="accountCallback($event)"></app-package>
+
+    <button mat-raised-button color="primary" type="submit"
+        *ngIf="walletDetails && walletDetails.address!='' && packageDetails && packageDetails.packageId>0">Join</button>
+    <div class="mt-4">
+        <h4><b>Already joined?</b><br><a mat-raised-button color="info"
+                [routerLink]="app_routes.login.url">View here</a></h4>
+    </div>
+</form>

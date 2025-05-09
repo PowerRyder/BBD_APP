@@ -1,0 +1,21 @@
+<div class="offset-md-3 offset-sm-0 col-md-6">
+    <mat-card>
+        <mat-card-title class="text-align-center">Credit | Debit</mat-card-title>
+        <mat-card-content class="card-pad">
+            <mat-form-field>
+                <mat-label>User Address</mat-label>
+                <input matInput [(ngModel)]="userAddress" />
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>{{paymentToken}} Amount</mat-label>
+                <input matInput [(ngModel)]="amount" type="number" />
+            </mat-form-field>
+
+            <div class="d-flex justify-content-center">
+                <button mat-raised-button color="primary" (click)="onCreditClick()">Credit</button>
+                <button mat-raised-button color="warn" (click)="onDebitClick()">Debit</button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -1,0 +1,25 @@
+<h3><b>View ID</b></h3>
+<form [formGroup]=loginForm #formDir="ngForm" (ngSubmit)="onLoginClick()">
+
+    <div class="mb-4" *ngIf="isDemo">
+        <button mat-raised-button color="primary" type="button" (click)="onDemoLoginClick()">Click here
+            to view demo</button><br>
+    </div>
+    <mat-form-field>
+        <mat-label>Id or Wallet</mat-label>
+        <input matInput formControlName="userId" />
+        <mat-error>
+            <app-text-validation-message fieldName="userId"
+                [formGroupDirective]="formDir"></app-text-validation-message>
+        </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" *ngIf="loginForm.controls['userId'].value!=''">View</button>
+    <button mat-raised-button color="primary" type="button" *ngIf="loginForm.controls['userId'].value==''"
+        (click)="onConnectWalletClick()">Connect Wallet</button>
+
+    <div class="mt-4">
+        <h4><b>If you haven't joined yet!</b><br><a mat-raised-button color="info"
+                [routerLink]="app_routes.register.url">Join here</a></h4>
+    </div>
+</form>

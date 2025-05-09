@@ -1,0 +1,68 @@
+<div class="d-flex flex-column">
+    <mat-toolbar [class.mat-elevation-z4]="true">
+      <mat-toolbar-row>
+        <img [src]="logo" class="company-logo">
+        <button mat-icon-button (click)="sidenav.toggle();">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="spacer"></span>
+  
+        <div class="toolbar-right">
+  
+          <app-logout-button></app-logout-button>
+        </div>
+      </mat-toolbar-row>
+  
+    </mat-toolbar>
+  
+    <mat-sidenav-container>
+      <mat-sidenav #sidenav [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" (click)="handleMenuItemClick();"
+        [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+        <mat-nav-list>
+          <!-- <app-side-menu [menus]="menus"></app-side-menu> -->
+          <mat-list-item [routerLink]="app_routes.admin_dashboard.url" routerLinkActive="active"
+            class="side-nav-menu-item-1" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon mat-list-icon>keyboard_double_arrow_right
+            </mat-icon>
+            <div mat-line>{{app_routes.admin_dashboard.title}}</div>
+          </mat-list-item>
+  
+          <mat-list-item [routerLink]="app_routes.admin_mint_burn_internal_tokens.url" routerLinkActive="active" class="side-nav-menu-item-1"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon mat-list-icon>keyboard_double_arrow_right
+            </mat-icon>
+            <div mat-line>{{app_routes.admin_mint_burn_internal_tokens.title}}</div>
+          </mat-list-item>
+  
+          <mat-list-item [routerLink]="app_routes.admin_credit_debit_amount.url" routerLinkActive="active" class="side-nav-menu-item-1"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon mat-list-icon>keyboard_double_arrow_right
+            </mat-icon>
+            <div mat-line>{{app_routes.admin_credit_debit_amount.title}}</div>
+          </mat-list-item>
+  
+          <mat-list-item [routerLink]="app_routes.admin_block_unblock_user.url" routerLinkActive="active" class="side-nav-menu-item-1"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon mat-list-icon>keyboard_double_arrow_right
+            </mat-icon>
+            <div mat-line>{{app_routes.admin_block_unblock_user.title}}</div>
+          </mat-list-item>
+  
+          <mat-list-item [routerLink]="app_routes.admin_withdraw_funds.url" routerLinkActive="active" class="side-nav-menu-item-1"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon mat-list-icon>keyboard_double_arrow_right
+            </mat-icon>
+            <div mat-line>{{app_routes.admin_withdraw_funds.title}}</div>
+          </mat-list-item>
+  
+        </mat-nav-list>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <div class="py-2">
+          <router-outlet></router-outlet>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  
+    <app-footer></app-footer>
+  </div>

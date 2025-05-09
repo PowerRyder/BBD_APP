@@ -1,0 +1,56 @@
+<mat-card class="mat-card d-flex col-sm-12 col-12" *ngIf="appearance=='One-Row'">
+    <mat-card-content class="mat-card-content d-flex flex-row justify-content-start">
+        <div class="d-flex col-3 align-items-center justify-content-center">
+            <mat-icon class="tile-avatar">{{matIcon}}</mat-icon>
+        </div>
+        <mat-divider vertical="true"></mat-divider>
+        <div class="d-flex flex-column col-9">
+            <div class="d-flex tile-title flex-row align-items-center justify-content-center">{{title}}</div>
+
+            <div class="d-flex flex-row justify-content-around">
+                <ng-container *ngFor="let d of data; let i = index">
+                    <div class="d-flex flex-column justify-content-center align-items-center">
+                        <button mat-button class="tile-value-button">
+                            <div class="tile-value">{{d.value}}</div>
+                            <div class="tile-value-description">{{d.key}}</div>
+                        </button>
+                    </div>
+                    <mat-divider vertical="true" *ngIf="i<data.length-1"></mat-divider>
+                </ng-container>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+<!-- 
+<mat-card class="col-sm-12 col-12" *ngIf="appearance=='Two-Row'">
+    <mat-card-content fxFlex fxLayout="row" fxLayoutAlign="start">
+        <div fxFlex="25" fxLayout="column" fxLayoutAlign="center center">
+            <mat-icon class="tile-avatar">{{matIcon}}</mat-icon>
+        </div>
+        <mat-divider vertical="true"></mat-divider>
+        <div fxFlex="5"></div>
+        <div fxFlex="65" fxLayout="column">
+            <div fxFlex="100" class="tile-title pb-3" fxLayout="row" fxLayoutAlign="center">{{title}}</div>
+            <div fxFlex="100" fxLayout="row">
+                <ng-container *ngFor="let d of firstRowData; let i = index">
+                    <button fxFlex mat-button class="tile-value-button">
+                        <div class="tile-value">{{d.value}}</div>
+                        <div class="tile-value-description">{{d.key}}</div>
+                    </button>
+                    <mat-divider vertical="true" *ngIf="i<firstRowData.length-1"></mat-divider>
+                </ng-container>
+            </div>
+            <mat-divider *ngIf="secondRowData.length>0"></mat-divider>
+            <div fxFlex="100" fxLayout="row">
+                <ng-container *ngFor="let d of secondRowData; let i = index">
+                    <button fxFlex mat-button class="tile-value-button">
+                        <div class="tile-value">{{d.value}}</div>
+                        <div class="tile-value-description">{{d.key}}</div>
+                    </button>
+                    <mat-divider vertical="true" *ngIf="i<secondRowData.length-1"></mat-divider>
+                </ng-container>
+            </div>
+        </div>
+        <div fxFlex="5"></div>
+    </mat-card-content>
+</mat-card> -->

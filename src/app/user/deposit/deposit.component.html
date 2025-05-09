@@ -1,0 +1,31 @@
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card>
+        <mat-card-title class="text-align-center">Deposit</mat-card-title>
+        <mat-card-content class="card-pad">
+            <div class="d-flex justify-content-center">
+                <span>1 {{paymentCurrency}} ~ {{paymentTokenToInternalTokensRate}} {{internalTokenName}} </span>
+            </div>
+
+            <app-package (packageCallback)="packageCallback($event)"
+                (accountCallback)="accountCallback($event)"></app-package>
+
+                <div *ngIf="walletDetails && walletDetails.address!='' && packageDetails && packageDetails.packageId>0 && isInternalToken">
+                    <mat-form-field>
+                        <mat-label>Amount used to buy tokens ({{paymentCurrency}})</mat-label>
+                        <input matInput [(ngModel)]="amountUsedToBuyTokens" type="number" disabled />
+                    </mat-form-field>
+                    
+                    <mat-form-field>
+                        <mat-label>Amount of {{internalTokenName}} tokens alloted</mat-label>
+                        <input matInput [(ngModel)]="internalTokenAmount" type="number" disabled />
+                    </mat-form-field>
+                    
+                    <div class="d-flex justify-content-center">
+                        <button mat-raised-button color="success" (click)="onDepositClick()">Deposit</button>
+                    </div>
+                </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<app-deposit-history *ngIf="showHistory"></app-deposit-history>

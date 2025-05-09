@@ -1,0 +1,101 @@
+@import 'variables.scss';
+@import 'grid.scss';
+@import 'table.scss';
+
+.border {
+    border: 1px solid #dee2e6 !important;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.border-left {
+    border-left: 1px solid #dee2e6 !important;
+}
+
+.border-right {
+    border-right: 1px solid #dee2e6 !important;
+}
+
+.border-top {
+    border-top: 1px solid #dee2e6 !important;
+}
+
+.border-x{
+    border-left: 1px solid #dee2e6 !important;
+    border-right: 1px solid #dee2e6 !important;
+}
+
+.border-y{
+    border-top: 1px solid #dee2e6 !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.width-10 {
+    width: 10%;
+}
+
+.width-20 {
+    width: 20%;
+}
+
+.width-50 {
+    width: 50%;
+}
+
+.width-60 {
+    width: 60%;
+}
+
+.width-70 {
+    width: 70%;
+}
+
+.width-80 {
+    width: 80%;
+}
+
+.width-90 {
+    width: 90%;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.text-success {
+    color: $color-success;
+}
+
+.text-info {
+    color: $color-info;
+}
+
+.text-warning {
+    color: $color-warning;
+}
+
+.text-danger {
+    color: $color-danger;
+}
+
+.font-bold {
+    font-weight: bold !important;
+}
+
+.text-align-center{
+    text-align: center !important;
+}
+
+.bg-success{
+    background-color:lightgreen !important;
+}
+
+.overflow-x-scroll{
+    overflow-x: scroll !important;
+}

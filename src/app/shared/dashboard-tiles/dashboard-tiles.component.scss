@@ -1,0 +1,61 @@
+@import 'src/styles-utils/variables.scss';
+
+.mat-card {
+    border-color: $user-dashboard-tiles-border-color;
+    border-left-width: 4px;
+    border-left-style: solid;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+
+    .mat-card-content {
+        .tile-avatar {
+            width: 60px;
+            height: 60px;
+            color: $user-dashboard-tiles-header-text-color;
+        }
+
+        .tile-title {
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .tile-title-small {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        @media (max-width:840px) {
+            .tile-title-small {
+                font-size: 14px;
+            }
+        }
+
+        .mat-icon {
+            font-size: 55px;
+        }
+
+        .tile-value-button {
+            line-height: 30px;
+        }
+
+        .tile-value {
+            font-size: 25px;
+            color: #555;
+            margin-left: 0.25rem;
+            margin-right: 0.25rem;
+        }
+
+        .tile-value-description {
+            font-size: 15px;
+            font-weight: 400;
+            margin-left: 0.25rem;
+            margin-right: 0.25rem;
+        }
+    }
+}
+
+.mat-mdc-button.mat-mdc-button-base {
+    height: 65px;
+}

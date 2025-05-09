@@ -1,0 +1,30 @@
+<div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
+
+    <app-dashboard-tiles matIcon="account_balance" title="Contract Balance" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: contractDetails?.ContractBalance}]"></app-dashboard-tiles>
+
+    <app-dashboard-tiles matIcon="group" title="Total Users" class="col-md-3 col-sm-12"
+        [data]="[{key: '', value: contractDetails?.TotalCommunity}]"></app-dashboard-tiles>
+
+    <app-dashboard-tiles matIcon="account_balance" title="Total Investment" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: contractDetails?.CommunityInvestment}]"></app-dashboard-tiles>
+
+    <app-dashboard-tiles matIcon="account_balance" title="Total Withdrawal" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: contractDetails?.CommunityWithdrawal}]"></app-dashboard-tiles>
+
+    <app-dashboard-tiles matIcon="token" title="Total Supply" class="col-md-3 col-sm-12" *ngIf="isInternalToken"
+        [data]="[{key: internalTokenName, value: contractDetails?.InternalTokenTotalSupply}]"></app-dashboard-tiles>
+
+    <app-dashboard-tiles matIcon="group" title="Liquidity" class="col-md-3 col-sm-12"
+        [data]="[{key: '', value: contractDetails?.InternalTokenLiquidity}]"></app-dashboard-tiles>
+
+    <app-dashboard-tiles matIcon="group" title="Rate" class="col-md-3 col-sm-12"
+        [data]="[{key: '', value: '1 '+internalTokenName+' ~ '+contractDetails?.InternalTokenRate+' '+paymentCurrency}]"></app-dashboard-tiles>
+
+</div>
+
+<div class="d-flex justify-content-center">
+    <div class="col-md-4 col-sm-12">
+        <app-referral-link text="Contract Address" [displayValue]="contractAddress" [url]="addressExplorer+contractAddress"></app-referral-link>
+    </div>
+</div>

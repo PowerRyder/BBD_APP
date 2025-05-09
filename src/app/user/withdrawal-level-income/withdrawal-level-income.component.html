@@ -1,0 +1,81 @@
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card class="mx-0">
+        <mat-card-title class="text-align-center">Withdrawal Level Income</mat-card-title>
+        <mat-card-content class="card-pad table-responsive">
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th *ngIf="isVisible('RequiredSelfInvestment')">Req. Self Investment ({{paymentCurrency}})</th>
+                        <th *ngIf="isVisible('RequiredSelfInvestment')">Self Investment ({{paymentCurrency}})</th>
+                        <th *ngIf="isVisible('RequiredNumberOfDirects')">Req. Directs</th>
+                        <th *ngIf="isVisible('RequiredNumberOfDirects')">Directs Count</th>
+                        <th *ngIf="isVisible('RequiredDirectsInvestment')">Req. Directs Investment ({{paymentCurrency}})
+                        </th>
+                        <th *ngIf="isVisible('RequiredDirectsInvestment')">Directs Investment ({{paymentCurrency}})</th>
+                        <th *ngIf="isVisible('RequiredNumberOfTeam')">Req. Team</th>
+                        <th *ngIf="isVisible('RequiredNumberOfTeam')">Total Team</th>
+                        <th *ngIf="isVisible('RequiredTeamInvestment')">Req. Team Investment ({{paymentCurrency}})</th>
+                        <th *ngIf="isVisible('RequiredTeamInvestment')">Team Investment ({{paymentCurrency}})</th>
+                        <th>On Amount ({{paymentCurrency}})</th>
+                        <th>Percentage</th>
+                        <th>Income ({{paymentCurrency}})</th>
+                        <th>Is Level Achieved?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let elem of dataSource" [ngClass]="elem.IsLevelAchieved?'text-success':''">
+                        <td>
+                            {{elem.Level}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredSelfInvestment')">
+                            {{elem.RequiredSelfInvestment}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredSelfInvestment')">
+                            {{elem.SelfInvestment}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredNumberOfDirects')">
+                            {{elem.RequiredNumberOfDirects}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredNumberOfDirects')">
+                            {{elem.DirectsCount}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredDirectsInvestment')">
+                            {{elem.RequiredDirectsInvestment}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredDirectsInvestment')">
+                            {{elem.DirectsInvestment}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredNumberOfTeam')">
+                            {{elem.RequiredNumberOfTeam}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredNumberOfTeam')">
+                            {{elem.TotalTeam}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredTeamInvestment')">
+                            {{elem.RequiredTeamInvestment}}
+                        </td>
+                        <td *ngIf="isVisible('RequiredTeamInvestment')">
+                            {{elem.TeamInvestment}}
+                        </td>
+                        <td>
+                            {{elem.OnAmount}}
+                        </td>
+                        <td>
+                            {{elem.Percentage}}
+                        </td>
+                        <td>
+                            {{elem.Income}}
+                        </td>
+                        <td>
+                            <mat-icon>
+                                {{elem.IsLevelAchieved?'done':'close'}}
+                            </mat-icon>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+</div>

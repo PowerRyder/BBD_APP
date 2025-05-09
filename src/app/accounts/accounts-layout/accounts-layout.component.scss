@@ -1,0 +1,63 @@
+.login-box-wrapper {
+    // background: url('assets/Bitcoin-HD-Background.jpg') no-repeat;
+    background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+    /* background: linear-gradient(
+90deg, rgba(131,58,180,1) 0%, rgb(7, 156, 243) 50%, rgba(252,176,69,1) 100%); */
+    min-height: 100vh;
+    position: relative;
+    text-align: center;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 0;
+    background-size: 100% 100%;
+}
+
+@media (min-width: 576px) {
+    .accounts-container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .accounts-container {
+        max-width: 720px;
+    }
+}
+
+// @media (min-width: 992px) {
+//     .container {
+//         max-width: 960px;
+//     }
+// }
+
+// @media (min-width: 1200px) {
+//     .container {
+//         max-width: 1140px;
+//     }
+// }
+
+.accounts-container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.login-box-inner {
+    margin: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 35px rgb(0 0 0 / 10%);
+    background: #fff;
+}
+
+.login-box-wrapper .details {
+    padding: 30px 35px 30px 35px;
+}

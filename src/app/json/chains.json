@@ -1,0 +1,54 @@
+{
+    "BEP20":{
+        "TestNet":{
+            "ChainId": 97,
+            "ChainIdHex": "0x61",
+            "ChainName": "BSC TestNet",
+            "RpcUrl": "https://data-seed-prebsc-1-s1.binance.org:8545/",
+            "ExplorerUrl": "https://testnet.bscscan.com/",
+            "NativeCurrency": {
+                "Name": "BNB",
+                "Symbol": "BNB",
+                "Decimal": 18
+            }
+        },
+        "MainNet": {
+            "ChainId": 56,
+            "ChainIdHex": "0x38",
+            "ChainName": "BSC MainNet",
+            "RpcUrl": "https://bsc-dataseed.binance.org/",
+            "ExplorerUrl": "https://bscscan.com/",
+            "NativeCurrency": {
+                "Name": "BNB",
+                "Symbol": "BNB",
+                "Decimal": 18
+            }
+        }
+    },
+    "Polygon":{
+        "TestNet":{
+            "ChainId": 80001,
+            "ChainIdHex": "0x13881",
+            "ChainName": "Polygon TestNet",
+            "RpcUrl": "https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78/",
+            "ExplorerUrl": "https://mumbai.polygonscan.com/",
+            "NativeCurrency": {
+                "Name": "MATIC",
+                "Symbol": "MATIC",
+                "Decimal": 18
+            }
+        },
+        "MainNet": {
+            "ChainId": 137,
+            "ChainIdHex": "0x89",
+            "ChainName": "Polygon MainNet",
+            "RpcUrl": "https://rpc-mainnet.matic.quiknode.pro/",
+            "ExplorerUrl": "https://polygonscan.com/",
+            "NativeCurrency": {
+                "Name": "MATIC",
+                "Symbol": "MATIC",
+                "Decimal": 18
+            }
+        }
+    }
+}

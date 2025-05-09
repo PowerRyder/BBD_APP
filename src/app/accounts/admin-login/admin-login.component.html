@@ -1,0 +1,16 @@
+<h3><b>View ID</b></h3>
+<form [formGroup]=loginForm #formDir="ngForm" (ngSubmit)="onLoginClick()">
+
+    <mat-form-field>
+        <mat-label>Wallet</mat-label>
+        <input matInput formControlName="userId" />
+        <mat-error>
+            <app-text-validation-message fieldName="userId"
+                [formGroupDirective]="formDir"></app-text-validation-message>
+        </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" *ngIf="loginForm.controls['userId'].value!=''">View</button>
+    <button mat-raised-button color="primary" type="button" *ngIf="loginForm.controls['userId'].value==''"
+        (click)="onConnectWalletClick()">Connect Wallet</button>
+</form>

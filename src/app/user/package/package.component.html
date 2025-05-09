@@ -1,0 +1,50 @@
+<form [formGroup]=packageForm #formDir="ngForm" *ngIf="packageForm.controls['userAddress'].value!=''">
+    <mat-form-field class="label">
+        <mat-label>Selected Wallet</mat-label>
+        <input matInput formControlName="userAddress" />
+        <mat-error>
+            <app-text-validation-message fieldName="userAddress"
+                [formGroupDirective]="formDir"></app-text-validation-message>
+        </mat-error>
+    </mat-form-field>
+    <div class="d-flex justify-content-end">
+        <b>Balance: {{paymentCurrencyBalance}} {{paymentCurrency}}</b>
+    </div>
+    <div class="d-flex justify-content-center mb-3" *ngIf="packages.length>1">
+        <ng-container *ngFor="let package of packages">
+            <button mat-raised-button class="mx-2"
+                [color]="selectedPackage && selectedPackage.PackageId==package.PackageId?'accent':'primary'"
+                *ngIf="package.IsActive" type="button" (click)=onPackageSelect(package)>{{ package.Name }}</button>
+        </ng-container>
+    </div>
+
+    <mat-form-field *ngIf="selectedPackage">
+        <mat-label>Amount ({{paymentCurrency}})</mat-label>
+        <input matInput formControlName="amount" type="number" (change)="onAmountChange()" [min]="minAmount"
+            [max]="maxAmount" />
+        <button mat-button matSuffix mat-raised-button color="warn" type="button" *ngIf="selectedPackage.HasRange"
+            (click)="onMaxClick();">
+            Max
+        </button>
+        <mat-error>
+            <app-text-validation-message fieldName="amount"
+                [formGroupDirective]="formDir"></app-text-validation-message>
+        </mat-error>
+    </mat-form-field>
+
+    <div class="d-flex justify-content-center mb-3" *ngIf="selectedPackage && selectedPackage.HasRange">
+        <button mat-raised-button color="info" type="button" (click)=addAmount(10) class="mx-2">+10 {{ paymentCurrency
+            }}</button>
+        <button mat-raised-button color="info" type="button" (click)=addAmount(50) class="mx-2">+50 {{ paymentCurrency
+            }}</button>
+        <button mat-raised-button color="info" type="button" (click)=addAmount(100) class="mx-2">+100 {{ paymentCurrency
+            }}</button>
+        <button mat-raised-button color="info" type="button" (click)=addAmount(500) class="mx-2">+500 {{ paymentCurrency
+            }}</button>
+    </div>
+</form>
+<div class="d-flex justify-content-center">
+    <button mat-raised-button color="primary" type="button" *ngIf="packageForm.controls['userAddress'].value==''"
+        (click)="onConnectWalletClick()">Connect Wallet</button>
+
+</div>

@@ -1,0 +1,26 @@
+<div class="mat-alert-container">
+    <div class="mat-alert-action-icon">
+        <mat-icon *ngIf="data.action && data.action=='success'" class="mat-icon-success">check_circle</mat-icon>
+        <mat-icon *ngIf="data.action && data.action=='info'" class="mat-icon-info">info_outline</mat-icon>
+        <mat-icon *ngIf="data.action && data.action=='warning'" class="mat-icon-warning">warning</mat-icon>
+        <mat-icon *ngIf="data.action && data.action=='error'" class="mat-icon-error">cancel</mat-icon>
+        <mat-icon *ngIf="data.action && data.action=='question'" class="mat-icon-question">help_outline</mat-icon>
+    </div>
+    <h1 class="mat-alert-title">{{data.title}}</h1>
+    <div class="mat-alert-message-body">
+        <div [innerHtml]="data.message">
+
+        </div>
+    </div>
+    <div class="mat-alert-buttons-container">
+        <button mat-raised-button *ngIf="data.cancelButtonText" [color]="data.cancelButtonTheme" (click)="closeDialog('cancel')">
+            {{data.cancelButtonText}}
+        </button>
+        <button mat-raised-button *ngIf="data.denyButtonText" [color]="data.denyButtonTheme" (click)="closeDialog('deny')">
+            {{data.denyButtonText}}
+        </button>
+        <button mat-raised-button [color]="data.confirmButtonTheme" (click)="closeDialog('confirm')">
+            {{data.confirmButtonText}}
+        </button>
+    </div>
+</div>

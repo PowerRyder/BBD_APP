@@ -1,0 +1,27 @@
+<ng-container *ngFor="let item of menus">
+    <ng-container *ngIf="item.children== undefined || item.children.length==0">
+        <mat-list-item *ngIf="item.is_nav_menu_item" [routerLink]="item.url" routerLinkActive="active" [class]="'side-nav-menu-item-'+level"
+            [id]="item.control_id" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon mat-list-icon>
+                {{ item.mat_icon?item.mat_icon:'keyboard_double_arrow_right' }}
+            </mat-icon>
+            <div mat-line>{{ item.name }}</div>
+        </mat-list-item>
+    </ng-container>
+
+    <ng-container *ngIf="item.children?.length > 0">
+        <mat-expansion-panel [expanded]="item.expanded">
+            <mat-expansion-panel-header matRipple [style.paddingLeft.px]="level*16">
+                <mat-panel-title>
+                    <mat-icon mat-list-icon>
+                        {{ item.mat_icon?item.mat_icon:'keyboard_double_arrow_right' }}
+                    </mat-icon>
+                    <span class="mat-list-text">
+                        <div mat-line>{{ item.name }}</div>
+                    </span>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-side-menu [menus]="item.children" [level]="level+1"></app-side-menu>
+        </mat-expansion-panel>
+    </ng-container>
+</ng-container>

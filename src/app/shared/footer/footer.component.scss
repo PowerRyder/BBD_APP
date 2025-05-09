@@ -1,0 +1,8 @@
+@import 'src/styles-utils/variables.scss';
+
+footer {
+    background-color: $user-layout-toolbar-background-color;
+    color: $user-layout-toolbar-text-color;
+    height: 50px;
+    width: 100%;
+}

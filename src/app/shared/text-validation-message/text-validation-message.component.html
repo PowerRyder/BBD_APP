@@ -1,0 +1,19 @@
+<div class="text-danger" *ngIf="!!control && !!control.errors && (control.dirty || control.touched || formGroupDirective.submitted)">
+    <div *ngIf="control.errors['required']">This field is required.</div>
+    <div *ngIf="control.errors.min">Minimum value should be {{control.errors.min.min}}.</div>
+    <div *ngIf="control.errors.max">Maximum value should be {{control.errors.max.max}}.</div>
+    <div *ngIf="control.errors.email">Invalid email!</div>
+    <div *ngIf="control.errors.mobile">Invalid mobile number!</div>
+    <div *ngIf="control.errors.minlength">Length must be of minimum {{control.errors.minlength.requiredLength}} characters.</div>
+    <div *ngIf="control.errors.maxlength">Length must be of maximum {{control.errors.maxlength.requiredLength}} characters.</div>
+    <div *ngIf="control.errors.exactlength">Length must be of exactly {{control.errors.exactlength}} characters.</div>
+    
+    <div *ngIf="control.errors.userIdExists">{{control.errors.userIdExists}}</div>
+    <div *ngIf="control.errors.invalidSponsorId">{{control.errors.invalidSponsorId}}</div>
+    <div *ngIf="control.errors.invalidUplineId">{{control.errors.invalidUplineId}}</div>
+    <div *ngIf="control.errors.invalidIFSCode">{{control.errors.invalidIFSCode}}</div>
+    
+    <div *ngIf="control.errors.invalidPin">{{control.errors.invalidPin}}</div>
+    <div *ngIf="control.errors.passwordMismatch">Passwords mismatch!</div>
+    <div *ngIf="control.errors.pattern">{{regexErrorMessage}}</div>
+</div>

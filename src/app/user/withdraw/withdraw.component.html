@@ -1,0 +1,50 @@
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card>
+        <mat-card-title class="text-align-center">Withdraw</mat-card-title>
+        <mat-card-content class="card-pad">
+            <form [formGroup]=withdrawForm #formDir="ngForm" *ngIf="withdrawForm.controls['userAddress'].value!=''">
+                <mat-form-field class="label">
+                    <mat-label>Selected Wallet</mat-label>
+                    <input matInput formControlName="userAddress" />
+                    <mat-error>
+                        <app-text-validation-message fieldName="userAddress"
+                            [formGroupDirective]="formDir"></app-text-validation-message>
+                    </mat-error>
+                </mat-form-field>
+                <div class="d-flex justify-content-end">
+                    <b>Balance: {{amountAvailableToWithdraw}} {{paymentCurrency}}</b>
+                </div>
+
+                <mat-form-field>
+                    <mat-label>Amount To Withdraw ({{paymentCurrency}})</mat-label>
+                    <input matInput formControlName="amount" type="number" [min]="minAmount" [max]="maxAmount" (change)="onAmountChange()" />
+                    <button mat-button matSuffix mat-raised-button color="warn" type="button" (click)="onMaxClick();">
+                        Max
+                    </button>
+                    <mat-error>
+                        <app-text-validation-message fieldName="amount"
+                            [formGroupDirective]="formDir"></app-text-validation-message>
+                    </mat-error>
+                </mat-form-field>
+                <div class="d-flex justify-content-between">
+                    <b>Deduction: {{deductionAmount}} {{paymentCurrency}} ({{deductionPercentage}}%)</b>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <b>You Receive: {{receivingAmount}} {{paymentCurrency}}</b>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button mat-raised-button color="success" (click)="onWithdrawClick()">Withdraw</button>
+                </div>
+            </form>
+            <div class="d-flex justify-content-center" *ngIf="withdrawForm.controls['userAddress'].value==''">
+                <button mat-raised-button color="primary" type="button" (click)="onConnectWalletClick()">Connect
+                    Wallet</button>
+
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<app-withdrawal-history></app-withdrawal-history>
