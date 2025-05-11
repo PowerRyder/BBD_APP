@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: None
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -16,7 +16,7 @@ interface IBEP20
     function balanceOf(address account) external view returns (uint256);
 }
 
-contract DAppDemo is IBEP20 
+contract DAppDemo
 {
     event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -30,19 +30,13 @@ contract DAppDemo is IBEP20
     address constant PaymentTokenContractAddress = 0xc06e70c4038059965172Cf02025d7e5033f39767; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
 
     uint256 LevelIncome_LevelCount = 0;
-    uint256 WithdrawalLevelIncome_LevelCount = 0;
+    uint256 TotalRanksCount = 0;
 
     bool IsLevelIncomePercentage = true;
-    bool IsWithdrawalLevelIncomePercentage = true;
 
     uint256 TotalNoOfPackages = 0;
 
     uint256 constant PaymentCurrencyDecimals = 18;
-
-    uint256 private TotalSupply = 0;
-
-    uint256 public LiquidityAmount_PaymentToken = 0;
-    uint256 INITIAL_COIN_RATE = 10000000;
 
     struct User 
     {
@@ -51,21 +45,28 @@ contract DAppDemo is IBEP20
         address SponsorAddress;
         uint256 JoiningTimestamp;
         uint256 Investment;
-        uint256 TeamInvestment;
-        uint256 DirectsInvestment;
-        address[] DirectAddresses;
         uint256 TotalTeam;
         bool IsBlocked;
-        uint256 LastTokenSellTimestamp;
+        uint256 FirstActivationTimestamp;
+        uint256 ActivationExpiryTimestamp;
+        uint256 ReactivationCount;
         uint256 RankId;
+    }
+
+    struct UserTeam
+    {
+        uint256 DirectsInvestment;
+        address[] DirectAddresses;
+        uint256 TeamABusiness;
+        uint256 TeamBBusiness;
+        uint256 TeamInvestment;
+        address[] TeamAddresses;
     }
 
     struct UserDeposit 
     {
         uint256 PackageId;
         uint256 Amount;
-        uint256 InternalTokenAmount;
-        uint256 Rate;
         uint256 Timestamp;
     }
 
@@ -73,7 +74,7 @@ contract DAppDemo is IBEP20
     {
         uint256 ReferralIncome;
         uint256[] LevelIncome;
-        uint256[] WithdrawalLevelIncome;
+        uint256 RankIncome;
         uint256 AmountWithdrawn;
     }
 
@@ -82,14 +83,6 @@ contract DAppDemo is IBEP20
         uint256 DepositsCount;
         uint256 TokenSellCount;
         uint256 IncomeWithdrawalCount;
-    }
-
-    struct UserTokenSellTransaction
-    {
-        uint256 TokenAmount;
-        uint256 PaymentTokenAmount;
-        uint256 Rate;
-        uint256 Timestamp;
     }
 
     struct UserIncomeWithdrawalTransaction
@@ -134,9 +127,6 @@ contract DAppDemo is IBEP20
         uint256 CommunityInvestment;
         uint256 CommunityWithdrawal;
         uint256 ContractBalance;
-        uint256 InternalTokenTotalSupply;
-        uint256 InternalTokenLiquidity;
-        uint256 InternalTokenRate;
     }
 
     struct UserDashboard
@@ -144,10 +134,8 @@ contract DAppDemo is IBEP20
         uint256 DirectsCount;
         uint256 ReferralIncome;
         uint256 LevelIncome;
-        uint256 WithdrawalLevelIncome;
         uint256 TotalIncome;
         uint256 AmountWithdrawn;
-        uint256 InternalTokenBalance;
     }
 
     struct UserDirects
@@ -177,15 +165,26 @@ contract DAppDemo is IBEP20
         bool IsLevelAchieved;
     }
 
+    struct RankMaster
+    {
+        uint256 RankId;
+        string RankName;
+        uint256 ReqSelfInvestment;
+        uint256 ReqTeamA_Business;
+        uint256 ReqTeamB_Business;
+        uint256 RewardAmount;
+    }
+
     mapping(uint256 => PackageMaster) public map_PackageMaster;
     mapping(uint256 => LevelIncomeMaster) public map_LevelIncomeMaster;
-    mapping(uint256 => LevelIncomeMaster) public map_WithdrawalLevelIncomeMaster;
+    mapping(uint256 => RankMaster) public map_RankMaster;
 
     mapping(address => User) public map_Users;
     mapping(uint256 => address) public map_UserIdToAddress;
 
+    mapping(address => UserTeam) public map_UserTeam;
     mapping(address => mapping(uint256 => UserDeposit)) public map_UserDeposits;
-    mapping(address => mapping(uint256 => UserTokenSellTransaction)) public map_UserTokenSellHistory;
+    
     mapping(address => mapping(uint256 => UserIncomeWithdrawalTransaction)) public map_UserIncomeWithdrawalHistory;
 
     mapping(address => mapping(uint256 => uint256)) public map_UserBusinessOnLevel;
@@ -194,33 +193,6 @@ contract DAppDemo is IBEP20
     mapping(address => UserWallet) public map_UserWallet;
 
     mapping(address => UserTransactionCount) public map_UserTransactionCount;
-
-    mapping(address => uint256) balances;
-
-    function totalSupply() external view returns (uint256)
-    {
-        return TotalSupply;
-    }
-
-    function decimals() external pure returns (uint8)
-    {
-        return 0;
-    }
-
-    function symbol() external pure returns (string memory)
-    {
-        return "SOLWAVE";
-    }
-
-    function name() external pure returns (string memory)
-    {
-        return "Solwave";
-    }
-
-    function balanceOf(address account) public view returns (uint256)
-    {
-        return balances[account];
-    }
 
     constructor()
     {
@@ -231,7 +203,7 @@ contract DAppDemo is IBEP20
     {
         InitPackageMaster();
         InitLevelIncomeMaster();
-        InitWithdrawalLevelIncomeMaster();
+        InitRankMaster();
 
         InitTopUser();
     }
@@ -245,23 +217,10 @@ contract DAppDemo is IBEP20
             Amount: 0,
             IsActive: true,
             HasRange: true,
-            MinAmount: ConvertToBase(1)/100,
-            MaxAmount: ConvertToBase(20000000),
+            MinAmount: ConvertToBase(30),
+            MaxAmount: ConvertToBase(3000),
             ReferralIncome: 20,
             IsReferralIncomePercentage: true
-        });
-        
-        TotalNoOfPackages++;
-        map_PackageMaster[TotalNoOfPackages] = PackageMaster({
-            PackageId: TotalNoOfPackages,
-            Name: "Fixed Package",
-            Amount: ConvertToBase(10),
-            IsActive: true,
-            HasRange: false,
-            MinAmount: ConvertToBase(0),
-            MaxAmount: ConvertToBase(0),
-            ReferralIncome: 2,
-            IsReferralIncomePercentage: false
         });
     }
 
@@ -329,45 +288,56 @@ contract DAppDemo is IBEP20
 
     }
 
-    function InitWithdrawalLevelIncomeMaster() internal
+    function InitRankMaster() internal
     {
-        WithdrawalLevelIncome_LevelCount++;
-        map_WithdrawalLevelIncomeMaster[
-            WithdrawalLevelIncome_LevelCount
-        ] = LevelIncomeMaster({
-            Level: WithdrawalLevelIncome_LevelCount,
-            Percentage: 40,
-            RequiredSelfInvestment: ConvertToBase(0),
-            RequiredNumberOfDirects: 0,
-            RequiredDirectsInvestment: 0,
-            RequiredNumberOfTeam: 0,
-            RequiredTeamInvestment: 0
+        TotalRanksCount++;
+        map_RankMaster[TotalRanksCount] = RankMaster({
+            RankId: TotalRanksCount,
+            RankName: "1 Star",
+            ReqSelfInvestment: ConvertToBase(300),
+            ReqTeamA_Business: ConvertToBase(1000),
+            ReqTeamB_Business: ConvertToBase(1000),
+            RewardAmount: ConvertToBase(0)
         });
-
-        WithdrawalLevelIncome_LevelCount++;
-        map_WithdrawalLevelIncomeMaster[
-            WithdrawalLevelIncome_LevelCount
-        ] = LevelIncomeMaster({
-            Level: WithdrawalLevelIncome_LevelCount,
-            Percentage: 40,
-            RequiredSelfInvestment: ConvertToBase(0),
-            RequiredNumberOfDirects: 0,
-            RequiredDirectsInvestment: 0,
-            RequiredNumberOfTeam: 0,
-            RequiredTeamInvestment: 0
+        
+        TotalRanksCount++;
+        map_RankMaster[TotalRanksCount] = RankMaster({
+            RankId: TotalRanksCount,
+            RankName: "2 Star",
+            ReqSelfInvestment: ConvertToBase(500),
+            ReqTeamA_Business: ConvertToBase(5000),
+            ReqTeamB_Business: ConvertToBase(5000),
+            RewardAmount: ConvertToBase(0)
         });
-
-        WithdrawalLevelIncome_LevelCount++;
-        map_WithdrawalLevelIncomeMaster[
-            WithdrawalLevelIncome_LevelCount
-        ] = LevelIncomeMaster({
-            Level: WithdrawalLevelIncome_LevelCount,
-            Percentage: 40,
-            RequiredSelfInvestment: ConvertToBase(0),
-            RequiredNumberOfDirects: 0,
-            RequiredDirectsInvestment: 0,
-            RequiredNumberOfTeam: 0,
-            RequiredTeamInvestment: 0
+        
+        TotalRanksCount++;
+        map_RankMaster[TotalRanksCount] = RankMaster({
+            RankId: TotalRanksCount,
+            RankName: "3 Star",
+            ReqSelfInvestment: ConvertToBase(1000),
+            ReqTeamA_Business: ConvertToBase(10000),
+            ReqTeamB_Business: ConvertToBase(10000),
+            RewardAmount: ConvertToBase(0)
+        });
+        
+        TotalRanksCount++;
+        map_RankMaster[TotalRanksCount] = RankMaster({
+            RankId: TotalRanksCount,
+            RankName: "4 Star",
+            ReqSelfInvestment: ConvertToBase(2000),
+            ReqTeamA_Business: ConvertToBase(25000),
+            ReqTeamB_Business: ConvertToBase(25000),
+            RewardAmount: ConvertToBase(2500)
+        });
+        
+        TotalRanksCount++;
+        map_RankMaster[TotalRanksCount] = RankMaster({
+            RankId: TotalRanksCount,
+            RankName: "5 Star",
+            ReqSelfInvestment: ConvertToBase(3000),
+            ReqTeamA_Business: ConvertToBase(75000),
+            ReqTeamB_Business: ConvertToBase(75000),
+            RewardAmount: ConvertToBase(5000)
         });
     }
 
@@ -387,34 +357,41 @@ contract DAppDemo is IBEP20
             SponsorAddress: sponsorAddress,
             JoiningTimestamp: block.timestamp,
             Investment: 0,
-            TeamInvestment: 0,
-            DirectsInvestment: 0,
-            DirectAddresses: new address[](0),
             TotalTeam: 0,
             IsBlocked: false,
-            LastTokenSellTimestamp: 0,
+            FirstActivationTimestamp: 0,
+            ActivationExpiryTimestamp: 0,
+            ReactivationCount: 0,
             RankId: 0
+        });
+
+        UserTeam memory ut = UserTeam({
+            DirectsInvestment: 0,
+            DirectAddresses: new address[](0),
+            TeamABusiness: 0,
+            TeamBBusiness: 0,
+            TeamInvestment: 0,
+            TeamAddresses: new address[](0)
         });
 
         UserIncome memory ui = UserIncome({
             ReferralIncome: 0,
             LevelIncome: new uint256[](LevelIncome_LevelCount + 1),
-            WithdrawalLevelIncome: new uint256[](
-                WithdrawalLevelIncome_LevelCount + 1
-            ),
+            RankIncome: 0,
             AmountWithdrawn: 0
         });
 
         map_Users[userAddress] = u;
+        map_UserTeam[userAddress] = ut;
         map_UserIncome[userAddress] = ui;
         map_UserIdToAddress[TotalUsers] = userAddress;
 
         if (sponsorAddress != address(0))
         {
-            map_Users[sponsorAddress].DirectAddresses.push(userAddress);
+            map_UserTeam[sponsorAddress].DirectAddresses.push(userAddress);
         }
 
-        UpdateTeamCount(sponsorAddress);
+        UpdateTeamCount(sponsorAddress, userAddress);
     }
 
     function SaveDeposit(address userAddress,uint256 packageId,uint256 amount) internal
@@ -428,25 +405,28 @@ contract DAppDemo is IBEP20
             "Invalid amount!"
         );
         
+        uint timestamp = block.timestamp;
+
         TotalInvestment += amount;
 
         address sponsorAddress = map_Users[userAddress].SponsorAddress;
         map_Users[userAddress].Investment += amount;
-        map_Users[sponsorAddress].DirectsInvestment += amount;
+        map_UserTeam[sponsorAddress].DirectsInvestment += amount;
 
-        UpdateTeamInvestment(sponsorAddress, amount);
+        UpdateTeamInvestment(sponsorAddress, userAddress, amount);
 
         DistributeIncome(userAddress, packageId, amount);
-        uint256 _rate = PaymentTokenToTokens();
-        uint256 noOfTokens = BuyTokens(userAddress, (amount * 66) / 100);
-
+        
         {
+            if(map_UserTransactionCount[userAddress].DepositsCount == 0)
+            {
+                map_Users[userAddress].FirstActivationTimestamp = timestamp;
+            }
+
             UserDeposit memory d = UserDeposit({
                 PackageId: packageId,
                 Amount: amount,
-                InternalTokenAmount: noOfTokens,
-                Rate: _rate,
-                Timestamp: block.timestamp
+                Timestamp: timestamp
             });
 
             map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount + 1] = d;
@@ -482,26 +462,70 @@ contract DAppDemo is IBEP20
         }
     }
 
-    function UpdateTeamCount(address sponsorAddress) internal
+    function UpdateTeamCount(address sponsorAddress, address userAddress) internal
     {
         while (sponsorAddress != address(0))
         {
             map_Users[sponsorAddress].TotalTeam++;
+            map_UserTeam[sponsorAddress].TeamAddresses.push(userAddress);
             sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
         }
     }
 
-    function UpdateTeamInvestment(address sponsorAddress, uint256 amount) internal 
+    function UpdateTeamInvestment(address sponsorAddress, address userAddress, uint256 amount) internal 
     {
+        ProcessRankQualification(userAddress);
         uint256 level = 1;
         while (sponsorAddress != address(0))
         {
-            map_Users[sponsorAddress].TeamInvestment += amount; //Including Directs
+            if(map_UserTeam[sponsorAddress].TeamABusiness<amount)
+            {
+                map_UserTeam[sponsorAddress].TeamBBusiness += map_UserTeam[sponsorAddress].TeamABusiness;
+                map_UserTeam[sponsorAddress].TeamABusiness = amount;
+            }
+            else 
+            {
+                map_UserTeam[sponsorAddress].TeamBBusiness += amount;
+            }
+
+            map_UserTeam[sponsorAddress].TeamInvestment += amount; //Including Directs
 
             map_UserBusinessOnLevel[sponsorAddress][level] += amount;
 
+            ProcessRankQualification(sponsorAddress);
+
             sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
             level++;
+        }
+    }
+
+    function ProcessRankQualification(address userAddress) internal {
+        uint256 nextRankId = map_Users[userAddress].RankId + 1;
+
+        while (nextRankId <= TotalRanksCount) {
+            RankMaster memory r = map_RankMaster[nextRankId];
+
+            if (
+                map_Users[userAddress].Investment >= r.ReqSelfInvestment &&
+                map_UserTeam[userAddress].TeamABusiness >= r.ReqTeamA_Business &&
+                map_UserTeam[userAddress].TeamBBusiness >= r.ReqTeamB_Business
+            ) {
+                map_UserIncome[userAddress].RankIncome += r.RewardAmount;
+                CreditIncomeToWallet(userAddress, r.RewardAmount);
+                map_Users[userAddress].RankId = nextRankId;
+                nextRankId++;
+            } else {
+                break;
+            }
+        }
+    }
+
+
+    function CreditIncomeToWallet(address userAddress, uint256 amount) internal
+    {
+        if(amount>0)
+        {
+
         }
     }
 
@@ -525,14 +549,14 @@ contract DAppDemo is IBEP20
         return !map_Users[_address].IsBlocked;
     }
 
-    function RegisterInternal(address sponsorAddress,uint256 packageId,uint256 amount) internal
+    function RegisterInternal(address sponsorAddress, uint256 packageId, uint256 amount) internal
     {
         address userAddress = msg.sender;
         require(Login(sponsorAddress), "Invalid sponsor!");
         require(!doesUserExist(userAddress), "Already registered!");
 
         SaveUser(userAddress, sponsorAddress);
-        DepositInternal(packageId, amount);
+        // DepositInternal(packageId, amount);
     }
 
     function DepositInternal(uint256 packageId, uint256 amount) internal 
@@ -585,62 +609,16 @@ contract DAppDemo is IBEP20
     function IsQualifiedForLevelIncome(address userAddress, uint256 level) internal view returns (bool)
     {
         if (
-            map_Users[userAddress].DirectsInvestment >= map_LevelIncomeMaster[level].RequiredDirectsInvestment 
+            map_UserTeam[userAddress].DirectsInvestment >= map_LevelIncomeMaster[level].RequiredDirectsInvestment 
                 &&
-            map_Users[userAddress].TeamInvestment >= map_LevelIncomeMaster[level].RequiredTeamInvestment 
+            map_UserTeam[userAddress].TeamInvestment >= map_LevelIncomeMaster[level].RequiredTeamInvestment 
                 &&
-            map_Users[userAddress].DirectAddresses.length >= map_LevelIncomeMaster[level].RequiredNumberOfDirects 
+            map_UserTeam[userAddress].DirectAddresses.length >= map_LevelIncomeMaster[level].RequiredNumberOfDirects 
                 &&
             map_Users[userAddress].TotalTeam >= map_LevelIncomeMaster[level].RequiredNumberOfTeam 
                 &&
             map_Users[userAddress].Investment >= map_LevelIncomeMaster[level].RequiredSelfInvestment
         ) 
-        {
-            return true;
-        }
-        return false;
-    }
-
-    function DistributeWithdrawalLevelIncome(address userAddress,uint256 onAmount) internal 
-    {
-        address sponsorAddress = map_Users[userAddress].SponsorAddress;
-
-        uint256 level = 1;
-        while (sponsorAddress != address(0) && level <= WithdrawalLevelIncome_LevelCount) 
-        {
-            if (IsQualifiedForWithdrawalLevelIncome(userAddress, level)) 
-            {
-                map_UserIncome[sponsorAddress].WithdrawalLevelIncome[level] += (IsWithdrawalLevelIncomePercentage ? ((onAmount * map_WithdrawalLevelIncomeMaster[level].Percentage) / (10 * 100)) : map_WithdrawalLevelIncomeMaster[level].Percentage);
-            } 
-            else 
-            {
-                map_UserIncome[CreatorAddress].WithdrawalLevelIncome[level] += (IsWithdrawalLevelIncomePercentage ? ((onAmount * map_WithdrawalLevelIncomeMaster[level].Percentage) / (10 * 100)) : map_WithdrawalLevelIncomeMaster[level].Percentage);
-            }
-
-            map_UserWithdrawalOnLevel[sponsorAddress][level] += onAmount;
-
-            sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
-            level++;
-
-            if (sponsorAddress == address(0)) {
-                sponsorAddress = CreatorAddress;
-            }
-        }
-    }
-
-    function IsQualifiedForWithdrawalLevelIncome(address userAddress,uint256 level) internal view returns (bool) 
-    {
-        if (
-            map_Users[userAddress].DirectsInvestment >= map_WithdrawalLevelIncomeMaster[level].RequiredDirectsInvestment 
-                &&
-            map_Users[userAddress].TeamInvestment >= map_WithdrawalLevelIncomeMaster[level].RequiredTeamInvestment 
-                &&
-            map_Users[userAddress].DirectAddresses.length >= map_WithdrawalLevelIncomeMaster[level].RequiredNumberOfDirects 
-                &&
-            map_Users[userAddress].TotalTeam >= map_WithdrawalLevelIncomeMaster[level].RequiredNumberOfTeam 
-                &&
-            map_Users[userAddress].Investment >= map_WithdrawalLevelIncomeMaster[level].RequiredSelfInvestment
-        )
         {
             return true;
         }
@@ -658,24 +636,11 @@ contract DAppDemo is IBEP20
         return totalLevelIncome;
     }
 
-    function GetTotalWithdrawalLevelIncome(address userAddress) internal view returns (uint256)
-    {
-        uint256 totalWithdrawalLevelIncome = 0;
-        UserIncome memory u = map_UserIncome[userAddress];
-
-        for (uint256 i = 0; i < u.WithdrawalLevelIncome.length; i++) {
-            totalWithdrawalLevelIncome += u.WithdrawalLevelIncome[i];
-        }
-
-        return totalWithdrawalLevelIncome;
-    }
-
     function GetTotalIncome(address userAddress) internal view returns (uint256)
     {
         return
             map_UserIncome[userAddress].ReferralIncome +
-            GetTotalLevelIncome(userAddress) +
-            GetTotalWithdrawalLevelIncome(userAddress);
+            GetTotalLevelIncome(userAddress);
     }
 
     function GetContractBalance() internal view returns (uint256) 
@@ -690,9 +655,24 @@ contract DAppDemo is IBEP20
         }
     }
 
+    function ReactivateInternal(address userAddress, uint block_timestamp) internal returns (bool)
+    {
+        uint noOfDays = 10 + (map_Users[userAddress].ReactivationCount/2);
+        uint expiryTimestamp = block_timestamp + (noOfDays * 1 days); // Convert days to seconds
+
+        map_Users[userAddress].ActivationExpiryTimestamp = expiryTimestamp;
+        map_Users[userAddress].ReactivationCount++;
+        return true;
+    }
+
     function Login(address _address) public view returns (bool) 
     {
         return doesUserExist(_address) && isUserActive(_address);
+    }
+
+    function Reactivate() external returns (bool)
+    {
+        return ReactivateInternal(msg.sender, block.timestamp);
     }
 
     function GetPackages() external view returns (PackageMaster[] memory) 
@@ -712,37 +692,32 @@ contract DAppDemo is IBEP20
             TotalCommunity: TotalUsers,
             CommunityInvestment: TotalInvestment,
             CommunityWithdrawal: TotalWithdrawn,
-            ContractBalance: GetContractBalance(),
-            InternalTokenTotalSupply: TotalSupply,
-            InternalTokenLiquidity: LiquidityAmount_PaymentToken,
-            InternalTokenRate: PaymentTokenToTokens()
+            ContractBalance: GetContractBalance()
         });
     }
 
     function GetDashboardDetails(address userAddress) external view returns (UserDashboard memory info)
     {
         info = UserDashboard({
-            DirectsCount: map_Users[userAddress].DirectAddresses.length,
+            DirectsCount: map_UserTeam[userAddress].DirectAddresses.length,
             ReferralIncome: map_UserIncome[userAddress].ReferralIncome,
             LevelIncome: GetTotalLevelIncome(userAddress),
-            WithdrawalLevelIncome: GetTotalWithdrawalLevelIncome(userAddress),
             TotalIncome: GetTotalIncome(userAddress),
-            AmountWithdrawn: map_UserIncome[userAddress].AmountWithdrawn,
-            InternalTokenBalance: balanceOf(userAddress)
+            AmountWithdrawn: map_UserIncome[userAddress].AmountWithdrawn
         });
     }
 
     function GetDirects(address userAddress) external view returns (UserDirects[] memory directs)
     {
-        directs = new UserDirects[](map_Users[userAddress].DirectAddresses.length);
+        directs = new UserDirects[](map_UserTeam[userAddress].DirectAddresses.length);
 
-        for (uint256 i = 0; i < map_Users[userAddress].DirectAddresses.length; i++) 
+        for (uint256 i = 0; i < map_UserTeam[userAddress].DirectAddresses.length; i++) 
         {
             directs[i] = UserDirects({
                 Srno: i + 1,
-                Address: map_Users[userAddress].DirectAddresses[i],
-                Investment: map_Users[map_Users[userAddress].DirectAddresses[i]].Investment,
-                Business: map_Users[map_Users[userAddress].DirectAddresses[i]].Investment
+                Address: map_UserTeam[userAddress].DirectAddresses[i],
+                Investment: map_Users[map_UserTeam[userAddress].DirectAddresses[i]].Investment,
+                Business: map_Users[map_UserTeam[userAddress].DirectAddresses[i]].Investment
             });
         }
         // return map_Users[userAddress].DirectAddresses;
@@ -759,45 +734,17 @@ contract DAppDemo is IBEP20
                 RequiredSelfInvestment: map_LevelIncomeMaster[i].RequiredSelfInvestment,
                 SelfInvestment: map_Users[userAddress].Investment,
                 RequiredNumberOfDirects: map_LevelIncomeMaster[i].RequiredNumberOfDirects,
-                DirectsCount: map_Users[userAddress].DirectAddresses.length,
+                DirectsCount: map_UserTeam[userAddress].DirectAddresses.length,
                 RequiredDirectsInvestment: map_LevelIncomeMaster[i].RequiredDirectsInvestment,
-                DirectsInvestment: map_Users[userAddress].DirectsInvestment,
+                DirectsInvestment: map_UserTeam[userAddress].DirectsInvestment,
                 RequiredNumberOfTeam: map_LevelIncomeMaster[i].RequiredNumberOfTeam,
                 TotalTeam: map_Users[userAddress].TotalTeam,
                 RequiredTeamInvestment: map_LevelIncomeMaster[i].RequiredTeamInvestment,
-                TeamInvestment: map_Users[userAddress].TeamInvestment,
+                TeamInvestment: map_UserTeam[userAddress].TeamInvestment,
                 OnAmount: map_UserBusinessOnLevel[userAddress][i],
                 Percentage: map_LevelIncomeMaster[i].Percentage,
                 Income: map_UserIncome[userAddress].LevelIncome[i],
                 IsLevelAchieved: IsQualifiedForLevelIncome(userAddress, i)
-            });
-        }
-    }
-
-    function GetWithdrawalLevelIncomeInfo(address userAddress) external view returns (LevelIncomeInfo[] memory info)
-    {
-        info = new LevelIncomeInfo[](WithdrawalLevelIncome_LevelCount);
-
-        for (uint256 i = 1; i <= WithdrawalLevelIncome_LevelCount; i++) {
-            info[i - 1] = LevelIncomeInfo({
-                Level: i,
-                RequiredSelfInvestment: map_WithdrawalLevelIncomeMaster[i].RequiredSelfInvestment,
-                SelfInvestment: map_Users[userAddress].Investment,
-                RequiredNumberOfDirects: map_WithdrawalLevelIncomeMaster[i].RequiredNumberOfDirects,
-                DirectsCount: map_Users[userAddress].DirectAddresses.length,
-                RequiredDirectsInvestment: map_WithdrawalLevelIncomeMaster[i].RequiredDirectsInvestment,
-                DirectsInvestment: map_Users[userAddress].DirectsInvestment,
-                RequiredNumberOfTeam: map_WithdrawalLevelIncomeMaster[i].RequiredNumberOfTeam,
-                TotalTeam: map_Users[userAddress].TotalTeam,
-                RequiredTeamInvestment: map_WithdrawalLevelIncomeMaster[i].RequiredTeamInvestment,
-                TeamInvestment: map_Users[userAddress].TeamInvestment,
-                OnAmount: map_UserWithdrawalOnLevel[userAddress][i],
-                Percentage: map_WithdrawalLevelIncomeMaster[i].Percentage,
-                Income: map_UserIncome[userAddress].WithdrawalLevelIncome[i],
-                IsLevelAchieved: IsQualifiedForWithdrawalLevelIncome(
-                    userAddress,
-                    i
-                )
             });
         }
     }
@@ -817,20 +764,6 @@ contract DAppDemo is IBEP20
         }
     }
 
-    function GetTokenSellHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserTokenSellTransaction[] memory history) 
-    {
-        history = new UserTokenSellTransaction[](map_UserTransactionCount[userAddress].TokenSellCount);
-
-        uint256 startCount = (pageIndex * pageSize > map_UserTransactionCount[userAddress].TokenSellCount) ? map_UserTransactionCount[userAddress].TokenSellCount : (pageIndex * pageSize);
-        uint256 endCount = startCount >= pageSize ? startCount - pageSize : 0;
-
-        uint256 arr_index = 0;
-        for (uint256 i = startCount; i > endCount; i--) {
-            history[arr_index] = map_UserTokenSellHistory[userAddress][i];
-            arr_index++;
-        }
-    }
-
     function GetIncomeWithdrawalHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserIncomeWithdrawalTransaction[] memory history) 
     {
         history = new UserIncomeWithdrawalTransaction[](map_UserTransactionCount[userAddress].IncomeWithdrawalCount);
@@ -845,12 +778,12 @@ contract DAppDemo is IBEP20
         }
     }
 
-    function Deposit(address sponsorAddress,uint256 packageId,uint256 amount) external payable 
+    function Register(address sponsorAddress, uint256 packageId, uint256 amount) external payable 
     {
         RegisterInternal(sponsorAddress, packageId, amount);
     }
 
-    function Redeposit(uint256 packageId, uint256 amount) external payable 
+    function Deposit(uint256 packageId, uint256 amount) external payable 
     {
         DepositInternal(packageId, amount);
     }
@@ -872,8 +805,6 @@ contract DAppDemo is IBEP20
         uint256 deductionAmount = (amount * 12) / 100;
         uint256 amountWithdrawn = amount - deductionAmount;
 
-        DistributeWithdrawalLevelIncome(userAddress, amount);
-
         UserIncomeWithdrawalTransaction
             memory d = UserIncomeWithdrawalTransaction({
                 Amount: amount,
@@ -887,144 +818,31 @@ contract DAppDemo is IBEP20
         SendTokens(CreatorAddress, deductionAmount);
     }
 
-    function PaymentTokenToTokens() internal view returns (uint256) {
-        return LiquidityAmount_PaymentToken >= (1 ether) ? ((INITIAL_COIN_RATE * (1 ether)) / (LiquidityAmount_PaymentToken*2)) : (INITIAL_COIN_RATE);
-    }
-
-    function _mint(address account, uint256 amount) internal {
-        require(account != address(0), "ERC20: mint to the zero address");
-
-        TotalSupply += amount;
-        balances[account] += amount;
-        emit Transfer(address(0), account, amount);
-    }
-
-    function _burn(address account, uint256 amount) internal {
-        require(account != address(0), "ERC20: burn from the zero address");
-
-        uint256 accountBalance = balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
-        require(TotalSupply >= amount, "Invalid amount of tokens!");
-
-        balances[account] = accountBalance - amount;
-
-        TotalSupply -= amount;
-        emit Transfer(account, address(0), amount);
-    }
-
-    function BuyTokens(address _senderAddress, uint256 amount) internal returns (uint256)
-    {
-        uint256 noOfTokens = (PaymentTokenToTokens() * amount) / 1 ether; //dividing by 10**18 because this token has 0 decimal places
-        _mint(_senderAddress, noOfTokens);
-        LiquidityAmount_PaymentToken += amount;
-        return noOfTokens;
-    }
-
-    function SellTokens(address userAddress, uint256 tokenAmount, uint256 _type) external {
-        if (_type == 0) {
-            userAddress = msg.sender;
-            uint256 timestamp = block.timestamp;
-
-            require(doesUserExist(userAddress), "Invalid user!");
-            require(isUserActive(userAddress), "You are not allowed!");
-            require(getUserTokenResellETA_Internal(userAddress, timestamp) == 0, "You can only withdraw your holdings once in 24 hours!"); //Only once in 24 hours
-
-            uint256 balance = balances[userAddress];
-
-            require(tokenAmount <= balance, "Insufficient token balance!");
-
-            uint256 amount = (tokenAmount * 1 ether) / PaymentTokenToTokens(); // because payment token has 18 decimal places
-
-            uint256 deductionPercentage = 5;
-
-            uint256 totalamount = (balances[userAddress] * 1 ether) / PaymentTokenToTokens();
-
-            if (totalamount <= map_Users[userAddress].Investment * 2) 
-            {
-                require(tokenAmount <= (balance * 2) / 100, "You can only sell 2% of your Holding at a time!");
-            } 
-            else if (totalamount <= map_Users[userAddress].Investment * 3) 
-            {
-                require(tokenAmount <= (balance * 1) / 100, "You can only sell 1% of your Holding at a time!");
-            } 
-            else if (totalamount <= map_Users[userAddress].Investment * 4) 
-            {
-                require(tokenAmount <= (balance * 1) / 200, "You can only sell 0.5% of your Holding at a time!");
-            } 
-            else if (totalamount > map_Users[userAddress].Investment * 4) 
-            {
-                require(tokenAmount <= (balance * 1) / 400, "You can only sell 0.25% of your Holding at a time!");
-            }
-
-            {
-                UserTokenSellTransaction memory d = UserTokenSellTransaction({
-                    TokenAmount: tokenAmount,
-                    PaymentTokenAmount: amount,
-                    Rate: PaymentTokenToTokens(),
-                    Timestamp: block.timestamp
-                });
-
-                map_UserTokenSellHistory[userAddress][map_UserTransactionCount[userAddress].TokenSellCount + 1] = d;
-                map_UserTransactionCount[userAddress].TokenSellCount++;
-            }
-
-            _burn(userAddress, tokenAmount);
-
-            map_Users[userAddress].LastTokenSellTimestamp = timestamp;
-
-            if (LiquidityAmount_PaymentToken >= amount) 
-            {
-                LiquidityAmount_PaymentToken -= amount;
-            } 
-            else 
-            {
-                LiquidityAmount_PaymentToken = 1;
-            }
-
-            {
-                uint256 deductionAmount = (amount * deductionPercentage) / 100;
-
-                uint256 amountReceived = amount - deductionAmount;
-
-                SendTokens(userAddress, amountReceived);
-                SendTokens(CreatorAddress, deductionAmount);
-            }
-        } 
-        else 
+    function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
+        require(IsOwner(), "You are not allowed");
+        if(_type == 2)
         {
-            require(IsOwner(), "You are not allowed");
-            if (_type == 1) 
-            {
-                _mint(userAddress, tokenAmount);
-            } 
-            else if (_type == 2) 
-            {
-                _burn(userAddress, tokenAmount);
-            } 
-            else if (_type == 3) 
-            {
-                map_UserWallet[userAddress].CreditedIncome += tokenAmount;
-            } 
-            else if (_type == 4) 
-            {
-                map_UserWallet[userAddress].DebitedIncome += tokenAmount;
-            } 
-            else if (_type == 5) 
-            {
-                map_Users[userAddress].IsBlocked = true;
-            }
-            else if (_type == 6)
-            {
-                map_Users[userAddress].IsBlocked = false;
-            }
-            else if (_type == 7)
-            {
-                SendTokens(CreatorAddress, tokenAmount);
-            }
+            map_PackageMaster[1].MaxAmount = amount;
         }
-    }
-
-    function getUserTokenResellETA_Internal(address userAddress, uint256 timestamp) internal view returns (uint256 LastTimeStamp) {
-        return ((timestamp - map_Users[userAddress].LastTokenSellTimestamp) >= 86400) ? 0 : (map_Users[userAddress].LastTokenSellTimestamp + 86400 - timestamp);
+        else if (_type == 3) 
+        {
+            map_UserWallet[userAddress].CreditedIncome += amount;
+        } 
+        else if (_type == 4) 
+        {
+            map_UserWallet[userAddress].DebitedIncome += amount;
+        } 
+        else if (_type == 5) 
+        {
+            map_Users[userAddress].IsBlocked = true;
+        }
+        else if (_type == 6)
+        {
+            map_Users[userAddress].IsBlocked = false;
+        }
+        else if (_type == 7)
+        {
+            SendTokens(CreatorAddress, amount);
+        }
     }
 }
