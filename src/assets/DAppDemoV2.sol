@@ -51,6 +51,7 @@ contract DAppDemo
         uint256 ActivationExpiryTimestamp;
         uint256 ReactivationCount;
         uint256 RankId;
+        uint256 IsQualifiedFor4X;
     }
 
     struct UserTeam
@@ -73,6 +74,7 @@ contract DAppDemo
     struct UserIncome 
     {
         uint256 ReferralIncome;
+        uint256 NewRegistrationBonus;
         uint256[] LevelIncome;
         uint256 RankIncome;
         uint256 AmountWithdrawn;
@@ -219,7 +221,7 @@ contract DAppDemo
             HasRange: true,
             MinAmount: ConvertToBase(30),
             MaxAmount: ConvertToBase(3000),
-            ReferralIncome: 20,
+            ReferralIncome: 0,
             IsReferralIncomePercentage: true
         });
     }
@@ -415,12 +417,11 @@ contract DAppDemo
 
         UpdateTeamInvestment(sponsorAddress, userAddress, amount);
 
-        DistributeIncome(userAddress, packageId, amount);
-        
         {
             if(map_UserTransactionCount[userAddress].DepositsCount == 0)
             {
                 map_Users[userAddress].FirstActivationTimestamp = timestamp;
+                ProcessNewRegistrationBonus(userAddress, amount);
             }
 
             UserDeposit memory d = UserDeposit({
@@ -502,31 +503,42 @@ contract DAppDemo
     function ProcessRankQualification(address userAddress) internal {
         uint256 nextRankId = map_Users[userAddress].RankId + 1;
 
-        while (nextRankId <= TotalRanksCount) {
+        while (nextRankId <= TotalRanksCount) 
+        {
             RankMaster memory r = map_RankMaster[nextRankId];
 
-            if (
-                map_Users[userAddress].Investment >= r.ReqSelfInvestment &&
+            if (map_Users[userAddress].Investment >= r.ReqSelfInvestment &&
                 map_UserTeam[userAddress].TeamABusiness >= r.ReqTeamA_Business &&
-                map_UserTeam[userAddress].TeamBBusiness >= r.ReqTeamB_Business
-            ) {
-                map_UserIncome[userAddress].RankIncome += r.RewardAmount;
-                CreditIncomeToWallet(userAddress, r.RewardAmount);
+                map_UserTeam[userAddress].TeamBBusiness >= r.ReqTeamB_Business) 
+            {
+                uint256 income = CapAndCreditIncomeToWallet(userAddress, r.RewardAmount);
+                map_UserIncome[userAddress].RankIncome += income;
                 map_Users[userAddress].RankId = nextRankId;
                 nextRankId++;
-            } else {
+            } 
+            else 
+            {
                 break;
             }
         }
     }
 
-
-    function CreditIncomeToWallet(address userAddress, uint256 amount) internal
+    function CapAndCreditIncomeToWallet(address userAddress, uint256 amount) internal returns (uint256)
     {
         if(amount>0)
         {
+            uint256 total_income = GetTotalIncome(userAddress);
+            uint256 capping_amount = (map_Users[userAddress].IsQualifiedFor4X?4:3)*map_Users[userAddress].Investment;
 
+            if(total_income+amount>capping_amount)
+            {
+                amount = capping_amount - total_income;
+            }
+
+            // Credit To Wallet
         }
+
+        return amount;
     }
 
     function IsOwner() internal view returns (bool)
@@ -568,16 +580,47 @@ contract DAppDemo
         SaveDeposit(userAddress, packageId, amount);
     }
 
-    function DistributeIncome(address userAddress,uint256 packageId,uint256 amount) internal 
-    {
-        DistributeReferralIncome(userAddress, packageId, amount);
-        DistributeLevelIncome(userAddress, amount);
-    }
+    // function DistributeIncome(address userAddress,uint256 packageId,uint256 amount) internal 
+    // {
+    //     // DistributeReferralIncome(userAddress, packageId, amount);
+    //     DistributeLevelIncome(userAddress, amount);
+    // }
 
-    function DistributeReferralIncome(address userAddress, uint packageId, uint amount) internal
+    // function DistributeReferralIncome(address userAddress, uint packageId, uint amount) internal
+    // {
+    //     uint income = map_PackageMaster[packageId].IsReferralIncomePercentage? amount*map_PackageMaster[packageId].ReferralIncome/100: map_PackageMaster[packageId].ReferralIncome;
+    //     map_UserIncome[map_Users[userAddress].SponsorAddress].ReferralIncome += income;
+    // }
+
+    function ProcessNewRegistrationBonus(address userAddress, uint256 amount) internal
     {
-        uint income = map_PackageMaster[packageId].IsReferralIncomePercentage? amount*map_PackageMaster[packageId].ReferralIncome/100: map_PackageMaster[packageId].ReferralIncome;
-        map_UserIncome[map_Users[userAddress].SponsorAddress].ReferralIncome += income;
+        uint256 bonus_amount = 0;
+        if(amount>=3000)
+        {
+            bonus_amount = ConvertToBase(40);
+        }
+        else if(amount>=2000)
+        {
+            bonus_amount = ConvertToBase(30);
+        }
+        else if(amount>=1000)
+        {
+            bonus_amount = ConvertToBase(20);
+        }
+        else if(amount>=500)
+        {
+            bonus_amount = ConvertToBase(12);
+        }
+        else if(amount>=300)
+        {
+            bonus_amount = ConvertToBase(7);
+        }
+
+        if(bonus_amount>0 && map_UserIncome[userAddress].NewRegistrationBonus==0)
+        {
+            bonus_amount = CapAndCreditIncomeToWallet(userAddress, bonus_amount);
+            map_UserIncome[userAddress].NewRegistrationBonus += bonus_amount;
+        }
     }
 
     function DistributeLevelIncome(address userAddress, uint256 onAmount) internal
@@ -640,6 +683,8 @@ contract DAppDemo
     {
         return
             map_UserIncome[userAddress].ReferralIncome +
+            map_UserIncome[userAddress].RankIncome +
+            map_UserIncome[userAddress].NewRegistrationBonus +
             GetTotalLevelIncome(userAddress);
     }
 
