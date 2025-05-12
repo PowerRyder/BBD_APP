@@ -274,10 +274,13 @@ export class Web3ContractService {
       });
 
       let data = this.contract.methods[methodName].apply(this, params).encodeABI();
+      console.log("data", data)
       var receipt = await this.sendTransaction(this.account, AppSettings.ContractAddress, value, _gasPrice, estimatedGas, data);
+      console.log("receip" , receipt)
       return { success: receipt.success, data: receipt.data, message: receipt.success ? "Ok!" : receipt.message };
     }
     catch (e) {
+      console.log("e",e)
       return { success: false, data: null, message: e };
     }
   }
