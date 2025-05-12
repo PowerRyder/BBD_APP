@@ -189,6 +189,11 @@ contract DAppDemo
 
     mapping(address => UserTransactionCount) public map_UserTransactionCount;
 
+    struct TempSponsorCount {
+        address sponsor;
+        uint256 count;
+    }
+
     address[] private userActivations;
 
     constructor()
@@ -548,42 +553,108 @@ contract DAppDemo
         }
     }
 
+    // function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal {
+    //     uint256 timeLimit = block.timestamp - 1 days;
+
+    //     // Temp structure to hold sponsor counts
+    //     address[] memory recentSponsors = new address[](userActivations.length);
+    //     uint256 sponsorCount = 0;
+
+    //     mapping(address => uint256) memory sponsorRefCounts;
+
+    //     // Step 1: Loop backwards through activations to get last 24h sponsors
+    //     for (uint256 i = userActivations.length; i > 0; i--) {
+    //         address userAddress = userActivations[i - 1];
+
+    //         if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) break;
+
+    //         address sponsor = map_Users[userAddress].SponsorAddress;
+    //         if (sponsor != address(0)) {
+    //             if (sponsorRefCounts[sponsor] == 0) {
+    //                 recentSponsors[sponsorCount] = sponsor;
+    //                 sponsorCount++;
+    //             }
+    //             sponsorRefCounts[sponsor]++;
+    //         }
+    //     }
+
+    //     // Step 2: Identify top 3 sponsors
+    //     address[3] memory topSponsors;
+    //     uint256[3] memory topCounts;
+
+    //     for (uint256 i = 0; i < sponsorCount; i++) {
+    //         address sponsor = recentSponsors[i];
+    //         uint256 count = sponsorRefCounts[sponsor];
+
+    //         for (uint256 j = 0; j < 3; j++) {
+    //             if (count > topCounts[j]) {
+    //                 // Shift lower ranks
+    //                 for (uint256 k = 2; k > j; k--) {
+    //                     topCounts[k] = topCounts[k - 1];
+    //                     topSponsors[k] = topSponsors[k - 1];
+    //                 }
+    //                 topCounts[j] = count;
+    //                 topSponsors[j] = sponsor;
+    //                 break;
+    //             }
+    //         }
+    //     }
+
+    //     // Step 3: Distribute to top sponsors
+    //     uint256[3] memory percentages = [uint256(50), 30, 20]; // 50%, 30%, 20%
+    //     for (uint256 i = 0; i < 3; i++) {
+    //         address s = topSponsors[i];
+    //         if (s != address(0)) {
+    //             uint256 income = (onAmount * 2 * percentages[i]) / 10000;
+    //             income = CapAndCreditIncomeToWallet(s, income);
+    //             map_UserIncome[s].TopmostSponsorsIncome += income;
+    //         }
+    //     }
+    // }
     function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal {
         uint256 timeLimit = block.timestamp - 1 days;
 
-        // Temp structure to hold sponsor counts
-        address[] memory recentSponsors = new address[](userActivations.length);
-        uint256 sponsorCount = 0;
+        // Temporary in-memory array to hold sponsor count structs
+        TempSponsorCount[] memory sponsorCounts = new TempSponsorCount[](userActivations.length);
+        uint256 sponsorIndex = 0;
 
-        mapping(address => uint256) memory sponsorRefCounts;
-
-        // Step 1: Loop backwards through activations to get last 24h sponsors
+        // Step 1: Loop backwards through activations to count sponsors
         for (uint256 i = userActivations.length; i > 0; i--) {
             address userAddress = userActivations[i - 1];
 
-            if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) break;
+            if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) {
+                break;
+            }
 
             address sponsor = map_Users[userAddress].SponsorAddress;
-            if (sponsor != address(0)) {
-                if (sponsorRefCounts[sponsor] == 0) {
-                    recentSponsors[sponsorCount] = sponsor;
-                    sponsorCount++;
+            if (sponsor == address(0)) continue;
+
+            bool found = false;
+            for (uint256 j = 0; j < sponsorIndex; j++) {
+                if (sponsorCounts[j].sponsor == sponsor) {
+                    sponsorCounts[j].count++;
+                    found = true;
+                    break;
                 }
-                sponsorRefCounts[sponsor]++;
+            }
+
+            if (!found) {
+                sponsorCounts[sponsorIndex] = TempSponsorCount({ sponsor: sponsor, count: 1 });
+                sponsorIndex++;
             }
         }
 
-        // Step 2: Identify top 3 sponsors
+        // Step 2: Find top 3 sponsors
         address[3] memory topSponsors;
         uint256[3] memory topCounts;
 
-        for (uint256 i = 0; i < sponsorCount; i++) {
-            address sponsor = recentSponsors[i];
-            uint256 count = sponsorRefCounts[sponsor];
+        for (uint256 i = 0; i < sponsorIndex; i++) {
+            address sponsor = sponsorCounts[i].sponsor;
+            uint256 count = sponsorCounts[i].count;
 
             for (uint256 j = 0; j < 3; j++) {
                 if (count > topCounts[j]) {
-                    // Shift lower ranks
+                    // Shift lower entries down
                     for (uint256 k = 2; k > j; k--) {
                         topCounts[k] = topCounts[k - 1];
                         topSponsors[k] = topSponsors[k - 1];
@@ -595,18 +666,19 @@ contract DAppDemo
             }
         }
 
-        // Step 3: Distribute to top sponsors
-        uint256[3] memory percentages = [uint256(50), 30, 20]; // 50%, 30%, 20%
+        // Step 3: Distribute 2% of `onAmount` => split as 50%, 30%, 20%
+        uint256 totalPool = (onAmount * 2) / 100;
+        uint256[3] memory percentages = [uint256(50), 30, 20]; // 50%, 30%, 20% in basis points (1/100)
+
         for (uint256 i = 0; i < 3; i++) {
             address s = topSponsors[i];
             if (s != address(0)) {
-                uint256 income = (onAmount * 2 * percentages[i]) / 10000;
+                uint256 income = (totalPool * percentages[i]) / 100;
                 income = CapAndCreditIncomeToWallet(s, income);
                 map_UserIncome[s].TopmostSponsorsIncome += income;
             }
         }
     }
-
 
     function ReceiveTokens(uint256 amount) internal
     {
@@ -699,9 +771,9 @@ contract DAppDemo
 
     function Process4X_CappingQualification(address userAddress, uint256 oneTimeDepositAmount, uint256 achievedRankId) internal
     {
-        if((!map_Users[userAddress].IsQualifiedFor4X 
+        if(!map_Users[userAddress].IsQualifiedFor4X 
                 && 
-            (!map_Users[userAddress].IsFirstActivationDone || map_Users[userAddress].FirstActivationTimestamp + 45 days)>=block.timestamp) 
+            (!map_Users[userAddress].IsFirstActivationDone || map_Users[userAddress].FirstActivationTimestamp + 45 days>=block.timestamp) 
                 && 
             (oneTimeDepositAmount>=ConvertToBase(2000) || achievedRankId>=1))
         {
@@ -799,7 +871,7 @@ contract DAppDemo
     //     map_UserIncome[map_Users[userAddress].SponsorAddress].ReferralIncome += income;
     // }
 
-    function GetPendingROIIncome() internal returns (uint256)
+    function GetPendingROIIncome(address userAddress) internal returns (uint256)
     {
         uint256 onAmount = map_Users[userAddress].Investment;
         
