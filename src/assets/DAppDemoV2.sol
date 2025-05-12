@@ -26,6 +26,7 @@ contract DAppDemo
 
     address public constant CreatorAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
     address public constant MarketingAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
+    address public SecurityFundContract = address(0);
 
 
     bool IsPaymentCurrencyDifferentThanNative = true;
@@ -189,8 +190,9 @@ contract DAppDemo
 
     address[] private userActivations;
 
-    constructor()
+    constructor(address _securityFundContract)
     {
+        SecurityFundContract = _securityFundContract;
         Init();
     }
 
@@ -1137,8 +1139,8 @@ contract DAppDemo
         require(isUserActive(userAddress), "You are not allowed!");
         require((map_UserWalletBalance[userAddress][1] >= amount), "Insufficient funds!");
 
-        map_UserIncome[userAddress].AmountWithdrawn += amount;
         map_UserWalletBalance[userAddress][1] -= amount;
+        map_UserIncome[userAddress].AmountWithdrawn += amount;
 
         uint256 deductionAmount = (amount * 5) / 100;
         uint256 amountWithdrawn = amount - deductionAmount;
@@ -1153,7 +1155,7 @@ contract DAppDemo
         map_UserTransactionCount[userAddress].IncomeWithdrawalCount++;
 
         SendTokens(userAddress, amountWithdrawn);
-        SendTokens(CreatorAddress, deductionAmount);
+        SendTokens(SecurityFundContract, deductionAmount);
     }
 
     function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
