@@ -623,10 +623,11 @@ contract DAppDemo
         }
     }
 
-    function DistributeLevelIncome(address userAddress, uint256 onAmount) internal
+    function DistributeLevelIncome(address userAddress) internal
     {
         address sponsorAddress = map_Users[userAddress].SponsorAddress;
-
+        uint256 onAmount = map_Users[userAddress].Investment;
+        
         uint256 level = 1;
         while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount) 
         {
