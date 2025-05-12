@@ -79,8 +79,8 @@ export class PackageComponent implements OnInit {
 
   onAmountChange() {
     // console.log("amount",this.packageForm.controls['amount'].value)
-    const _amount = 0;
-    this.packageCallback.emit({ packageId: this.selectedPackage.PackageId, amount: _amount})
+    // const _amount = 0;
+    this.packageCallback.emit({ packageId: this.selectedPackage.PackageId, amount: this.packageForm.controls['amount'].value})
     // console.log("Amount ", _amount)
   }
 
