@@ -25,6 +25,8 @@ contract DAppDemo
     uint256 public TotalWithdrawn = 0;
 
     address public constant CreatorAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
+    address public constant MarketingAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
+
 
     bool IsPaymentCurrencyDifferentThanNative = true;
     address constant PaymentTokenContractAddress = 0xAc17996d3a9A3081F626cD56E904A70E9DadF892; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
@@ -79,6 +81,7 @@ contract DAppDemo
         uint256 ROIIncome;
         uint256[] LevelIncome;
         uint256 RankIncome;
+        uint256 TopmostSponsorsIncome;
         uint256 AmountWithdrawn;
     }
 
@@ -473,6 +476,7 @@ contract DAppDemo
             NewRegistrationBonus: 0,
             ROIIncome: 0,
             RankIncome: 0,
+            TopmostSponsorsIncome: 0,
             AmountWithdrawn: 0
         });
 
@@ -535,9 +539,14 @@ contract DAppDemo
             {
                 map_Users[userAddress].FirstActivationTimestamp = timestamp;
                 ProcessNewRegistrationBonus(userAddress, amount);
+                Process24HoursTopmostSponsorsIncome(amount);
                 map_Users[userAddress].IsFirstActivationDone = true;
             }
         }
+    }
+
+    function Process24HoursTopmostSponsorsIncome(uint256 onAmount) {
+        
     }
 
     function ReceiveTokens(uint256 amount) internal
@@ -712,7 +721,11 @@ contract DAppDemo
         require(doesUserExist(userAddress), "You are not registered!");
         require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
         ReceiveTokens(amount);
+
         SaveDeposit(userAddress, packageId, amount);
+
+        SendTokens(CreatorAddress, amount*3/100);
+        SendTokens(MarketingAddress, amount*5/100);
     }
 
     // function DistributeIncome(address userAddress,uint256 packageId,uint256 amount) internal 
@@ -838,10 +851,13 @@ contract DAppDemo
 
     function GetTotalIncome(address userAddress) internal view returns (uint256)
     {
+        // Don't put Pending ROI Income here as it will have circular dependency
         return
             map_UserIncome[userAddress].ReferralIncome +
+            map_UserIncome[userAddress].ROIIncome +
             map_UserIncome[userAddress].RankIncome +
             map_UserIncome[userAddress].NewRegistrationBonus +
+            map_UserIncome[userAddress].TopmostSponsorsIncome +
             GetTotalLevelIncome(userAddress);
     }
 
