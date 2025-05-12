@@ -793,7 +793,7 @@ contract DAppDemo
     }
 
 
-    function CapIncome(address userAddress, uint256 amount) internal returns (uint256)
+    function CapIncome(address userAddress, uint256 amount) internal view returns (uint256)
     {
         if(amount>0)
         {
