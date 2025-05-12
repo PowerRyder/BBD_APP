@@ -10,9 +10,9 @@ let Chain = Chains;
 export class AppSettings {
     private static readonly IsDevelopment = true;
 
-    public static readonly IsDemo = true;
+    public static readonly IsDemo = false;
     
-    public static readonly CompanyName = "Neuradigi DApp Demo";
+    public static readonly CompanyName = "BBD";
     public static readonly Logo = "https://neuradigi.com/assets/img/logo.png";
     public static readonly Website = "https://dapp.neuradigi.com/"
 
