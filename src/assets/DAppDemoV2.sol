@@ -51,7 +51,8 @@ contract DAppDemo
         uint256 ActivationExpiryTimestamp;
         uint256 ReactivationCount;
         uint256 RankId;
-        uint256 IsQualifiedFor4X;
+        bool IsQualifiedFor4X;
+        bool IsFirstActivationDone;
     }
 
     struct UserTeam
@@ -116,11 +117,7 @@ contract DAppDemo
     {
         uint256 Level;
         uint256 Percentage;
-        uint256 RequiredSelfInvestment;
-        uint256 RequiredNumberOfDirects;
-        uint256 RequiredDirectsInvestment;
-        uint256 RequiredNumberOfTeam;
-        uint256 RequiredTeamInvestment;
+        uint256 RequiredMinRankId;
     }
 
     struct ContractInfo
@@ -151,16 +148,8 @@ contract DAppDemo
     struct LevelIncomeInfo
     {
         uint256 Level;
-        uint256 RequiredSelfInvestment;
-        uint256 SelfInvestment;
-        uint256 RequiredNumberOfDirects;
-        uint256 DirectsCount;
-        uint256 RequiredDirectsInvestment;
-        uint256 DirectsInvestment;
-        uint256 RequiredNumberOfTeam;
-        uint256 TotalTeam;
-        uint256 RequiredTeamInvestment;
-        uint256 TeamInvestment;
+        uint256 RequiredMinRankId;
+        uint256 RankId;
         uint256 OnAmount;
         uint256 Percentage;
         uint256 Income;
@@ -232,62 +221,161 @@ contract DAppDemo
         LevelIncome_LevelCount++;
         map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
             Level: LevelIncome_LevelCount,
-            Percentage: 80,
-            RequiredSelfInvestment: ConvertToBase(5),
-            RequiredNumberOfDirects: 1,
-            RequiredDirectsInvestment: 0,
-            RequiredNumberOfTeam: 0,
-            RequiredTeamInvestment: 0
+            Percentage: 500,
+            RequiredMinRankId: 0
         });
 
         // 2
         LevelIncome_LevelCount++;
         map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
             Level: LevelIncome_LevelCount,
-            Percentage: 60,
-            RequiredSelfInvestment: ConvertToBase(10),
-            RequiredNumberOfDirects: 1,
-            RequiredDirectsInvestment: 0,
-            RequiredNumberOfTeam: 0,
-            RequiredTeamInvestment: 0
+            Percentage: 300,
+            RequiredMinRankId: 1
         });
 
         // 3
         LevelIncome_LevelCount++;
         map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
             Level: LevelIncome_LevelCount,
-            Percentage: 40,
-            RequiredSelfInvestment: ConvertToBase(15),
-            RequiredNumberOfDirects: 2,
-            RequiredDirectsInvestment: 0,
-            RequiredNumberOfTeam: 0,
-            RequiredTeamInvestment: 0
+            Percentage: 200,
+            RequiredMinRankId: 1
         });
-
+        
         // 4
         LevelIncome_LevelCount++;
         map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
             Level: LevelIncome_LevelCount,
-            Percentage: 20,
-            RequiredSelfInvestment: ConvertToBase(20),
-            RequiredNumberOfDirects: 3,
-            RequiredDirectsInvestment: 0,
-            RequiredNumberOfTeam: 0,
-            RequiredTeamInvestment: 0
+            Percentage: 400,
+            RequiredMinRankId: 2
         });
-
+        
         // 5
         LevelIncome_LevelCount++;
         map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
             Level: LevelIncome_LevelCount,
-            Percentage: 20,
-            RequiredSelfInvestment: ConvertToBase(20),
-            RequiredNumberOfDirects: 3,
-            RequiredDirectsInvestment: 0,
-            RequiredNumberOfTeam: 0,
-            RequiredTeamInvestment: 0
+            Percentage: 200,
+            RequiredMinRankId: 2
         });
-
+        
+        // 6
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 200,
+            RequiredMinRankId: 2
+        });
+        
+        // 7
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 100,
+            RequiredMinRankId: 2
+        });
+        
+        // 8
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 100,
+            RequiredMinRankId: 2
+        });
+        
+        // 9
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 200,
+            RequiredMinRankId: 3
+        });
+        
+        // 10
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 100,
+            RequiredMinRankId: 3
+        });
+        
+        // 11
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 50,
+            RequiredMinRankId: 3
+        });
+        
+        // 12
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 50,
+            RequiredMinRankId: 3
+        });
+        
+        // 13
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 50,
+            RequiredMinRankId: 3
+        });
+        
+        // 14
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 100,
+            RequiredMinRankId: 4
+        });
+        
+        // 15
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 50,
+            RequiredMinRankId: 4
+        });
+        
+        // 16
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 25,
+            RequiredMinRankId: 4
+        });
+        
+        // 17
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 25,
+            RequiredMinRankId: 4
+        });
+        
+        // 18
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 25,
+            RequiredMinRankId: 4
+        });
+        
+        // 19
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 25,
+            RequiredMinRankId: 4
+        });
+        
+        // 20
+        LevelIncome_LevelCount++;
+        map_LevelIncomeMaster[LevelIncome_LevelCount] = LevelIncomeMaster({
+            Level: LevelIncome_LevelCount,
+            Percentage: 25,
+            RequiredMinRankId: 4
+        });
     }
 
     function InitRankMaster() internal
@@ -364,7 +452,9 @@ contract DAppDemo
             FirstActivationTimestamp: 0,
             ActivationExpiryTimestamp: 0,
             ReactivationCount: 0,
-            RankId: 0
+            RankId: 0,
+            IsFirstActivationDone: false,
+            IsQualifiedFor4X: false
         });
 
         UserTeam memory ut = UserTeam({
@@ -379,6 +469,7 @@ contract DAppDemo
         UserIncome memory ui = UserIncome({
             ReferralIncome: 0,
             LevelIncome: new uint256[](LevelIncome_LevelCount + 1),
+            NewRegistrationBonus: 0,
             RankIncome: 0,
             AmountWithdrawn: 0
         });
@@ -418,12 +509,6 @@ contract DAppDemo
         UpdateTeamInvestment(sponsorAddress, userAddress, amount);
 
         {
-            if(map_UserTransactionCount[userAddress].DepositsCount == 0)
-            {
-                map_Users[userAddress].FirstActivationTimestamp = timestamp;
-                ProcessNewRegistrationBonus(userAddress, amount);
-            }
-
             UserDeposit memory d = UserDeposit({
                 PackageId: packageId,
                 Amount: amount,
@@ -432,6 +517,14 @@ contract DAppDemo
 
             map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount + 1] = d;
             map_UserTransactionCount[userAddress].DepositsCount++;
+            ReactivateInternal(userAddress, timestamp);
+
+            if(!map_Users[userAddress].IsFirstActivationDone)
+            {
+                map_Users[userAddress].FirstActivationTimestamp = timestamp;
+                ProcessNewRegistrationBonus(userAddress, amount);
+                map_Users[userAddress].IsFirstActivationDone = true;
+            }
         }
     }
 
@@ -616,7 +709,7 @@ contract DAppDemo
             bonus_amount = ConvertToBase(7);
         }
 
-        if(bonus_amount>0 && map_UserIncome[userAddress].NewRegistrationBonus==0)
+        if(bonus_amount>0 && map_UserIncome[userAddress].NewRegistrationBonus==0 && !map_Users[userAddress].IsFirstActivationDone)
         {
             bonus_amount = CapAndCreditIncomeToWallet(userAddress, bonus_amount);
             map_UserIncome[userAddress].NewRegistrationBonus += bonus_amount;
@@ -626,43 +719,37 @@ contract DAppDemo
     function DistributeLevelIncome(address userAddress) internal
     {
         address sponsorAddress = map_Users[userAddress].SponsorAddress;
-        uint256 onAmount = map_Users[userAddress].Investment;
+
+        uint256 onAmount = map_Users[userAddress].Investment/(map_Users[userAddress].IsFirstActivationDone?2:1);
         
         uint256 level = 1;
         while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount) 
         {
+            uint256 income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (10 * 100)) : map_LevelIncomeMaster[level].Percentage);
             if (IsQualifiedForLevelIncome(userAddress, level)) 
             {
-                map_UserIncome[sponsorAddress].LevelIncome[level] += (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (10 * 100)) : map_LevelIncomeMaster[level].Percentage);
+                CapAndCreditIncomeToWallet(sponsorAddress, income_amount);
+                map_UserIncome[sponsorAddress].LevelIncome[level] += income_amount;
             } 
-            else 
-            {
-                map_UserIncome[CreatorAddress].LevelIncome[level] += (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (10 * 100)) : map_LevelIncomeMaster[level].Percentage);
-            }
+            // else 
+            // {
+            //     CapAndCreditIncomeToWallet(CreatorAddress, income_amount);
+            //     map_UserIncome[CreatorAddress].LevelIncome[level] += income_amount;
+            // }
 
             sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
             level++;
 
-            if (sponsorAddress == address(0)) 
-            {
-                sponsorAddress = CreatorAddress;
-            }
+            // if (sponsorAddress == address(0)) 
+            // {
+            //     sponsorAddress = CreatorAddress;
+            // }
         }
     }
 
     function IsQualifiedForLevelIncome(address userAddress, uint256 level) internal view returns (bool)
     {
-        if (
-            map_UserTeam[userAddress].DirectsInvestment >= map_LevelIncomeMaster[level].RequiredDirectsInvestment 
-                &&
-            map_UserTeam[userAddress].TeamInvestment >= map_LevelIncomeMaster[level].RequiredTeamInvestment 
-                &&
-            map_UserTeam[userAddress].DirectAddresses.length >= map_LevelIncomeMaster[level].RequiredNumberOfDirects 
-                &&
-            map_Users[userAddress].TotalTeam >= map_LevelIncomeMaster[level].RequiredNumberOfTeam 
-                &&
-            map_Users[userAddress].Investment >= map_LevelIncomeMaster[level].RequiredSelfInvestment
-        ) 
+        if (map_Users[userAddress].RankId >= map_LevelIncomeMaster[level].RequiredMinRankId) 
         {
             return true;
         }
@@ -708,6 +795,7 @@ contract DAppDemo
 
         map_Users[userAddress].ActivationExpiryTimestamp = expiryTimestamp;
         map_Users[userAddress].ReactivationCount++;
+        DistributeLevelIncome(userAddress);
         return true;
     }
 
@@ -718,6 +806,7 @@ contract DAppDemo
 
     function Reactivate() external returns (bool)
     {
+        require(map_Users[msg.sender].ActivationExpiryTimestamp<=block.timestamp, "Active!");
         return ReactivateInternal(msg.sender, block.timestamp);
     }
 
@@ -777,16 +866,8 @@ contract DAppDemo
         {
             info[i - 1] = LevelIncomeInfo({
                 Level: i,
-                RequiredSelfInvestment: map_LevelIncomeMaster[i].RequiredSelfInvestment,
-                SelfInvestment: map_Users[userAddress].Investment,
-                RequiredNumberOfDirects: map_LevelIncomeMaster[i].RequiredNumberOfDirects,
-                DirectsCount: map_UserTeam[userAddress].DirectAddresses.length,
-                RequiredDirectsInvestment: map_LevelIncomeMaster[i].RequiredDirectsInvestment,
-                DirectsInvestment: map_UserTeam[userAddress].DirectsInvestment,
-                RequiredNumberOfTeam: map_LevelIncomeMaster[i].RequiredNumberOfTeam,
-                TotalTeam: map_Users[userAddress].TotalTeam,
-                RequiredTeamInvestment: map_LevelIncomeMaster[i].RequiredTeamInvestment,
-                TeamInvestment: map_UserTeam[userAddress].TeamInvestment,
+                RequiredMinRankId: map_LevelIncomeMaster[i].RequiredMinRankId,
+                RankId: map_Users[userAddress].RankId,
                 OnAmount: map_UserBusinessOnLevel[userAddress][i],
                 Percentage: map_LevelIncomeMaster[i].Percentage,
                 Income: map_UserIncome[userAddress].LevelIncome[i],
