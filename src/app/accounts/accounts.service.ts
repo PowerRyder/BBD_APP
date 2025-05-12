@@ -37,8 +37,9 @@ export class AccountsService {
         console.log(r)
       }
       let amount_str = this.contract.convertAmountToPaymentCurrencyBaseValue(amount);
-      let res = await this.contract.writeContract('Deposit', [sponsorAddress, packageId, amount_str], amount_str);
-      console.log(res)
+      // console.log("amount", amount_str)
+      let res = await this.contract.writeContract('Register', [sponsorAddress, packageId, amount_str], amount_str);
+      // console.log(res)
       return res;
     }
     catch(e){

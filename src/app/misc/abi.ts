@@ -1,20 +1,33 @@
 export let abi = [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "packageId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Deposit",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "CreatorAddress",
+		"name": "Reactivate",
 		"outputs": [
 			{
-				"internalType": "address",
+				"internalType": "bool",
 				"name": "",
-				"type": "address"
+				"type": "bool"
 			}
 		],
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -35,9 +48,88 @@ export let abi = [
 				"type": "uint256"
 			}
 		],
-		"name": "Deposit",
+		"name": "Register",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_type",
+				"type": "uint256"
+			}
+		],
+		"name": "Withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "CreatorAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -64,21 +156,6 @@ export let abi = [
 					{
 						"internalType": "uint256",
 						"name": "ContractBalance",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "InternalTokenTotalSupply",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "InternalTokenLiquidity",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "InternalTokenRate",
 						"type": "uint256"
 					}
 				],
@@ -119,22 +196,12 @@ export let abi = [
 					},
 					{
 						"internalType": "uint256",
-						"name": "WithdrawalLevelIncome",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
 						"name": "TotalIncome",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
 						"name": "AmountWithdrawn",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "InternalTokenBalance",
 						"type": "uint256"
 					}
 				],
@@ -176,16 +243,6 @@ export let abi = [
 					{
 						"internalType": "uint256",
 						"name": "Amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "InternalTokenAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Rate",
 						"type": "uint256"
 					},
 					{
@@ -303,52 +360,12 @@ export let abi = [
 					},
 					{
 						"internalType": "uint256",
-						"name": "RequiredSelfInvestment",
+						"name": "RequiredMinRankId",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "SelfInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredNumberOfDirects",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "DirectsCount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredDirectsInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "DirectsInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredNumberOfTeam",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "TotalTeam",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredTeamInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "TeamInvestment",
+						"name": "RankId",
 						"type": "uint256"
 					},
 					{
@@ -444,166 +461,6 @@ export let abi = [
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "pageIndex",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "pageSize",
-				"type": "uint256"
-			}
-		],
-		"name": "GetTokenSellHistory",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "TokenAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "PaymentTokenAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Rate",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Timestamp",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct DAppDemo.UserTokenSellTransaction[]",
-				"name": "history",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			}
-		],
-		"name": "GetWithdrawalLevelIncomeInfo",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "Level",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredSelfInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "SelfInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredNumberOfDirects",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "DirectsCount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredDirectsInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "DirectsInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredNumberOfTeam",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "TotalTeam",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "RequiredTeamInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "TeamInvestment",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "OnAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Percentage",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Income",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "IsLevelAchieved",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct DAppDemo.LevelIncomeInfo[]",
-				"name": "info",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "LiquidityAmount_PaymentToken",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "_address",
 				"type": "address"
 			}
@@ -617,131 +474,6 @@ export let abi = [
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "packageId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "Redeposit",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_type",
-				"type": "uint256"
-			}
-		],
-		"name": "SellTokens",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "TotalInvestment",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "TotalUsers",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "TotalWithdrawn",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "Withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			}
-		],
-		"name": "balanceOf",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "decimals",
-		"outputs": [
-			{
-				"internalType": "uint8",
-				"name": "",
-				"type": "uint8"
-			}
-		],
-		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
@@ -766,27 +498,7 @@ export let abi = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "RequiredSelfInvestment",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredNumberOfDirects",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredDirectsInvestment",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredNumberOfTeam",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredTeamInvestment",
+				"name": "RequiredMinRankId",
 				"type": "uint256"
 			}
 		],
@@ -855,6 +567,50 @@ export let abi = [
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "map_RankMaster",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "RankId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "RankName",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ReqSelfInvestment",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ReqTeamA_Business",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ReqTeamB_Business",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "RewardAmount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
@@ -903,16 +659,6 @@ export let abi = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "InternalTokenAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "Rate",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
 				"name": "Timestamp",
 				"type": "uint256"
 			}
@@ -952,6 +698,16 @@ export let abi = [
 			{
 				"internalType": "uint256",
 				"name": "ReferralIncome",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "NewRegistrationBonus",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "RankIncome",
 				"type": "uint256"
 			},
 			{
@@ -998,33 +754,107 @@ export let abi = [
 				"internalType": "address",
 				"name": "",
 				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
-		"name": "map_UserTokenSellHistory",
+		"name": "map_Users",
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "TokenAmount",
+				"name": "Id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "Address",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "SponsorAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "JoiningTimestamp",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "PaymentTokenAmount",
+				"name": "Investment",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "Rate",
+				"name": "TotalTeam",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "IsBlocked",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "FirstActivationTimestamp",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "Timestamp",
+				"name": "ActivationExpiryTimestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ReactivationCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "RankId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "IsQualifiedFor4X",
+				"type": "bool"
+			},
+			{
+				"internalType": "bool",
+				"name": "IsFirstActivationDone",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "map_UserTeam",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "DirectsInvestment",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "TeamABusiness",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "TeamBBusiness",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "TeamInvestment",
 				"type": "uint256"
 			}
 		],
@@ -1109,117 +939,12 @@ export let abi = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "map_Users",
+		"inputs": [],
+		"name": "TotalInvestment",
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "Id",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "Address",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "SponsorAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "JoiningTimestamp",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "Investment",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "TeamInvestment",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "DirectsInvestment",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "TotalTeam",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bool",
-				"name": "IsBlocked",
-				"type": "bool"
-			},
-			{
-				"internalType": "uint256",
-				"name": "LastTokenSellTimestamp",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RankId",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
 				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "map_WithdrawalLevelIncomeMaster",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "Level",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "Percentage",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredSelfInvestment",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredNumberOfDirects",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredDirectsInvestment",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredNumberOfTeam",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "RequiredTeamInvestment",
 				"type": "uint256"
 			}
 		],
@@ -1228,33 +953,20 @@ export let abi = [
 	},
 	{
 		"inputs": [],
-		"name": "name",
+		"name": "TotalUsers",
 		"outputs": [
 			{
-				"internalType": "string",
+				"internalType": "uint256",
 				"name": "",
-				"type": "string"
+				"type": "uint256"
 			}
 		],
-		"stateMutability": "pure",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "symbol",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "totalSupply",
+		"name": "TotalWithdrawn",
 		"outputs": [
 			{
 				"internalType": "uint256",
