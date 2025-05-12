@@ -169,7 +169,7 @@ contract DAppDemo
         uint256 ReqTeamB_Business;
         uint256 RewardAmount;
     }
-
+    
     mapping(uint256 => PackageMaster) public map_PackageMaster;
     mapping(uint256 => LevelIncomeMaster) public map_LevelIncomeMaster;
     mapping(uint256 => RankMaster) public map_RankMaster;
@@ -188,6 +188,8 @@ contract DAppDemo
     mapping(address => UserWallet) public map_UserWallet;
 
     mapping(address => UserTransactionCount) public map_UserTransactionCount;
+
+    address[] private userActivations;
 
     constructor()
     {
@@ -538,6 +540,7 @@ contract DAppDemo
             if(!map_Users[userAddress].IsFirstActivationDone)
             {
                 map_Users[userAddress].FirstActivationTimestamp = timestamp;
+                userActivations.push(userAddress);
                 ProcessNewRegistrationBonus(userAddress, amount);
                 Process24HoursTopmostSponsorsIncome(amount);
                 map_Users[userAddress].IsFirstActivationDone = true;
@@ -545,9 +548,65 @@ contract DAppDemo
         }
     }
 
-    function Process24HoursTopmostSponsorsIncome(uint256 onAmount) {
-        
+    function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal {
+        uint256 timeLimit = block.timestamp - 1 days;
+
+        // Temp structure to hold sponsor counts
+        address[] memory recentSponsors = new address[](userActivations.length);
+        uint256 sponsorCount = 0;
+
+        mapping(address => uint256) memory sponsorRefCounts;
+
+        // Step 1: Loop backwards through activations to get last 24h sponsors
+        for (uint256 i = userActivations.length; i > 0; i--) {
+            address userAddress = userActivations[i - 1];
+
+            if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) break;
+
+            address sponsor = map_Users[userAddress].SponsorAddress;
+            if (sponsor != address(0)) {
+                if (sponsorRefCounts[sponsor] == 0) {
+                    recentSponsors[sponsorCount] = sponsor;
+                    sponsorCount++;
+                }
+                sponsorRefCounts[sponsor]++;
+            }
+        }
+
+        // Step 2: Identify top 3 sponsors
+        address[3] memory topSponsors;
+        uint256[3] memory topCounts;
+
+        for (uint256 i = 0; i < sponsorCount; i++) {
+            address sponsor = recentSponsors[i];
+            uint256 count = sponsorRefCounts[sponsor];
+
+            for (uint256 j = 0; j < 3; j++) {
+                if (count > topCounts[j]) {
+                    // Shift lower ranks
+                    for (uint256 k = 2; k > j; k--) {
+                        topCounts[k] = topCounts[k - 1];
+                        topSponsors[k] = topSponsors[k - 1];
+                    }
+                    topCounts[j] = count;
+                    topSponsors[j] = sponsor;
+                    break;
+                }
+            }
+        }
+
+        // Step 3: Distribute to top sponsors
+        uint256[3] memory percentages = [uint256(50), 30, 20]; // 50%, 30%, 20%
+        for (uint256 i = 0; i < 3; i++) {
+            address s = topSponsors[i];
+            if (s != address(0)) {
+                uint256 income = (onAmount * 2 * percentages[i]) / 10000;
+                income = CapAndCreditIncomeToWallet(s, income);
+                map_UserIncome[s].TopmostSponsorsIncome += income;
+            }
+        }
     }
+
 
     function ReceiveTokens(uint256 amount) internal
     {
