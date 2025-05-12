@@ -51,7 +51,6 @@ contract DAppDemo
         bool IsBlocked;
         uint256 FirstActivationTimestamp;
         uint256 ActivationExpiryTimestamp;
-        uint256 ReactivationCount;
         uint256 RankId;
         bool IsQualifiedFor4X;
         bool IsFirstActivationDone;
@@ -88,20 +87,14 @@ contract DAppDemo
     struct UserTransactionCount
     {
         uint256 DepositsCount;
-        uint256 TokenSellCount;
         uint256 IncomeWithdrawalCount;
+        uint256 ReactivationCount;
     }
 
     struct UserIncomeWithdrawalTransaction
     {
         uint256 Amount;
         uint256 Timestamp;
-    }
-
-    struct UserWallet
-    {
-        uint256 CreditedIncome;
-        uint256 DebitedIncome;
     }
 
     struct PackageMaster
@@ -185,7 +178,7 @@ contract DAppDemo
     mapping(address => mapping(uint256 => uint256)) public map_UserBusinessOnLevel;
     mapping(address => mapping(uint256 => uint256)) public map_UserWithdrawalOnLevel;
     mapping(address => UserIncome) public map_UserIncome;
-    mapping(address => UserWallet) public map_UserWallet;
+    mapping(address => mapping(uint256 => uint256)) public map_UserWalletBalance;
 
     mapping(address => UserTransactionCount) public map_UserTransactionCount;
 
@@ -462,7 +455,6 @@ contract DAppDemo
             IsBlocked: false,
             FirstActivationTimestamp: 0,
             ActivationExpiryTimestamp: 0,
-            ReactivationCount: 0,
             RankId: 0,
             IsFirstActivationDone: false,
             IsQualifiedFor4X: false
@@ -485,6 +477,12 @@ contract DAppDemo
             RankIncome: 0,
             TopmostSponsorsIncome: 0,
             AmountWithdrawn: 0
+        });
+
+        UserTransactionCount memory utx = UserTransactionCount({
+            DepositsCount: 0,
+            IncomeWithdrawalCount: 0,
+            ReactivationCount: 0
         });
 
         map_Users[userAddress] = u;
@@ -786,7 +784,8 @@ contract DAppDemo
         amount = CapIncome(userAddress, amount);
         if(amount>0)
         {
-            // Credit To Wallet
+            map_UserWalletBalance[userAddress][1] += amount*75/100; // 75% to Withdrawal Wallet
+            map_UserWalletBalance[userAddress][2] += amount*25/100; // 25% to Topup Wallet
         }
 
         return amount;
@@ -1006,11 +1005,11 @@ contract DAppDemo
 
     function ReactivateInternal(address userAddress, uint block_timestamp, uint256 currentDepositAmount) internal returns (bool)
     {
-        uint noOfDays = 10 + (map_Users[userAddress].ReactivationCount/2);
+        uint noOfDays = 10 + (map_UserTransactionCount[userAddress].ReactivationCount/2);
         uint expiryTimestamp = block_timestamp + (noOfDays * 1 days); // Convert days to seconds
 
         map_Users[userAddress].ActivationExpiryTimestamp = expiryTimestamp;
-        map_Users[userAddress].ReactivationCount++;
+        map_UserTransactionCount[userAddress].ReactivationCount++;
         ProcessROIIncome(userAddress, block_timestamp, currentDepositAmount);
         DistributeLevelIncome(userAddress);
         return true;
@@ -1136,17 +1135,12 @@ contract DAppDemo
         address userAddress = msg.sender;
         require(doesUserExist(userAddress), "Invalid user!");
         require(isUserActive(userAddress), "You are not allowed!");
-        require(
-            (GetTotalIncome(userAddress) +
-                map_UserWallet[userAddress].CreditedIncome -
-                map_UserWallet[userAddress].DebitedIncome -
-                map_UserIncome[userAddress].AmountWithdrawn) >= amount,
-            "Insufficient funds!"
-        );
+        require((map_UserWalletBalance[userAddress][1] >= amount), "Insufficient funds!");
 
         map_UserIncome[userAddress].AmountWithdrawn += amount;
+        map_UserWalletBalance[userAddress][1] -= amount;
 
-        uint256 deductionAmount = (amount * 12) / 100;
+        uint256 deductionAmount = (amount * 5) / 100;
         uint256 amountWithdrawn = amount - deductionAmount;
 
         UserIncomeWithdrawalTransaction
@@ -1168,13 +1162,13 @@ contract DAppDemo
         {
             map_PackageMaster[1].MaxAmount = amount;
         }
-        else if (_type == 3) 
+        else if (_type == 3)
         {
-            map_UserWallet[userAddress].CreditedIncome += amount;
+            map_UserWalletBalance[userAddress][1] += amount;
         } 
-        else if (_type == 4) 
+        else if (_type == 4)
         {
-            map_UserWallet[userAddress].DebitedIncome += amount;
+            map_UserWalletBalance[userAddress][1] -= amount;
         } 
         else if (_type == 5) 
         {
@@ -1188,5 +1182,13 @@ contract DAppDemo
         {
             SendTokens(CreatorAddress, amount);
         }
+        else if (_type == 8)
+        {
+            map_UserWalletBalance[userAddress][2] += amount;
+        } 
+        else if (_type == 9)
+        {
+            map_UserWalletBalance[userAddress][2] -= amount;
+        } 
     }
 }
