@@ -27,7 +27,7 @@ contract DAppDemo
     address public constant CreatorAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
 
     bool IsPaymentCurrencyDifferentThanNative = true;
-    address constant PaymentTokenContractAddress = 0xc06e70c4038059965172Cf02025d7e5033f39767; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
+    address constant PaymentTokenContractAddress = 0xAc17996d3a9A3081F626cD56E904A70E9DadF892; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
 
     uint256 LevelIncome_LevelCount = 0;
     uint256 TotalRanksCount = 0;
@@ -76,6 +76,7 @@ contract DAppDemo
     {
         uint256 ReferralIncome;
         uint256 NewRegistrationBonus;
+        uint256 ROIIncome;
         uint256[] LevelIncome;
         uint256 RankIncome;
         uint256 AmountWithdrawn;
@@ -470,6 +471,7 @@ contract DAppDemo
             ReferralIncome: 0,
             LevelIncome: new uint256[](LevelIncome_LevelCount + 1),
             NewRegistrationBonus: 0,
+            ROIIncome: 0,
             RankIncome: 0,
             AmountWithdrawn: 0
         });
@@ -479,15 +481,9 @@ contract DAppDemo
         map_UserIncome[userAddress] = ui;
         map_UserIdToAddress[TotalUsers] = userAddress;
 
-        if (sponsorAddress != address(0))
-        {
-            map_UserTeam[sponsorAddress].DirectAddresses.push(userAddress);
-        }
-
-        UpdateTeamCount(sponsorAddress, userAddress);
     }
 
-    function SaveDeposit(address userAddress,uint256 packageId,uint256 amount) internal
+    function SaveDeposit(address userAddress, uint256 packageId, uint256 amount) internal
     {
         require(
             map_PackageMaster[packageId].IsActive 
@@ -498,11 +494,25 @@ contract DAppDemo
             "Invalid amount!"
         );
         
+        require(map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount].Amount<=amount, "Amount must be equal to or more than previous deposit amount.");
+
         uint timestamp = block.timestamp;
 
         TotalInvestment += amount;
 
         address sponsorAddress = map_Users[userAddress].SponsorAddress;
+        
+        // Only active IDs to be counted
+        if(!map_Users[userAddress].IsFirstActivationDone)
+        {
+            if (sponsorAddress != address(0))
+            {
+                map_UserTeam[sponsorAddress].DirectAddresses.push(userAddress);
+            }
+
+            UpdateTeamCount(sponsorAddress, userAddress);
+        }
+
         map_Users[userAddress].Investment += amount;
         map_UserTeam[sponsorAddress].DirectsInvestment += amount;
 
@@ -515,9 +525,11 @@ contract DAppDemo
                 Timestamp: timestamp
             });
 
+            Process4X_CappingQualification(userAddress, amount, 0);
+
             map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount + 1] = d;
             map_UserTransactionCount[userAddress].DepositsCount++;
-            ReactivateInternal(userAddress, timestamp);
+            ReactivateInternal(userAddress, timestamp, amount);
 
             if(!map_Users[userAddress].IsFirstActivationDone)
             {
@@ -607,6 +619,7 @@ contract DAppDemo
                 uint256 income = CapAndCreditIncomeToWallet(userAddress, r.RewardAmount);
                 map_UserIncome[userAddress].RankIncome += income;
                 map_Users[userAddress].RankId = nextRankId;
+                Process4X_CappingQualification(userAddress, 0, nextRankId);
                 nextRankId++;
             } 
             else 
@@ -616,23 +629,53 @@ contract DAppDemo
         }
     }
 
+    function Process4X_CappingQualification(address userAddress, uint256 oneTimeDepositAmount, uint256 achievedRankId) internal
+    {
+        if((!map_Users[userAddress].IsQualifiedFor4X 
+                && 
+            (!map_Users[userAddress].IsFirstActivationDone || map_Users[userAddress].FirstActivationTimestamp + 45 days)>=block.timestamp) 
+                && 
+            (oneTimeDepositAmount>=ConvertToBase(2000) || achievedRankId>=1))
+        {
+            map_Users[userAddress].IsQualifiedFor4X = true;
+        }
+    }
+
     function CapAndCreditIncomeToWallet(address userAddress, uint256 amount) internal returns (uint256)
     {
+        amount = CapIncome(userAddress, amount);
         if(amount>0)
         {
-            uint256 total_income = GetTotalIncome(userAddress);
-            uint256 capping_amount = (map_Users[userAddress].IsQualifiedFor4X?4:3)*map_Users[userAddress].Investment;
-
-            if(total_income+amount>capping_amount)
-            {
-                amount = capping_amount - total_income;
-            }
-
             // Credit To Wallet
         }
 
         return amount;
     }
+
+
+    function CapIncome(address userAddress, uint256 amount) internal returns (uint256)
+    {
+        if(amount>0)
+        {
+            if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
+            {
+                return 0;
+            }
+            else
+            {
+                uint256 total_income = GetTotalIncome(userAddress);
+                uint256 capping_amount = (map_Users[userAddress].IsQualifiedFor4X?4:3)*map_Users[userAddress].Investment;
+
+                if(total_income+amount>capping_amount)
+                {
+                    amount = capping_amount - total_income;
+                }
+            }
+        }
+
+        return amount;
+    }
+
 
     function IsOwner() internal view returns (bool)
     {
@@ -661,14 +704,13 @@ contract DAppDemo
         require(!doesUserExist(userAddress), "Already registered!");
 
         SaveUser(userAddress, sponsorAddress);
-        // DepositInternal(packageId, amount);
     }
 
     function DepositInternal(uint256 packageId, uint256 amount) internal 
     {
         address userAddress = msg.sender;
         require(doesUserExist(userAddress), "You are not registered!");
-
+        require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
         ReceiveTokens(amount);
         SaveDeposit(userAddress, packageId, amount);
     }
@@ -684,6 +726,32 @@ contract DAppDemo
     //     uint income = map_PackageMaster[packageId].IsReferralIncomePercentage? amount*map_PackageMaster[packageId].ReferralIncome/100: map_PackageMaster[packageId].ReferralIncome;
     //     map_UserIncome[map_Users[userAddress].SponsorAddress].ReferralIncome += income;
     // }
+
+    function GetPendingROIIncome() internal returns (uint256)
+    {
+        uint256 onAmount = map_Users[userAddress].Investment;
+        
+        uint256 income_amount = 0;
+        if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
+        {
+            income_amount = onAmount*10/100;
+            income_amount = CapIncome(userAddress, income_amount);
+        }
+
+        return income_amount;
+    }
+
+    function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 currentDepositAmount) internal
+    {
+        uint256 onAmount = map_Users[userAddress].Investment-currentDepositAmount;
+
+        if(onAmount>0)
+        {
+            uint256 income_amount = onAmount*10/100;
+            income_amount = CapAndCreditIncomeToWallet(userAddress, income_amount);
+            map_UserIncome[userAddress].ROIIncome += income_amount;
+        }
+    }
 
     function ProcessNewRegistrationBonus(address userAddress, uint256 amount) internal
     {
@@ -723,9 +791,10 @@ contract DAppDemo
         uint256 onAmount = map_Users[userAddress].Investment/(map_Users[userAddress].IsFirstActivationDone?2:1);
         
         uint256 level = 1;
+        uint256 income_amount = 0;
         while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount) 
         {
-            uint256 income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (10 * 100)) : map_LevelIncomeMaster[level].Percentage);
+            income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (10 * 100)) : map_LevelIncomeMaster[level].Percentage);
             if (IsQualifiedForLevelIncome(userAddress, level)) 
             {
                 CapAndCreditIncomeToWallet(sponsorAddress, income_amount);
@@ -788,13 +857,14 @@ contract DAppDemo
         }
     }
 
-    function ReactivateInternal(address userAddress, uint block_timestamp) internal returns (bool)
+    function ReactivateInternal(address userAddress, uint block_timestamp, uint256 currentDepositAmount) internal returns (bool)
     {
         uint noOfDays = 10 + (map_Users[userAddress].ReactivationCount/2);
         uint expiryTimestamp = block_timestamp + (noOfDays * 1 days); // Convert days to seconds
 
         map_Users[userAddress].ActivationExpiryTimestamp = expiryTimestamp;
         map_Users[userAddress].ReactivationCount++;
+        ProcessROIIncome(userAddress, block_timestamp, currentDepositAmount);
         DistributeLevelIncome(userAddress);
         return true;
     }
@@ -807,7 +877,7 @@ contract DAppDemo
     function Reactivate() external returns (bool)
     {
         require(map_Users[msg.sender].ActivationExpiryTimestamp<=block.timestamp, "Active!");
-        return ReactivateInternal(msg.sender, block.timestamp);
+        return ReactivateInternal(msg.sender, block.timestamp, 0);
     }
 
     function GetPackages() external view returns (PackageMaster[] memory) 

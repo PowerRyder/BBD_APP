@@ -16,19 +16,19 @@ export class AppSettings {
     public static readonly Logo = "https://neuradigi.com/assets/img/logo.png";
     public static readonly Website = "https://dapp.neuradigi.com/"
 
-    public static readonly IsInternalToken = true;
+    public static readonly IsInternalToken = false;
     public static readonly InternalTokenName = "Neuradigi";
 
     public static readonly IsTestNetworkEnabled = true;
-    public static readonly ContractAddress = this.IsTestNetworkEnabled ? '0xDEDE1176d4c72b4C9E043B6A4BAF122D1a4D68a3' : '0x2DD1788E21E89728bD997f4d7Aa8c24e4591bC8B';
+    public static readonly ContractAddress = this.IsTestNetworkEnabled ? '0xBFF03a751C4ECafbBA7730CEdf6e96Aa37FF5083' : '0x2DD1788E21E89728bD997f4d7Aa8c24e4591bC8B';
     public static readonly ABI: any = abi;
 
     public static readonly IsPaymentCurrencyDifferentThanNative = true;
 
     static CHAIN = this.IsTestNetworkEnabled ? Chain.BEP20.TestNet : Chain.BEP20.MainNet;
 
-    public static readonly PaymentTokenSymbol = this.IsPaymentCurrencyDifferentThanNative ? "TEST" : this.CHAIN.NativeCurrency.Symbol;
-    public static readonly PaymentTokenContractAddress = this.IsTestNetworkEnabled ? '0xc06e70c4038059965172Cf02025d7e5033f39767' : '0x570A5D26f7765Ecb712C0924E4De545B89fD43dF';
+    public static readonly PaymentTokenSymbol = this.IsPaymentCurrencyDifferentThanNative ? "USDT" : this.CHAIN.NativeCurrency.Symbol;
+    public static readonly PaymentTokenContractAddress = this.IsTestNetworkEnabled ? '0xAc17996d3a9A3081F626cD56E904A70E9DadF892' : '0x570A5D26f7765Ecb712C0924E4De545B89fD43dF';
     public static readonly PaymentTokenABI: any = paymentTokenAbi;
     public static readonly PaymentTokenDecimals = 18;
 
