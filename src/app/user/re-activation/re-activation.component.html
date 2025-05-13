@@ -1,0 +1,36 @@
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card>
+        <mat-card-title class="text-align-center">Activation</mat-card-title>
+        <mat-card-content class="card-pad">
+
+            <div *ngIf="!countdownExpired; else expiredBlock">
+
+                <div class="d-flex justify-content-center">
+                    <h2>Next activation in...</h2>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <app-flip-clock [targetDate]="nextActivationDate" showUpto="days"></app-flip-clock>
+                </div>
+            </div>
+
+            <ng-template #expiredBlock>
+                <div class="d-flex justify-content-center my-3">
+                    <h4>Pending ROI Income: ₹{{ pendingRoiIncome | number:'1.2-2' }}</h4>
+                </div>
+
+                <div class="d-flex justify-content-center text-danger text-center mb-3">
+                    <strong>Your account is inactive. Please activate immediately to avoid losing any further
+                        income and to release the pending ROI.</strong>
+                </div>
+            </ng-template>
+
+            <div class="d-flex justify-content-center">
+                <button mat-raised-button color="warn" (click)="onActivateClick()">
+                    Activate Now
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>
