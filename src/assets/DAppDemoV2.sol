@@ -1020,12 +1020,6 @@ contract BBD
         return map_UserWalletBalance[userAddress][walletId];
     }
 
-    function Reactivate() external returns (bool)
-    {
-        require(map_Users[msg.sender].ActivationExpiryTimestamp<=block.timestamp, "Active!");
-        return ReactivateInternal(msg.sender, block.timestamp, 0);
-    }
-
     function GetPackages() external view returns (PackageMaster[] memory) 
     {
         PackageMaster[] memory m = new PackageMaster[](TotalNoOfPackages);
@@ -1186,6 +1180,25 @@ contract BBD
     function Deposit(uint256 packageId, uint256 amount) external payable 
     {
         DepositInternal(packageId, amount);
+    }
+
+    function Reactivate() external returns (bool)
+    {
+        require(map_Users[msg.sender].ActivationExpiryTimestamp<=block.timestamp, "Active!");
+        return ReactivateInternal(msg.sender, block.timestamp, 0);
+    }
+
+    function TopupMemberFromWallet(address userAddressToTopup, uint256 packageId, uint256 amount) external
+    {
+        address userAddress = msg.sender;
+        require(doesUserExist(userAddress), "You are not registered!");
+        require(doesUserExist(userAddressToTopup), "Invalid user for topup!");
+        require(map_Users[userAddressToTopup].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
+        require(!map_Users[userAddressToTopup].IsFirstActivationDone, "Only first time topup is allowed from wallet.");
+        require(GetWalletBalance(userAddress, 2)>=amount, "Insufficient funds in wallet!");
+
+        SaveDeposit(userAddressToTopup, packageId, amount);
+        map_UserWalletBalance[userAddress][2] -= amount;
     }
 
     function Withdraw(uint256 amount) external {
