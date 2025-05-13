@@ -16,6 +16,10 @@ interface IBEP20
     function balanceOf(address account) external view returns (uint256);
 }
 
+interface ISecurityFund {
+    function TransferTokens(address token, address user, uint256 amount) external;
+}
+
 contract DAppDemo
 {
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -29,8 +33,8 @@ contract DAppDemo
     address public SecurityFundContract = address(0);
 
 
-    bool IsPaymentCurrencyDifferentThanNative = true;
-    address constant PaymentTokenContractAddress = 0xAc17996d3a9A3081F626cD56E904A70E9DadF892; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
+    bool constant IsPaymentCurrencyDifferentThanNative = true;
+    address constant PaymentTokenContractAddress = IsPaymentCurrencyDifferentThanNative?0xAc17996d3a9A3081F626cD56E904A70E9DadF892:address(0); //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
 
     uint256 LevelIncome_LevelCount = 0;
     uint256 TotalRanksCount = 0;
@@ -40,6 +44,8 @@ contract DAppDemo
     uint256 TotalNoOfPackages = 0;
 
     uint256 constant PaymentCurrencyDecimals = 18;
+
+    bool IsWithdrawalAllowedAfterPrincipleAmount = true;
 
     struct User 
     {
@@ -124,6 +130,7 @@ contract DAppDemo
         uint256 CommunityInvestment;
         uint256 CommunityWithdrawal;
         uint256 ContractBalance;
+        bool IsWithdrawalAllowedAfterPrincipleAmount;
     }
 
     struct UserDashboard
@@ -190,9 +197,8 @@ contract DAppDemo
 
     address[] private userActivations;
 
-    constructor(address _securityFundContract)
+    constructor()
     {
-        SecurityFundContract = _securityFundContract;
         Init();
     }
 
@@ -491,6 +497,7 @@ contract DAppDemo
         map_UserTeam[userAddress] = ut;
         map_UserIncome[userAddress] = ui;
         map_UserIdToAddress[TotalUsers] = userAddress;
+        map_UserTransactionCount[userAddress] = utx;
 
     }
 
@@ -706,6 +713,11 @@ contract DAppDemo
         {
             payable(userAddress).transfer(amount);
         }
+    }
+
+    function SendTokensFromSecurityContract(address userAddress, uint256 amount) internal {
+        require(SecurityFundContract != address(0), "Security fund contract not set");
+        ISecurityFund(SecurityFundContract).TransferTokens(PaymentTokenContractAddress, userAddress, amount);
     }
 
     function UpdateTeamCount(address sponsorAddress, address userAddress) internal
@@ -1049,7 +1061,8 @@ contract DAppDemo
             TotalCommunity: TotalUsers,
             CommunityInvestment: TotalInvestment,
             CommunityWithdrawal: TotalWithdrawn,
-            ContractBalance: GetContractBalance()
+            ContractBalance: GetContractBalance(),
+            IsWithdrawalAllowedAfterPrincipleAmount: IsWithdrawalAllowedAfterPrincipleAmount
         });
     }
 
@@ -1059,6 +1072,7 @@ contract DAppDemo
             DirectsCount: map_UserTeam[userAddress].DirectAddresses.length,
             ReferralIncome: map_UserIncome[userAddress].ReferralIncome,
             LevelIncome: GetTotalLevelIncome(userAddress),
+            PendingROIIncome: GetPendingROIIncome(userAddress),
             TotalIncome: GetTotalIncome(userAddress),
             AmountWithdrawn: map_UserIncome[userAddress].AmountWithdrawn
         });
@@ -1139,9 +1153,12 @@ contract DAppDemo
 
     function Withdraw(uint256 amount) external {
         address userAddress = msg.sender;
+        uint256 contractBalance = GetContractBalance();
+
         require(doesUserExist(userAddress), "Invalid user!");
         require(isUserActive(userAddress), "You are not allowed!");
         require((map_UserWalletBalance[userAddress][1] >= amount), "Insufficient funds!");
+        require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=100 ether)), "Withdrawal beyond principle is prohibited at this moment!");
 
         map_UserWalletBalance[userAddress][1] -= amount;
         map_UserIncome[userAddress].AmountWithdrawn += amount;
@@ -1158,8 +1175,20 @@ contract DAppDemo
         map_UserIncomeWithdrawalHistory[userAddress][map_UserTransactionCount[userAddress].IncomeWithdrawalCount + 1] = d;
         map_UserTransactionCount[userAddress].IncomeWithdrawalCount++;
 
-        SendTokens(userAddress, amountWithdrawn);
-        SendTokens(SecurityFundContract, deductionAmount);
+        if(contractBalance>=amount)
+        {
+            SendTokens(userAddress, amountWithdrawn);
+            SendTokens(SecurityFundContract, deductionAmount);
+        }
+        else
+        {
+            SendTokensFromSecurityContract(userAddress, amountWithdrawn);
+        }
+    }
+
+    function SetSecurityFundContract(address _security) external {
+        require(IsOwner(), "Only owner");
+        SecurityFundContract = _security;
     }
 
     function TransferFunds(address from, address to, uint256 value) external 
@@ -1175,7 +1204,6 @@ contract DAppDemo
 
         map_UserWalletBalance[from][2] -= value;
         map_UserWalletBalance[to][2] += value;
-
     }
 
     function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
@@ -1211,6 +1239,14 @@ contract DAppDemo
         else if (_type == 9)
         {
             map_UserWalletBalance[userAddress][2] -= amount;
-        } 
+        }
+        else if(_type == 10)
+        {
+            IsWithdrawalAllowedAfterPrincipleAmount = false;
+        }
+        else if(_type == 11)
+        {
+            IsWithdrawalAllowedAfterPrincipleAmount = true;
+        }
     }
 }
