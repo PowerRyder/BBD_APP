@@ -47,6 +47,7 @@ body {
     scrollbar-width: none;
     -ms-overflow-style: none;
     font-size: 100%;
+    background:url("../src/assets/images/12.jpg");
 }
 
 body.swal2-shown {
@@ -346,8 +347,8 @@ p-table {
 }
 
 .mat-drawer-container {
-    background-color: #e1e1e1;
-    color: rgba(0,0,0,.87);
+    background-color:transparent !important;
+    color: #000;
 }
 
 .mat-drawer-content{

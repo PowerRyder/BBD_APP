@@ -1,5 +1,29 @@
-<mat-card class="mat-card d-flex col-sm-12 col-12" *ngIf="appearance=='One-Row'">
-    <mat-card-content class="mat-card-content d-flex flex-row justify-content-start">
+<!-- <mat-card class="mat-card d-flex col-sm-12 col-12" > -->
+    <div class="card stat-widget-one bg-btc" *ngIf="appearance=='One-Row'">
+        <div class="card-body">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <h4 class="mb-3">Bitcoin</h4>
+                    
+                    <h3 class="mb-3"><span class="counter">1.765</span> BTC</h3>
+                </div>
+                <div class="col-auto">
+                    <i class="cc BTC-alt" title="BTC"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <span class="badge text-success">
+                    <i class="mdi mdi-arrow-up-bold"></i> 2.50 % 
+                </span>
+                <span> Since last month</span>
+            </div>
+            
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+    <!-- <mat-card-content class="mat-card-content d-flex flex-row justify-content-start">
         <div class="d-flex col-3 align-items-center justify-content-center">
             <mat-icon class="tile-avatar">{{matIcon}}</mat-icon>
         </div>
@@ -19,8 +43,8 @@
                 </ng-container>
             </div>
         </div>
-    </mat-card-content>
-</mat-card>
+    </mat-card-content> -->
+<!-- </mat-card> -->
 <!-- 
 <mat-card class="col-sm-12 col-12" *ngIf="appearance=='Two-Row'">
     <mat-card-content fxFlex fxLayout="row" fxLayoutAlign="start">

@@ -59,3 +59,34 @@
 .mat-mdc-button.mat-mdc-button-base {
     height: 65px;
 }
+
+.stat-widget-one, .stat-widget-two {
+    border-color: transparent;
+}
+.card {
+    margin-bottom: 1.875rem;
+    background: rgba(0, 0, 0, .5);
+    transition: all .5s ease-in-out;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, .15);
+    z-index: 0;
+}
+
+.badge {
+    line-height: 1.5;
+    padding: 5px 10px;
+}
+
+.text-success {
+    color: #1dc9b7 !important;
+}
+.badge {
+    display: inline-block;
+    font-size: 75%;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
