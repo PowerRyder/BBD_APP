@@ -95,6 +95,7 @@ contract BBD
     struct UserTransactionCount
     {
         uint256 DepositsCount;
+        uint256 ROIIncomeCount;
         uint256 IncomeWithdrawalCount;
         uint256 ReactivationCount;
     }
@@ -182,6 +183,12 @@ contract BBD
         uint256 RewardAmount;
     }
     
+    struct ROIIncomeDetail {
+        uint256 OnAmount;
+        uint256 Timestamp;
+        uint256 Income;
+    }
+
     mapping(uint256 => PackageMaster) public map_PackageMaster;
     mapping(uint256 => LevelIncomeMaster) public map_LevelIncomeMaster;
     mapping(uint256 => RankMaster) public map_RankMaster;
@@ -195,7 +202,8 @@ contract BBD
     mapping(address => mapping(uint256 => UserIncomeWithdrawalTransaction)) public map_UserIncomeWithdrawalHistory;
 
     mapping(address => mapping(uint256 => uint256)) public map_UserBusinessOnLevel;
-    mapping(address => mapping(uint256 => uint256)) public map_UserWithdrawalOnLevel;
+    mapping(address => mapping(uint256 => ROIIncomeDetail)) public map_ROIIncomeHistory;
+
     mapping(address => UserIncome) public map_UserIncome;
     mapping(address => mapping(uint256 => uint256)) public map_UserWalletBalance;
 
@@ -507,6 +515,7 @@ contract BBD
 
         UserTransactionCount memory utx = UserTransactionCount({
             DepositsCount: 0,
+            ROIIncomeCount: 0,
             IncomeWithdrawalCount: 0,
             ReactivationCount: 0
         });
@@ -862,6 +871,14 @@ contract BBD
             uint256 income_amount = onAmount*10/100;
             income_amount = CapAndCreditIncomeToWallet(userAddress, income_amount);
             map_UserIncome[userAddress].ROIIncome += income_amount;
+
+            map_UserTransactionCount[userAddress].ROIIncomeCount++;
+
+            map_ROIIncomeHistory[userAddress][map_UserTransactionCount[userAddress].ROIIncomeCount] = ROIIncomeDetail({
+                OnAmount: onAmount,
+                Timestamp: block_timestamp,
+                Income: income_amount
+            });
         }
     }
 
@@ -1062,6 +1079,21 @@ contract BBD
         // return map_Users[userAddress].DirectAddresses;
     }
 
+    function GetROIIncomeHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (ROIIncomeDetail[] memory history) 
+    {
+        uint256 total = map_UserTransactionCount[userAddress].ROIIncomeCount;
+
+        uint256 start = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
+        uint256 end = start >= pageSize ? start - pageSize : 0;
+
+        uint256 arrIndex = 0;
+        history = new ROIIncomeDetail[](start - end);
+        for (uint256 i = start; i > end; i--) {
+            history[arrIndex++] = map_ROIIncomeHistory[userAddress][i];
+        }
+    }
+
+
     function GetLevelIncomeInfo(address userAddress) external view returns (LevelIncomeInfo[] memory info)
     {
         info = new LevelIncomeInfo[](LevelIncome_LevelCount);
@@ -1082,13 +1114,14 @@ contract BBD
 
     function GetDepositHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserDeposit[] memory deposits) 
     {
-        deposits = new UserDeposit[](map_UserTransactionCount[userAddress].DepositsCount);
+        uint256 total = map_UserTransactionCount[userAddress].DepositsCount;
 
-        uint256 startCount = (pageIndex * pageSize > map_UserTransactionCount[userAddress].DepositsCount) ? map_UserTransactionCount[userAddress].DepositsCount : (pageIndex * pageSize);
+        uint256 startCount = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
         uint256 endCount = startCount >= pageSize ? startCount - pageSize : 0;
 
         // uint endCount = (startCount+pageSize)<map_UserTransactionCount[userAddress].DepositsCount?(startCount+pageSize):map_UserTransactionCount[userAddress].DepositsCount;
         uint256 arr_index = 0;
+        deposits = new UserDeposit[](startCount - endCount);
         for (uint256 i = startCount; i > endCount; i--) {
             deposits[arr_index] = map_UserDeposits[userAddress][i];
             arr_index++;
@@ -1097,12 +1130,13 @@ contract BBD
 
     function GetIncomeWithdrawalHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserIncomeWithdrawalTransaction[] memory history) 
     {
-        history = new UserIncomeWithdrawalTransaction[](map_UserTransactionCount[userAddress].IncomeWithdrawalCount);
-
-        uint256 startCount = (pageIndex * pageSize > map_UserTransactionCount[userAddress].IncomeWithdrawalCount) ? map_UserTransactionCount[userAddress].IncomeWithdrawalCount : (pageIndex * pageSize);
+        uint256 total = map_UserTransactionCount[userAddress].IncomeWithdrawalCount;
+        uint256 startCount = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
         uint256 endCount = startCount >= pageSize ? startCount - pageSize : 0;
 
         uint256 arr_index = 0;
+        history = new UserIncomeWithdrawalTransaction[](startCount - endCount);
+
         for (uint256 i = startCount; i > endCount; i--) {
             history[arr_index] = map_UserIncomeWithdrawalHistory[userAddress][i];
             arr_index++;
@@ -1126,7 +1160,7 @@ contract BBD
         require(doesUserExist(userAddress), "Invalid user!");
         require(isUserActive(userAddress), "You are not allowed!");
         require((map_UserWalletBalance[userAddress][1] >= amount), "Insufficient funds!");
-        require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=100 ether)), "Withdrawal beyond principle is prohibited at this moment!");
+        require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
 
         map_UserWalletBalance[userAddress][1] -= amount;
         map_UserIncome[userAddress].AmountWithdrawn += amount;
