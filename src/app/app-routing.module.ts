@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { Constants } from './misc/app.constants';
 
 const routes: Routes = [
   {
@@ -13,7 +14,12 @@ const routes: Routes = [
   {
     path: 'a',
     loadChildren: () => import("./admin/admin.module").then(m => m.AdminModule)
-  }
+  },
+  {
+    path: Constants.refresh,
+    loadComponent: () => import("./shared/refresh/refresh.component").then(m => m.RefreshComponent),
+    data: { preload: true }
+  },
 ];
 
 @NgModule({

@@ -2,7 +2,7 @@
     <div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
 
         <app-dashboard-tiles matIcon="account_balance" title="Deposit" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: userDetails?.Investment}]"></app-dashboard-tiles>
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.Investment}]"></app-dashboard-tiles>
 
         <app-dashboard-tiles matIcon="token" title="Tokens Holding" class="col-md-3 col-sm-12" *ngIf="isInternalToken"
             [data]="[{key: internalTokenName, value: dashboardDetails?.InternalTokenBalance}]"></app-dashboard-tiles>
@@ -11,25 +11,43 @@
             [data]="[{key: '', value: dashboardDetails?.DirectsCount}]"></app-dashboard-tiles>
 
         <app-dashboard-tiles matIcon="group" title="Team" class="col-md-3 col-sm-12"
-            [data]="[{key: '', value: userDetails?.TotalTeam}]"></app-dashboard-tiles>
+            [data]="[{key: '', value: dashboardDetails?.TotalTeam}]"></app-dashboard-tiles>
 
         <app-dashboard-tiles matIcon="account_balance" title="Directs Deposit" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: userDetails?.DirectsInvestment}]"></app-dashboard-tiles>
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.DirectsInvestment}]"></app-dashboard-tiles>
 
         <app-dashboard-tiles matIcon="account_balance" title="Team Deposit" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: userDetails?.TeamInvestment}]"></app-dashboard-tiles>
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.TeamInvestment}]"></app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="group" title="Referral Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.ReferralIncome}]"></app-dashboard-tiles>
+        <!-- <app-dashboard-tiles matIcon="group" title="Referral Income" class="col-md-3 col-sm-12"
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.ReferralIncome}]"></app-dashboard-tiles> -->
+
+        <app-dashboard-tiles matIcon="payments" title="New Registration Bonus" class="col-md-3 col-sm-12"
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.NewRegistrationBonus}]"></app-dashboard-tiles>
+
+        <app-dashboard-tiles matIcon="payments" title="ROI Income" class="col-md-3 col-sm-12"
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.ROIIncome}]"></app-dashboard-tiles>
 
         <app-dashboard-tiles matIcon="payments" title="Level Income" class="col-md-3 col-sm-12"
             [data]="[{key: paymentCurrency, value: dashboardDetails?.LevelIncome}]"></app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="Withdrawal Level Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.WithdrawalLevelIncome}]"></app-dashboard-tiles>
+        <app-dashboard-tiles matIcon="payments" title="Rank Income" class="col-md-3 col-sm-12"
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.RankIncome}]"></app-dashboard-tiles>
+
+        <app-dashboard-tiles matIcon="payments" title="Topmost Sponsors Income" class="col-md-3 col-sm-12"
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.TopmostSponsorsIncome}]"></app-dashboard-tiles>
+
+        <!-- <app-dashboard-tiles matIcon="payments" title="Withdrawal Level Income" class="col-md-3 col-sm-12"
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.WithdrawalLevelIncome}]"></app-dashboard-tiles> -->
 
         <app-dashboard-tiles matIcon="payments" title="Total Income" class="col-md-3 col-sm-12"
             [data]="[{key: paymentCurrency, value: dashboardDetails?.TotalIncome}]"></app-dashboard-tiles>
+
+        <app-dashboard-tiles matIcon="payments" title="Pending ROI Income" class="col-md-3 col-sm-12"
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.PendingROIIncome}]"></app-dashboard-tiles>
+
+        <app-dashboard-tiles matIcon="payments" title="Capping Amount" class="col-md-3 col-sm-12"
+            [data]="[{key: paymentCurrency, value: dashboardDetails?.Capping}]"></app-dashboard-tiles>
 
         <app-dashboard-tiles matIcon="payments" title="Total Withdrawn" class="col-md-3 col-sm-12"
             [data]="[{key: paymentCurrency, value: dashboardDetails?.AmountWithdrawn}]"></app-dashboard-tiles>

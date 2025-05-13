@@ -16,7 +16,7 @@ import { ReferralLinkComponent } from '../referral-link/referral-link.component'
 export class UserDashboardComponent implements OnInit {
 
   userAddress: string = '';
-  userDetails: any;
+  // userDetails: any;
   dashboardDetails: any;
 
   referralLink: string = '';
@@ -30,24 +30,29 @@ export class UserDashboardComponent implements OnInit {
 
   async ngOnInit() {
     this.userAddress = sessionStorage.getItem("UserAddress");
-    let userDetails = (await this.details.getUserDetails(this.userAddress)).data;
-    
     let dashboardDetails = Object.assign({}, (await this.details.getDashboardDetails(this.userAddress)).data);
 
     // console.log(userDetails, dashboardDetails)
 
-    userDetails.Investment = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(userDetails.Investment);
-    userDetails.DirectsInvestment = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(userDetails.DirectsInvestment);
-    userDetails.TeamInvestment = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(userDetails.TeamInvestment);
-    
+    dashboardDetails.Investment = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.Investment);
+
+    dashboardDetails.DirectsInvestment = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.DirectsInvestment);
+    dashboardDetails.TeamInvestment = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.TeamInvestment);
     dashboardDetails.ReferralIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.ReferralIncome);
+    dashboardDetails.NewRegistrationBonus = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.NewRegistrationBonus);
+    dashboardDetails.ROIIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.ROIIncome);
+    dashboardDetails.RankIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.RankIncome);
+    dashboardDetails.TopmostSponsorsIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.TopmostSponsorsIncome);
     dashboardDetails.LevelIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.LevelIncome);
-    dashboardDetails.WithdrawalLevelIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.WithdrawalLevelIncome);
+    dashboardDetails.PendingROIIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.PendingROIIncome);
     dashboardDetails.TotalIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.TotalIncome);
+    dashboardDetails.Capping = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.Capping);
     dashboardDetails.AmountWithdrawn = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.AmountWithdrawn);
 
     
-    this.userDetails = userDetails;
+    // let userDetails = (await this.details.getUserDetails(this.userAddress)).data;
+    
+    // this.userDetails = userDetails;
     this.dashboardDetails = dashboardDetails;
 
     // console.log(this.userDetails, this.dashboardDetails)

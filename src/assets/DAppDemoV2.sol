@@ -137,7 +137,9 @@ contract BBD
 
     struct UserDashboard
     {
+        uint256 Investment;
         uint256 DirectsCount;
+        uint256 DirectsInvestment;
         uint256 TeamCount;
         uint256 TeamA_Business;
         uint256 TeamB_Business;
@@ -150,12 +152,20 @@ contract BBD
         uint256 RankIncome;
         uint256 TopmostSponsorsIncome;
         uint256 TotalIncome;
+        uint256 Capping;
         uint256 AmountWithdrawn;
         string RankName;
     }
 
     struct UserDirects
     {
+        uint256 Srno;
+        address Address;
+        uint256 Investment;
+        uint256 Business;
+    }
+
+    struct UserTeamMember {
         uint256 Srno;
         address Address;
         uint256 Investment;
@@ -1045,7 +1055,9 @@ contract BBD
         UserIncome memory ui = map_UserIncome[userAddress];
 
         info = UserDashboard({
+            Investment: u.Investment,
             DirectsCount: ut.DirectAddresses.length,
+            DirectsInvestment: ut.DirectsInvestment,
             TeamCount: u.TotalTeam,
             TeamA_Business: ut.TeamABusiness,
             TeamB_Business: ut.TeamBBusiness,
@@ -1058,6 +1070,7 @@ contract BBD
             RankIncome: ui.RankIncome,
             TopmostSponsorsIncome: ui.TopmostSponsorsIncome,
             TotalIncome: GetTotalIncome(userAddress),
+            Capping: u.Investment*(u.IsQualifiedFor4X?4:3),
             AmountWithdrawn: ui.AmountWithdrawn,
             RankName: map_RankMaster[u.RankId].RankName
         });
@@ -1077,6 +1090,28 @@ contract BBD
             });
         }
         // return map_Users[userAddress].DirectAddresses;
+    }
+
+    function GetTeamDetails(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserTeamMember[] memory team) {
+        address[] memory fullTeam = map_UserTeam[userAddress].TeamAddresses;
+        uint256 totalTeam = fullTeam.length;
+
+        uint256 start = (pageIndex * pageSize > totalTeam) ? totalTeam : (pageIndex * pageSize);
+        uint256 end = start >= pageSize ? start - pageSize : 0;
+        uint256 resultSize = start - end;
+
+        team = new UserTeamMember[](resultSize);
+
+        uint256 arrIndex = 0;
+        for (uint256 i = start; i > end; i--) {
+            address member = fullTeam[i - 1];
+            team[arrIndex++] = UserTeamMember({
+                Srno: i,
+                Address: member,
+                Investment: map_Users[member].Investment,
+                Business: map_Users[member].Investment // Adjust if business differs
+            });
+        }
     }
 
     function GetROIIncomeHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (ROIIncomeDetail[] memory history) 

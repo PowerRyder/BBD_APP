@@ -7,6 +7,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { AppSettings } from 'src/app/app.settings';
 import { Subscription } from 'rxjs';
 import { AccountsService } from 'src/app/accounts/accounts.service';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 @Component({
   selector: 'app-transfer-fund',
@@ -20,10 +21,10 @@ export class TransferFundComponent implements OnInit {
   transferfundForm: UntypedFormGroup
   paymentCurrency = AppSettings.PaymentTokenSymbol;
   amountAvailableToSend: number = 0;
-  Fundsubscription: Subscription;
+  // Fundsubscription: Subscription;
   maxAmount: number = 0;
 
-  constructor(public shared: SharedService, private details: DetailsService, private accounts: AccountsService) {
+  constructor(public shared: SharedService, private details: DetailsService, private accounts: AccountsService, private refresh: RefreshService) {
     this.createForm()
 
   }
@@ -36,10 +37,10 @@ export class TransferFundComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.Fundsubscription = this.accounts.accountChange.subscribe(async addr => {
-      this.transferfundForm.controls['userAddress'].setValue(addr);
-      await this.fetchAndSetBalance();
-    })
+    // this.Fundsubscription = this.accounts.accountChange.subscribe(async addr => {
+    //   this.transferfundForm.controls['userAddress'].setValue(addr);
+    //   await this.fetchAndSetBalance();
+    // })
     await this.fetchAndSetBalance();
 
   }
@@ -67,8 +68,9 @@ export class TransferFundComponent implements OnInit {
 
       if (result && result.success) {
         await this.fetchAndSetBalance()
-        this.shared.alert.trigger({ action: 'success', message: 'Withdrawal successful!' }).then(() => {
-          location.reload();
+        this.shared.alert.trigger({ action: 'success', message: 'Transfer successful!' }).then(() => {
+          // location.reload();
+          this.refresh.refreshComponent();
         });
       }
       else {

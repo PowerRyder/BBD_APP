@@ -8,6 +8,7 @@ import { DetailsService } from '../services/details.service';
 import { WithdrawService } from '../services/withdraw.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { WithdrawalHistoryComponent } from '../withdrawal-history/withdrawal-history.component';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 @Component({
   selector: 'app-withdraw',
@@ -31,11 +32,11 @@ export class WithdrawComponent implements OnInit {
   minAmount: number = 0;
   maxAmount: number = 0;
 
-  deductionPercentage: number = 10;
+  deductionPercentage: number = 5;
   deductionAmount: number = 0;
   receivingAmount: number = 0;
 
-  constructor(private shared: SharedService, private accounts: AccountsService, private details: DetailsService, private withdraw: WithdrawService) { }
+  constructor(private shared: SharedService, private accounts: AccountsService, private details: DetailsService, private withdraw: WithdrawService, private refresh: RefreshService) { }
 
   async ngOnInit() {
 
@@ -76,7 +77,7 @@ export class WithdrawComponent implements OnInit {
       // console.log("register", res)
       if (res && res.success) {
         this.shared.alert.trigger({ action: 'success', message: 'Withdrawal successful!' }).then(() => {
-          location.reload();
+          this.refresh.refreshComponent();
         });
       }
       else {

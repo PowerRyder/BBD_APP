@@ -8,6 +8,7 @@ import { DetailsService } from '../services/details.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DepositHistoryComponent } from '../deposit-history/deposit-history.component';
 import { PackageComponent } from '../package/package.component';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 @Component({
   selector: 'app-deposit',
@@ -31,7 +32,7 @@ export class DepositComponent {
   isInternalToken = AppSettings.IsInternalToken;
   internalTokenName = AppSettings.InternalTokenName;
 
-  constructor(private router: Router, private shared: SharedService, private deposit: DepositService, private details: DetailsService){ }
+  constructor(private router: Router, private shared: SharedService, private deposit: DepositService, private details: DetailsService, private refresh: RefreshService){ }
 
   async ngOnInit(){
     this.paymentTokenToInternalTokensRate = (await this.details.getContractDetails()).data.InternalTokenRate;
@@ -53,7 +54,7 @@ export class DepositComponent {
       // console.log("register", res)
       if (res && res.success) {
         this.shared.alert.trigger({action: 'success', message: 'Deposit successful!'}).then(()=>{
-          location.reload();
+          this.refresh.refreshComponent();
         });
       }
       else{

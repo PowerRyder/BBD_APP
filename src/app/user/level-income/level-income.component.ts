@@ -38,7 +38,7 @@ export class LevelIncomeComponent {
         RequiredTeamInvestment: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.RequiredTeamInvestment),
         TeamInvestment: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.TeamInvestment),
         OnAmount: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.OnAmount),
-        Percentage: d.Percentage/10,
+        Percentage: d.Percentage/100,
         Income: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.Income),
         IsLevelAchieved: d.IsLevelAchieved
       });

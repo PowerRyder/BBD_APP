@@ -22,7 +22,7 @@ export class DepositService {
         // console.log(r)
       }
       let amount_str = this.contract.convertAmountToPaymentCurrencyBaseValue(amount);
-      let res = await this.contract.writeContract('Redeposit', [packageId, amount_str], amount_str);
+      let res = await this.contract.writeContract('Deposit', [packageId, amount_str], amount_str);
       // console.log(res)
       return res;
     }
