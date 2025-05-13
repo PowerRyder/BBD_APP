@@ -1,0 +1,16 @@
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card>
+        <mat-card-title class="text-align-center">Activation</mat-card-title>
+        <mat-card-content class="card-pad">
+            <div class="d-flex justify-content-center">
+                <h2>Next activation in...</h2>
+            </div>
+            <div class="d-flex justify-content-center">
+                <app-flip-clock [targetDate]="nextActivationDate" showUpto="days"></app-flip-clock>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button mat-raised-button color="success" (click)="onActivateClick()">Activate</button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -5,12 +5,13 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { DepositComponent } from '../deposit/deposit.component';
 import { DashboardTilesComponent } from 'src/app/shared/dashboard-tiles/dashboard-tiles.component';
 import { ReferralLinkComponent } from '../referral-link/referral-link.component';
+import { ReActivationComponent } from '../re-activation/re-activation.component';
 
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './user-dashboard.component.html',
   standalone: true,
-  imports: [SharedModule, DepositComponent, DashboardTilesComponent, ReferralLinkComponent],
+  imports: [SharedModule, DepositComponent, DashboardTilesComponent, ReferralLinkComponent, ReActivationComponent],
   styleUrls: ['./user-dashboard.component.scss']
 })
 export class UserDashboardComponent implements OnInit {
