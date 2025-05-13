@@ -29,7 +29,7 @@ export class AccountsService {
     return this.contract.readContract('Login', [userAddress]);
   }
 
-  async register(sponsorAddress: string, packageId: number, amount: number){
+  async register(sponsorAddress: string, amount: number){
     try{
       this.spinner.show();
       if(AppSettings.IsPaymentCurrencyDifferentThanNative){
@@ -38,7 +38,7 @@ export class AccountsService {
       }
       let amount_str = this.contract.convertAmountToPaymentCurrencyBaseValue(amount);
       // console.log("amount", amount_str)
-      let res = await this.contract.writeContract('Register', [sponsorAddress, packageId, amount_str], amount_str);
+      let res = await this.contract.writeContract('Register', [sponsorAddress], amount_str);
       // console.log(res)
       return res;
     }

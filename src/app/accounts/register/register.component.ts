@@ -76,7 +76,7 @@ export class RegisterComponent implements OnInit {
         let res = await this.accounts.login(this.walletDetails.address);
         if (!res.data) {
           // if (this.walletDetails.balance >= this.packageDetails.amount) {
-            let res = await this.accounts.register(sponsorAddress, Number(1), 0);
+            let res = await this.accounts.register(sponsorAddress, 0);
             // console.log("register", res)
             if (res && res.success) {
               this.shared.alert.trigger({ action: 'success', message: 'Deposit successful!' }).then(() => {
