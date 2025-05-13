@@ -13,20 +13,33 @@ import { DetailsService } from '../services/details.service';
 export class ReActivationComponent {
 
   nextActivationDate: Date = new Date();
+  countdownExpired = false;
+  pendingRoiIncome: number = 0;
 
   constructor(private details: DetailsService){ }
-  
+
   async ngOnInit(){
     let userAddress = sessionStorage.getItem("UserAddress");
     let userDetails = (await this.details.getUserDetails(userAddress)).data;
 
-    let ActivationExpiryTimestamp = userDetails.ActivationExpiryTimestamp;
-    this.nextActivationDate = new Date(ActivationExpiryTimestamp * 1000);
-    // console.log(this.nextActivationDate)
-    // this.nextActivationDate = new Date('2025-05-15T18:00:00')
+    this.pendingRoiIncome = userDetails.PendingRoiIncome || 0;
+
+    const expiryTimestamp = userDetails.ActivationExpiryTimestamp * 1000;
+    const now = Date.now();
+
+    if (now >= expiryTimestamp) {
+      this.countdownExpired = true;
+    } else {
+      this.countdownExpired = false;
+      this.nextActivationDate = new Date(expiryTimestamp);
+      const remaining = expiryTimestamp - now;
+      setTimeout(() => {
+        this.countdownExpired = true;
+      }, remaining);
+    }
   }
 
-  onActivateClick(){
-
+  onActivateClick() {
+    
   }
 }
