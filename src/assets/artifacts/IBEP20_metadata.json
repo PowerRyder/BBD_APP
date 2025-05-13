@@ -98,7 +98,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -113,11 +113,11 @@
 			]
 		},
 		"src/assets/DAppDemoV2.sol": {
-			"keccak256": "0x4180e818f0aa4153a60dd33349456dd4cd924a71b732b4a4dc198d29ab0f68ec",
+			"keccak256": "0x4f20f133b1d4ded62946f2c9020314f82ec04a72562b9adc3c42537090b30608",
 			"license": "None",
 			"urls": [
-				"bzz-raw://709b3c2e8356786ec6b6c19278a47d2af53ee6d569bbae0d14dcb2d1f681c568",
-				"dweb:/ipfs/QmQsCy3sRmZUvAXtwXWUAtLoHx9jQhw2LM4DTvgXEKfu4a"
+				"bzz-raw://cb4d1d146410c46402cda559707f5e47348bf11fd09f38cebeaad10c619e8f8e",
+				"dweb:/ipfs/Qmd8gMktfALx22Atov2XYY59pw4NhMzhkAvhs8CSVrKJPd"
 			]
 		}
 	},

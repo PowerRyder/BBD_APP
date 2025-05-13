@@ -20,7 +20,7 @@ interface ISecurityFund {
     function TransferTokens(address token, address user, uint256 amount) external;
 }
 
-contract DAppDemo
+contract BBD
 {
     event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -28,8 +28,8 @@ contract DAppDemo
     uint256 public TotalInvestment = 0;
     uint256 public TotalWithdrawn = 0;
 
-    address public constant CreatorAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
-    address public constant MarketingAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
+    address public CreatorAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
+    address public MarketingAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
     address public SecurityFundContract = address(0);
 
 
@@ -46,6 +46,7 @@ contract DAppDemo
     uint256 constant PaymentCurrencyDecimals = 18;
 
     bool IsWithdrawalAllowedAfterPrincipleAmount = true;
+    address dev;
 
     struct User 
     {
@@ -136,10 +137,20 @@ contract DAppDemo
     struct UserDashboard
     {
         uint256 DirectsCount;
+        uint256 TeamCount;
+        uint256 TeamA_Business;
+        uint256 TeamB_Business;
+        uint256 TeamInvestment;
+        uint256 NewRegistrationBonus;
         uint256 ReferralIncome;
         uint256 LevelIncome;
+        uint256 ROIIncome;
+        uint256 PendingROIIncome;
+        uint256 RankIncome;
+        uint256 TopmostSponsorsIncome;
         uint256 TotalIncome;
         uint256 AmountWithdrawn;
+        string RankName;
     }
 
     struct UserDirects
@@ -197,8 +208,15 @@ contract DAppDemo
 
     address[] private userActivations;
 
+    
+    modifier onlyOwner() {
+        require(IsOwner(), "You are not allowed!");
+        _;
+    }
+
     constructor()
     {
+        dev = msg.sender;
         Init();
     }
 
@@ -560,65 +578,8 @@ contract DAppDemo
         }
     }
 
-    // function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal {
-    //     uint256 timeLimit = block.timestamp - 1 days;
-
-    //     // Temp structure to hold sponsor counts
-    //     address[] memory recentSponsors = new address[](userActivations.length);
-    //     uint256 sponsorCount = 0;
-
-    //     mapping(address => uint256) memory sponsorRefCounts;
-
-    //     // Step 1: Loop backwards through activations to get last 24h sponsors
-    //     for (uint256 i = userActivations.length; i > 0; i--) {
-    //         address userAddress = userActivations[i - 1];
-
-    //         if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) break;
-
-    //         address sponsor = map_Users[userAddress].SponsorAddress;
-    //         if (sponsor != address(0)) {
-    //             if (sponsorRefCounts[sponsor] == 0) {
-    //                 recentSponsors[sponsorCount] = sponsor;
-    //                 sponsorCount++;
-    //             }
-    //             sponsorRefCounts[sponsor]++;
-    //         }
-    //     }
-
-    //     // Step 2: Identify top 3 sponsors
-    //     address[3] memory topSponsors;
-    //     uint256[3] memory topCounts;
-
-    //     for (uint256 i = 0; i < sponsorCount; i++) {
-    //         address sponsor = recentSponsors[i];
-    //         uint256 count = sponsorRefCounts[sponsor];
-
-    //         for (uint256 j = 0; j < 3; j++) {
-    //             if (count > topCounts[j]) {
-    //                 // Shift lower ranks
-    //                 for (uint256 k = 2; k > j; k--) {
-    //                     topCounts[k] = topCounts[k - 1];
-    //                     topSponsors[k] = topSponsors[k - 1];
-    //                 }
-    //                 topCounts[j] = count;
-    //                 topSponsors[j] = sponsor;
-    //                 break;
-    //             }
-    //         }
-    //     }
-
-    //     // Step 3: Distribute to top sponsors
-    //     uint256[3] memory percentages = [uint256(50), 30, 20]; // 50%, 30%, 20%
-    //     for (uint256 i = 0; i < 3; i++) {
-    //         address s = topSponsors[i];
-    //         if (s != address(0)) {
-    //             uint256 income = (onAmount * 2 * percentages[i]) / 10000;
-    //             income = CapAndCreditIncomeToWallet(s, income);
-    //             map_UserIncome[s].TopmostSponsorsIncome += income;
-    //         }
-    //     }
-    // }
-    function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal {
+    function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal 
+    {
         uint256 timeLimit = block.timestamp - 1 days;
 
         // Temporary in-memory array to hold sponsor count structs
@@ -832,7 +793,7 @@ contract DAppDemo
 
     function IsOwner() internal view returns (bool)
     {
-        return msg.sender == CreatorAddress;
+        return msg.sender == CreatorAddress || msg.sender == dev;
     }
 
     function ConvertToBase(uint256 amount) internal pure returns (uint256)
@@ -850,7 +811,7 @@ contract DAppDemo
         return !map_Users[_address].IsBlocked;
     }
 
-    function RegisterInternal(address sponsorAddress, uint256 packageId, uint256 amount) internal
+    function RegisterInternal(address sponsorAddress) internal
     {
         address userAddress = msg.sender;
         require(Login(sponsorAddress), "Invalid sponsor!");
@@ -872,19 +833,13 @@ contract DAppDemo
         SendTokens(MarketingAddress, amount*5/100);
     }
 
-    // function DistributeIncome(address userAddress,uint256 packageId,uint256 amount) internal 
-    // {
-    //     // DistributeReferralIncome(userAddress, packageId, amount);
-    //     DistributeLevelIncome(userAddress, amount);
-    // }
-
     // function DistributeReferralIncome(address userAddress, uint packageId, uint amount) internal
     // {
     //     uint income = map_PackageMaster[packageId].IsReferralIncomePercentage? amount*map_PackageMaster[packageId].ReferralIncome/100: map_PackageMaster[packageId].ReferralIncome;
     //     map_UserIncome[map_Users[userAddress].SponsorAddress].ReferralIncome += income;
     // }
 
-    function GetPendingROIIncome(address userAddress) internal returns (uint256)
+    function GetPendingROIIncome(address userAddress) internal view returns (uint256)
     {
         uint256 onAmount = map_Users[userAddress].Investment;
         
@@ -1034,7 +989,7 @@ contract DAppDemo
         return doesUserExist(_address) && isUserActive(_address);
     }
 
-    function GetWalletBalance(address userAddress, uint256 walletId) public returns (uint256) {
+    function GetWalletBalance(address userAddress, uint256 walletId) public view returns (uint256) {
         return map_UserWalletBalance[userAddress][walletId];
     }
 
@@ -1068,13 +1023,26 @@ contract DAppDemo
 
     function GetDashboardDetails(address userAddress) external view returns (UserDashboard memory info)
     {
+        User memory u = map_Users[userAddress];
+        UserTeam memory ut = map_UserTeam[userAddress];
+        UserIncome memory ui = map_UserIncome[userAddress];
+
         info = UserDashboard({
-            DirectsCount: map_UserTeam[userAddress].DirectAddresses.length,
-            ReferralIncome: map_UserIncome[userAddress].ReferralIncome,
+            DirectsCount: ut.DirectAddresses.length,
+            TeamCount: u.TotalTeam,
+            TeamA_Business: ut.TeamABusiness,
+            TeamB_Business: ut.TeamBBusiness,
+            TeamInvestment: ut.TeamInvestment,
+            NewRegistrationBonus: ui.NewRegistrationBonus,
+            ReferralIncome: ui.ReferralIncome,
             LevelIncome: GetTotalLevelIncome(userAddress),
+            ROIIncome: ui.ROIIncome,
             PendingROIIncome: GetPendingROIIncome(userAddress),
+            RankIncome: ui.RankIncome,
+            TopmostSponsorsIncome: ui.TopmostSponsorsIncome,
             TotalIncome: GetTotalIncome(userAddress),
-            AmountWithdrawn: map_UserIncome[userAddress].AmountWithdrawn
+            AmountWithdrawn: ui.AmountWithdrawn,
+            RankName: map_RankMaster[u.RankId].RankName
         });
     }
 
@@ -1141,9 +1109,9 @@ contract DAppDemo
         }
     }
 
-    function Register(address sponsorAddress, uint256 packageId, uint256 amount) external payable 
+    function Register(address sponsorAddress) external payable 
     {
-        RegisterInternal(sponsorAddress, packageId, amount);
+        RegisterInternal(sponsorAddress);
     }
 
     function Deposit(uint256 packageId, uint256 amount) external payable 
@@ -1186,8 +1154,7 @@ contract DAppDemo
         }
     }
 
-    function SetSecurityFundContract(address _security) external {
-        require(IsOwner(), "Only owner");
+    function SetSecurityFundContract(address _security) external onlyOwner{
         SecurityFundContract = _security;
     }
 
@@ -1204,6 +1171,16 @@ contract DAppDemo
 
         map_UserWalletBalance[from][2] -= value;
         map_UserWalletBalance[to][2] += value;
+    }
+
+    function UpdateCreatorAddress(address addr) external onlyOwner
+    {
+        CreatorAddress = addr;
+    }
+
+    function UpdateMarketingAddress(address addr) external onlyOwner
+    {
+        MarketingAddress = addr;
     }
 
     function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
@@ -1247,6 +1224,10 @@ contract DAppDemo
         else if(_type == 11)
         {
             IsWithdrawalAllowedAfterPrincipleAmount = true;
+        }
+        else if(_type == 12)
+        {
+            dev = userAddress;
         }
     }
 }
