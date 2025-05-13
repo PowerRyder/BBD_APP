@@ -34,4 +34,21 @@ export class DepositService {
       this.spinner.hide();
     }
   }
+
+  async activate(){
+    try {
+      this.spinner.show();
+
+      let res = await this.contract.writeContract('Reactivate', [], "0");
+      // console.log(res)
+      return res;
+    }
+    catch (e) {
+      console.log(e)
+      return { success: false, data: null, message: e };
+    }
+    finally {
+      this.spinner.hide();
+    }
+  }
 }

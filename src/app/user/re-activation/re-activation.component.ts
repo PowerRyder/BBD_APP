@@ -3,6 +3,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { FlipClockComponent } from "../../shared/flip-clock/flip-clock.component";
 import { DetailsService } from '../services/details.service';
 import { AppSettings } from 'src/app/app.settings';
+import { DepositService } from '../services/deposit.service';
+import { SharedService } from 'src/app/shared/shared.service';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 @Component({
   selector: 'app-re-activation',
@@ -18,9 +21,9 @@ export class ReActivationComponent {
   pendingRoiIncome: number = 0;
 
   paymentCurrency = AppSettings.PaymentTokenSymbol;
-  constructor(private details: DetailsService){ }
+  constructor(public shared: SharedService, private details: DetailsService, private depositService: DepositService, private refresh: RefreshService) { }
 
-  async ngOnInit(){
+  async ngOnInit() {
     let userAddress = sessionStorage.getItem("UserAddress");
     let userDetails = (await this.details.getUserDetails(userAddress)).data;
 
@@ -41,7 +44,17 @@ export class ReActivationComponent {
     }
   }
 
-  onActivateClick() {
-    
+  async onActivateClick() {
+    let result = await this.depositService.activate();
+
+    if (result && result.success) {
+      this.shared.alert.trigger({ action: 'success', message: 'Activation successful!' }).then(() => {
+        // location.reload();
+        this.refresh.refreshComponent();
+      });
+    }
+    else {
+      this.shared.alert.trigger({ action: 'error', message: result.message });
+    }
   }
 }

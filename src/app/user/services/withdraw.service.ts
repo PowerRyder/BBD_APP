@@ -44,4 +44,8 @@ export class WithdrawService {
       this.spinner.hide();
     }
   }
+
+  transferFund(fromUserAddress : string , toUserAddress : string, amount : string){
+    return this.contract.writeContract('TransferFunds',[fromUserAddress,toUserAddress,amount],"0")
+  }
 }

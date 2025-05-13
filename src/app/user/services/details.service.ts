@@ -51,8 +51,4 @@ export class DetailsService {
   getwalletBalanceAmount(userAddress :string , walletId : number){
     return this.contract.readContract('GetWalletBalance',[userAddress , walletId])
   }
-
-  transferFund(fromUserAddress : string , toUserAddress : string, amount : string){
-    return this.contract.writeContract('TransferFunds',[fromUserAddress,toUserAddress,amount],"0")
-  }
 }

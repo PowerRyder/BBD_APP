@@ -8,6 +8,7 @@ import { AppSettings } from 'src/app/app.settings';
 import { Subscription } from 'rxjs';
 import { AccountsService } from 'src/app/accounts/accounts.service';
 import { RefreshService } from 'src/app/services/refresh.service';
+import { WithdrawService } from '../services/withdraw.service';
 
 @Component({
   selector: 'app-transfer-fund',
@@ -24,7 +25,7 @@ export class TransferFundComponent implements OnInit {
   // Fundsubscription: Subscription;
   maxAmount: number = 0;
 
-  constructor(public shared: SharedService, private details: DetailsService, private accounts: AccountsService, private refresh: RefreshService) {
+  constructor(public shared: SharedService, private details: DetailsService, private accounts: AccountsService, private refresh: RefreshService, private withdrawService: WithdrawService) {
     this.createForm()
 
   }
@@ -62,7 +63,7 @@ export class TransferFundComponent implements OnInit {
       let to_address = this.transferfundForm.controls['userIdAddress'].value
       let amount = this.transferfundForm.controls['amount'].value
       let sendamount = this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(amount)
-      let result = await this.details.transferFund(from_address, to_address, sendamount)
+      let result = await this.withdrawService.transferFund(from_address, to_address, sendamount)
 
       // console.log("result", result)
 
