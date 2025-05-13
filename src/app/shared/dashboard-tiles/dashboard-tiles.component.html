@@ -14,13 +14,13 @@
             </div>
             <div class="mb-4">
                 <span class="badge text-success">
-                    <i class="mdi mdi-arrow-up-bold"></i> 2.50 % 
+                    <i class="mdi mdi-arrow-up-bold"></i> {{badge}}%
                 </span>
-                <span> Since last month</span>
+                <span> {{badgeText}}</span>
             </div>
             
             <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" [style]="'width: '+badge+'%'" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
     </div>

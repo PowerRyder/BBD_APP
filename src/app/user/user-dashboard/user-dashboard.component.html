@@ -1,72 +1,106 @@
 <!-- <div class="tiles-container d-flex flex-column flex-row"> -->
-    <div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
+<div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
+    <app-dashboard-tiles matIcon="account_balance" title="Deposit" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.Investment}]"
+        [badge]="dashboardDetails?.InvestmentBadge" badgeText="Earnings">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="account_balance" title="Deposit" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.Investment}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="token" title="Tokens Holding" class="col-md-3 col-sm-12" *ngIf="isInternalToken"
+        [data]="[{key: internalTokenName, value: dashboardDetails?.InternalTokenBalance}]">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="token" title="Tokens Holding" class="col-md-3 col-sm-12" *ngIf="isInternalToken"
-            [data]="[{key: internalTokenName, value: dashboardDetails?.InternalTokenBalance}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="group" title="Directs" class="col-md-3 col-sm-12"
+        [data]="[{key: '', value: dashboardDetails?.DirectsCount}]" [badge]="dashboardDetails?.DirectsCountBadge"
+        badgeText="Team Fill">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="group" title="Directs" class="col-md-3 col-sm-12"
-            [data]="[{key: '', value: dashboardDetails?.DirectsCount}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="group" title="Team" class="col-md-3 col-sm-12"
+        [data]="[{key: '', value: dashboardDetails?.TeamCount}]" [badge]="dashboardDetails?.DirectsCountBadge"
+        badgeText="Directs">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="group" title="Team" class="col-md-3 col-sm-12"
-            [data]="[{key: '', value: dashboardDetails?.TotalTeam}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="account_balance" title="Directs Deposit" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.DirectsInvestment}]"
+        [badge]="dashboardDetails?.DirectsInvestmentBadge" badgeText="% of Team Business">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="account_balance" title="Directs Deposit" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.DirectsInvestment}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="account_balance" title="Team A" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.TeamA_Business}]"
+        [badge]="dashboardDetails?.TeamA_Badge" badgeText="% of Team Business">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="account_balance" title="Team Deposit" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.TeamInvestment}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="account_balance" title="Team B" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.TeamB_Business}]"
+        [badge]="dashboardDetails?.TeamB_Badge" badgeText="% of Team Business">
+    </app-dashboard-tiles>
 
-        <!-- <app-dashboard-tiles matIcon="group" title="Referral Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.ReferralIncome}]"></app-dashboard-tiles> -->
+    <app-dashboard-tiles matIcon="account_balance" title="Team Business" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.TeamInvestment}]"
+        [badge]="dashboardDetails?.TeamInvestmentBadge" badgeText="Directs Investment %">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="New Registration Bonus" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.NewRegistrationBonus}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="payments" title="New Registration Bonus" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.NewRegistrationBonus}]"
+        [badge]="dashboardDetails?.RegistrationBonusBadge" badgeText="of Total">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="ROI Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.ROIIncome}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="payments" title="ROI Income" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.ROIIncome}]" [badge]="dashboardDetails?.RoiIncomeBadge"
+        badgeText="of Total">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="Level Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.LevelIncome}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="payments" title="Level Income" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.LevelIncome}]"
+        [badge]="dashboardDetails?.LevelIncomeBadge" badgeText="of Total">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="Rank Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.RankIncome}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="payments" title="Rank Income" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.RankIncome}]"
+        [badge]="dashboardDetails?.RankIncomeBadge" badgeText="of Total">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="Topmost Sponsors Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.TopmostSponsorsIncome}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="payments" title="Topmost Sponsors Income" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.TopmostSponsorsIncome}]"
+        [badge]="dashboardDetails?.TopmostSponsorsBadge" badgeText="of Total">
+    </app-dashboard-tiles>
 
-        <!-- <app-dashboard-tiles matIcon="payments" title="Withdrawal Level Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.WithdrawalLevelIncome}]"></app-dashboard-tiles> -->
+    <app-dashboard-tiles matIcon="payments" title="Total Income" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.TotalIncome}]"
+        [badge]="dashboardDetails?.TotalIncomeBadge" badgeText="of Capping">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="Total Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.TotalIncome}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="payments" title="Pending ROI Income" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.PendingROIIncome}]"
+        [badge]="dashboardDetails?.PendingRoiBadge" badgeText="of ROI">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="Pending ROI Income" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.PendingROIIncome}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="payments" title="Capping Amount" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.Capping}]" [badge]="dashboardDetails?.CappingUsedBadge"
+        badgeText="Used">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="Capping Amount" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.Capping}]"></app-dashboard-tiles>
+    <app-dashboard-tiles matIcon="payments" title="Total Withdrawn" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: dashboardDetails?.AmountWithdrawn}]"
+        [badge]="dashboardDetails?.WithdrawnBadge" badgeText="of Total">
+    </app-dashboard-tiles>
 
-        <app-dashboard-tiles matIcon="payments" title="Total Withdrawn" class="col-md-3 col-sm-12"
-            [data]="[{key: paymentCurrency, value: dashboardDetails?.AmountWithdrawn}]"></app-dashboard-tiles>
-
-    </div>
+</div>
 <!-- </div> -->
- <app-re-activation></app-re-activation>
+<app-re-activation></app-re-activation>
 <app-deposit [showHistory]="false"></app-deposit>
 <div class="d-flex flex-column flex-row flex-md-row justify-content-around">
     <div class="col-md-4 col-sm-12">
-        <app-referral-link text="Connected Wallet" [displayValue]="userAddress" [url]="addressExplorer+userAddress"></app-referral-link>
+        <app-referral-link text="Connected Wallet" [displayValue]="userAddress"
+            [url]="addressExplorer+userAddress"></app-referral-link>
     </div>
     <div class="col-md-4 col-sm-12">
         <app-referral-link text="Referral Link" [displayValue]="referralLink" [url]="referralLink"></app-referral-link>
     </div>
     <div class="col-md-4 col-sm-12">
-        <app-referral-link text="Contract Address" [displayValue]="contractAddress" [url]="addressExplorer+contractAddress"></app-referral-link>
+        <app-referral-link text="Contract Address" [displayValue]="contractAddress"
+            [url]="addressExplorer+contractAddress"></app-referral-link>
     </div>
-<!--    
+    <!--    
     <mat-card class="col-md-4">
         <mat-card-title class="text-align-center">Sponsored by</mat-card-title>
         <mat-card-content class="card-pad">

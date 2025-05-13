@@ -16,6 +16,8 @@ export class DashboardTilesComponent implements OnInit, OnChanges {
   @Input() title: string = '';
   @Input() data: { key: string, value: string | number}[] = [];
   @Input() appearance: dashboardTilesAppearance = AppSettings.dashboardTilesAppearance;
+  @Input() badge: string = '';
+  @Input() badgeText: string = '';
 
   firstRowData: { key: string, value: string | number }[] = [];
   secondRowData: { key: string, value: string | number }[] = [];
