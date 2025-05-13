@@ -1,0 +1,32 @@
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card>
+        <mat-card-title class="text-align-center">Transfer Fund</mat-card-title>
+        <mat-card-content class="card-pad table-responsive">
+            <form [formGroup]=transferfundForm #formDir="ngForm" (ngSubmit)="onSubmit()">
+                <mat-form-field class="label">
+                    <mat-label>User Id</mat-label>
+                    <input matInput formControlName="userIdAddress" />
+                    <mat-error>
+                        <app-text-validation-message fieldName="userIdAddress"
+                            [formGroupDirective]="formDir"></app-text-validation-message>
+                    </mat-error>
+                </mat-form-field>
+                <div class="d-flex justify-content-end">
+                    <b>Balance: {{amountAvailableToSend}} {{paymentCurrency}}</b>
+                </div>
+                <mat-form-field class="label">
+                    <mat-label>Amount</mat-label>
+                    <input matInput formControlName="amount" />
+                    <mat-error>
+                        <app-text-validation-message fieldName="amount"
+                            [formGroupDirective]="formDir"></app-text-validation-message>
+                    </mat-error>
+                </mat-form-field>
+                <div class="d-flex justify-content-center" >
+                    <button mat-raised-button color="primary" type="submit" (click)="fetchAndSetBalance()">Submit</button>
+                </div>
+            
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

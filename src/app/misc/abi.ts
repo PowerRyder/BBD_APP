@@ -36,21 +36,24 @@ export let abi = [
 				"internalType": "address",
 				"name": "sponsorAddress",
 				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "packageId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
 			}
 		],
 		"name": "Register",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_security",
+				"type": "address"
+			}
+		],
+		"name": "SetSecurityFundContract",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -82,6 +85,55 @@ export let abi = [
 		],
 		"name": "Transfer",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "TransferFunds",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "UpdateCreatorAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "UpdateMarketingAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -157,9 +209,14 @@ export let abi = [
 						"internalType": "uint256",
 						"name": "ContractBalance",
 						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "IsWithdrawalAllowedAfterPrincipleAmount",
+						"type": "bool"
 					}
 				],
-				"internalType": "struct DAppDemo.ContractInfo",
+				"internalType": "struct BBD.ContractInfo",
 				"name": "info",
 				"type": "tuple"
 			}
@@ -186,12 +243,57 @@ export let abi = [
 					},
 					{
 						"internalType": "uint256",
+						"name": "TeamCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "TeamA_Business",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "TeamB_Business",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "TeamInvestment",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "NewRegistrationBonus",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "ReferralIncome",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
 						"name": "LevelIncome",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ROIIncome",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "PendingROIIncome",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "RankIncome",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "TopmostSponsorsIncome",
 						"type": "uint256"
 					},
 					{
@@ -203,9 +305,14 @@ export let abi = [
 						"internalType": "uint256",
 						"name": "AmountWithdrawn",
 						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "RankName",
+						"type": "string"
 					}
 				],
-				"internalType": "struct DAppDemo.UserDashboard",
+				"internalType": "struct BBD.UserDashboard",
 				"name": "info",
 				"type": "tuple"
 			}
@@ -251,7 +358,7 @@ export let abi = [
 						"type": "uint256"
 					}
 				],
-				"internalType": "struct DAppDemo.UserDeposit[]",
+				"internalType": "struct BBD.UserDeposit[]",
 				"name": "deposits",
 				"type": "tuple[]"
 			}
@@ -292,7 +399,7 @@ export let abi = [
 						"type": "uint256"
 					}
 				],
-				"internalType": "struct DAppDemo.UserDirects[]",
+				"internalType": "struct BBD.UserDirects[]",
 				"name": "directs",
 				"type": "tuple[]"
 			}
@@ -333,7 +440,7 @@ export let abi = [
 						"type": "uint256"
 					}
 				],
-				"internalType": "struct DAppDemo.UserIncomeWithdrawalTransaction[]",
+				"internalType": "struct BBD.UserIncomeWithdrawalTransaction[]",
 				"name": "history",
 				"type": "tuple[]"
 			}
@@ -389,7 +496,7 @@ export let abi = [
 						"type": "bool"
 					}
 				],
-				"internalType": "struct DAppDemo.LevelIncomeInfo[]",
+				"internalType": "struct BBD.LevelIncomeInfo[]",
 				"name": "info",
 				"type": "tuple[]"
 			}
@@ -449,9 +556,79 @@ export let abi = [
 						"type": "bool"
 					}
 				],
-				"internalType": "struct DAppDemo.PackageMaster[]",
+				"internalType": "struct BBD.PackageMaster[]",
 				"name": "",
 				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pageIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pageSize",
+				"type": "uint256"
+			}
+		],
+		"name": "GetROIIncomeHistory",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "OnAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Income",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct BBD.ROIIncomeDetail[]",
+				"name": "history",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "walletId",
+				"type": "uint256"
+			}
+		],
+		"name": "GetWalletBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -621,6 +798,40 @@ export let abi = [
 				"type": "uint256"
 			}
 		],
+		"name": "map_ROIIncomeHistory",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "OnAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "Timestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "Income",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"name": "map_UserBusinessOnLevel",
 		"outputs": [
 			{
@@ -707,7 +918,17 @@ export let abi = [
 			},
 			{
 				"internalType": "uint256",
+				"name": "ROIIncome",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
 				"name": "RankIncome",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "TopmostSponsorsIncome",
 				"type": "uint256"
 			},
 			{
@@ -805,11 +1026,6 @@ export let abi = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "ReactivationCount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
 				"name": "RankId",
 				"type": "uint256"
 			},
@@ -878,36 +1094,17 @@ export let abi = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "TokenSellCount",
+				"name": "ROIIncomeCount",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
 				"name": "IncomeWithdrawalCount",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "map_UserWallet",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "CreditedIncome",
-				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "DebitedIncome",
+				"name": "ReactivationCount",
 				"type": "uint256"
 			}
 		],
@@ -927,12 +1124,38 @@ export let abi = [
 				"type": "uint256"
 			}
 		],
-		"name": "map_UserWithdrawalOnLevel",
+		"name": "map_UserWalletBalance",
 		"outputs": [
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "MarketingAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "SecurityFundContract",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",

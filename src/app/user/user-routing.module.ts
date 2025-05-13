@@ -42,6 +42,10 @@ const routes: Routes = [
         path: app_routes.withdraw.path,
         loadComponent: () => import('./withdraw/withdraw.component').then(m => m.WithdrawComponent),
         title: app_routes.withdraw.title
+      },
+      {
+        path:app_routes.transfer_fund.path,
+        loadComponent:() =>import("./transfer-fund/transfer-fund.component").then(m=>m.TransferFundComponent)
       }
     ]
   }

@@ -73,5 +73,10 @@
         "path": "withdraw-funds",
         "url": "/a/withdraw-funds",
         "title": "Withdraw Funds"
+    },
+    "transfer_fund":{
+        "path":"transfer-fund",
+        "url" :"/u/transfer-fund",
+        "title" :"Transfer Fund"
     }
 }

@@ -7,7 +7,8 @@ import { UserRoutingModule } from './user-routing.module';
 
 @NgModule({
   declarations: [
-    UserLayoutComponent
+    UserLayoutComponent,
+    
   ],
   imports: [
     SharedModule,
