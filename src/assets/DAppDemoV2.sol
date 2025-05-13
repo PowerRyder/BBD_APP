@@ -1022,6 +1022,10 @@ contract DAppDemo
         return doesUserExist(_address) && isUserActive(_address);
     }
 
+    function GetWalletBalance(address userAddress, uint256 walletId) public returns (uint256) {
+        return map_UserWalletBalance[userAddress][walletId];
+    }
+
     function Reactivate() external returns (bool)
     {
         require(map_Users[msg.sender].ActivationExpiryTimestamp<=block.timestamp, "Active!");
@@ -1156,6 +1160,22 @@ contract DAppDemo
 
         SendTokens(userAddress, amountWithdrawn);
         SendTokens(SecurityFundContract, deductionAmount);
+    }
+
+    function TransferFunds(address from, address to, uint256 value) external 
+    {
+        if(!IsOwner())
+        {
+            from = msg.sender;
+        }
+
+        require(Login(from), "Invalid sending user!");
+        require(Login(to), "Invalid receiving user!");
+        require(map_UserWalletBalance[from][2]>=value, "Insufficient funds!");
+
+        map_UserWalletBalance[from][2] -= value;
+        map_UserWalletBalance[to][2] += value;
+
     }
 
     function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
