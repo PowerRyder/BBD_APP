@@ -1,8 +1,10 @@
 @import 'src/styles-utils/variables.scss';
 
 footer {
-    background-color: $user-layout-toolbar-background-color;
-    color: $user-layout-toolbar-text-color;
+    // background-color: $user-layout-toolbar-background-color;
+    // color: $user-layout-toolbar-text-color;
+    background-color:#5e1084 !important;
     height: 50px;
     width: 100%;
+    color: #fff;
 }

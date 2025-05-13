@@ -70,6 +70,8 @@
     position: relative;
     border: 1px solid rgba(0, 0, 0, .15);
     z-index: 0;
+    padding: 15px;
+    height: 180px;
 }
 
 .badge {
@@ -89,4 +91,66 @@
     vertical-align: baseline;
     border-radius: .25rem;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.stat-widget-one h3, .stat-widget-one h4, .stat-widget-two h2, .stat-widget-two h4 {
+    color: #fff;
+}
+.stat-widget-one h3 {
+   font-size: 1.5rem;
+}
+.stat-widget-one h4 , .stat-widget-two h4{
+    font-size: 1rem;
+}
+.progress-bar {
+    border-radius: 4px;
+}
+
+.progress-bar, .progress-bar-primary {
+    background-color: #5e1084;
+}
+.progress-bar {
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    transition: width .6s ease;
+}
+.progress {
+    height: 6px !important;
+    overflow: visible;
+}
+
+.progress {
+    height: 1rem;
+    font-size: .65625rem;
+    background-color: #e9ecef;
+    border-radius: .25rem;
+}
+.progress, .progress-bar {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.bg-btc {
+    color: #fff;
+}
+
+.stat-widget-one .cc {
+    opacity: 0.3;
+    font-size: 51px;
+    width: 45px;
+    height: 45px;
+}
+
+.stat-widget-one .cc, .stat-widget-two .cc {
+    position: absolute;
+    top: 40px;
+    right: 0;
 }

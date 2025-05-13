@@ -2,13 +2,14 @@
     <div class="card stat-widget-one bg-btc" *ngIf="appearance=='One-Row'">
         <div class="card-body">
             <div class="row justify-content-between">
-                <div class="col-auto">
-                    <h4 class="mb-3">Bitcoin</h4>
-                    
-                    <h3 class="mb-3"><span class="counter">1.765</span> BTC</h3>
+                <div class="col-auto pl-0">
+                    <h4 class="mb-3">{{title}}</h4>
+                    <ng-container *ngFor="let d of data; let i = index">
+                    <h3 class="mb-3"><span class="counter">{{d.value}}</span> {{d.key}}</h3>
+                </ng-container>
                 </div>
                 <div class="col-auto">
-                    <i class="cc BTC-alt" title="BTC"></i>
+                    <mat-icon class="tile-avatar cc">{{matIcon}}</mat-icon>
                 </div>
             </div>
             <div class="mb-4">
@@ -23,7 +24,7 @@
             </div>
         </div>
     </div>
-    <!-- <mat-card-content class="mat-card-content d-flex flex-row justify-content-start">
+   <!-- <mat-card-content class="mat-card-content d-flex flex-row justify-content-start">
         <div class="d-flex col-3 align-items-center justify-content-center">
             <mat-icon class="tile-avatar">{{matIcon}}</mat-icon>
         </div>
@@ -43,7 +44,7 @@
                 </ng-container>
             </div>
         </div>
-    </mat-card-content> -->
+    </mat-card-content>  -->
 <!-- </mat-card> -->
 <!-- 
 <mat-card class="col-sm-12 col-12" *ngIf="appearance=='Two-Row'">

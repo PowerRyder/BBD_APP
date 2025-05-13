@@ -21,7 +21,7 @@
       <mat-nav-list>
         <!-- <app-side-menu [menus]="menus"></app-side-menu> -->
         <mat-list-item [routerLink]="app_routes.user_dashboard.url" routerLinkActive="active"
-          class="side-nav-menu-item-1" [routerLinkActiveOptions]="{ exact: true }">
+          class="side-nav-menu-item-1 text-white" [routerLinkActiveOptions]="{ exact: true }">
           <mat-icon mat-list-icon>keyboard_double_arrow_right
           </mat-icon>
           <div mat-line>{{app_routes.user_dashboard.title}}</div>
@@ -79,6 +79,7 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="py-2">
+        
         <router-outlet></router-outlet>
       </div>
     </mat-sidenav-content>

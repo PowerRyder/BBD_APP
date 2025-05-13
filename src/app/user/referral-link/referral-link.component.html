@@ -2,10 +2,10 @@
     <mat-card-title class="text-align-center">{{text}}</mat-card-title>
     <mat-card-content class="card-pad">
         <mat-form-field class="text-align-center referral-link-text">
-            <input matInput [value]="displayValue" disabled="true">
+            <input matInput [value]="displayValue" class="forminput" disabled="true">
         </mat-form-field>
         <div class="d-flex justify-content-center">
-            <a [href]="url" target="_blank" mat-raised-button color="info">Open</a>
+            <a [href]="url" target="_blank" class="mr-2" mat-raised-button color="info">Open</a>
             <button mat-raised-button color="info" (click)="copyToClipboard(displayValue)">Copy</button>
         </div>
     </mat-card-content>
