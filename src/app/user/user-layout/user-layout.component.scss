@@ -120,3 +120,18 @@ footer {
 .mat-list-item.active {
     width: auto;
 }
+
+.mobile-nav {
+  background: #212121;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #333;
+  z-index: 2;
+}
+
+.mobile-nav a {
+  text-align: left;
+  padding: 12px 0;
+  color: white;
+}

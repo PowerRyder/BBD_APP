@@ -15,9 +15,9 @@
         "title": "Admin Login"
     },
     "user_dashboard":{
-        "path": "dashboard",
-        "url": "/u/dashboard",
-        "title": "Dashboard"
+        "path": "home",
+        "url": "/u/home",
+        "title": "Home"
     },
     "directs":{
         "path": "directs",

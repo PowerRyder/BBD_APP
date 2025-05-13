@@ -2,11 +2,28 @@
   <mat-toolbar [class.mat-elevation-z4]="true">
     <mat-toolbar-row>
       <img [src]="logo" class="company-logo">
-      <button mat-icon-button (click)="sidenav.toggle();">
-        <mat-icon>menu</mat-icon>
+      <button mat-icon-button (click)="isMenuOpen = !isMenuOpen" class="d-md-none">
+        <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
       </button>
-      <span class="spacer"></span>
 
+      <span class="spacer d-none d-md-flex justify-content-center">
+        <a *ngFor="let route of visibleRoutes" mat-button routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }" [routerLink]="route.url">
+          {{ route.title }}
+        </a>
+        <!-- <a mat-button routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="app_routes.user_dashboard.url">{{app_routes.user_dashboard.title}}</a>
+        <a mat-button routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="app_routes.directs.url">{{app_routes.directs.title}}</a>
+        <a mat-button routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="app_routes.level_income.url">{{app_routes.level_income.title}}</a>
+        <a mat-button routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="app_routes.transfer_fund.url">{{app_routes.transfer_fund.title}}</a>
+        <a mat-button routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="app_routes.deposit.url">{{app_routes.deposit.title}}</a>
+        <a mat-button routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="app_routes.withdraw.url">{{app_routes.withdraw.title}}</a> -->
+      </span>
       <div class="toolbar-right">
 
         <app-logout-button></app-logout-button>
@@ -15,9 +32,18 @@
 
   </mat-toolbar>
 
+
+  <div [@slideInOut]="(isMenuOpen && (isHandset$ | async)) ? 'in' : 'out'" class="mobile-nav d-md-none">
+    <a *ngFor="let route of visibleRoutes" mat-button routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }" [routerLink]="route.url" (click)="isMenuOpen = false">
+      {{ route.title }}
+    </a>
+  </div>
+
+
   <mat-sidenav-container>
     <mat-sidenav #sidenav [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" (click)="handleMenuItemClick();"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+      [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="false">
       <mat-nav-list>
         <!-- <app-side-menu [menus]="menus"></app-side-menu> -->
         <mat-list-item [routerLink]="app_routes.user_dashboard.url" routerLinkActive="active"
@@ -41,18 +67,12 @@
           <div mat-line>{{app_routes.level_income.title}}</div>
         </mat-list-item>
 
-        <mat-list-item [routerLink]="app_routes.transfer_fund.url" routerLinkActive="active" class="side-nav-menu-item-1"
-          [routerLinkActiveOptions]="{ exact: true }"><mat-icon mat-list-icon>keyboard_double_arrow_right
+        <mat-list-item [routerLink]="app_routes.transfer_fund.url" routerLinkActive="active"
+          class="side-nav-menu-item-1" [routerLinkActiveOptions]="{ exact: true }"><mat-icon
+            mat-list-icon>keyboard_double_arrow_right
           </mat-icon>
           <div mat-line>{{app_routes.transfer_fund.title}}</div>
         </mat-list-item>
-
-        <!-- <mat-list-item [routerLink]="app_routes.withdrawal_level_income.url" routerLinkActive="active"
-          class="side-nav-menu-item-1" [routerLinkActiveOptions]="{ exact: true }">
-          <mat-icon mat-list-icon>keyboard_double_arrow_right
-          </mat-icon>
-          <div mat-line>{{app_routes.withdrawal_level_income.title}}</div>
-        </mat-list-item> -->
 
         <mat-list-item [routerLink]="app_routes.deposit.url" routerLinkActive="active" class="side-nav-menu-item-1"
           [routerLinkActiveOptions]="{ exact: true }">
@@ -60,13 +80,13 @@
           </mat-icon>
           <div mat-line>{{app_routes.deposit.title}}</div>
         </mat-list-item>
-
-        <mat-list-item [routerLink]="app_routes.sell_tokens.url" routerLinkActive="active" class="side-nav-menu-item-1" *ngIf="isInternalToken"
-          [routerLinkActiveOptions]="{ exact: true }">
+        <!-- 
+        <mat-list-item [routerLink]="app_routes.sell_tokens.url" routerLinkActive="active" class="side-nav-menu-item-1"
+          *ngIf="isInternalToken" [routerLinkActiveOptions]="{ exact: true }">
           <mat-icon mat-list-icon>keyboard_double_arrow_right
           </mat-icon>
           <div mat-line>{{app_routes.sell_tokens.title}}</div>
-        </mat-list-item>
+        </mat-list-item> -->
 
         <mat-list-item [routerLink]="app_routes.withdraw.url" routerLinkActive="active" class="side-nav-menu-item-1"
           [routerLinkActiveOptions]="{ exact: true }">
@@ -79,7 +99,7 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="py-2">
-        
+
         <router-outlet></router-outlet>
       </div>
     </mat-sidenav-content>

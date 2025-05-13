@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FlipClockComponent } from "../../shared/flip-clock/flip-clock.component";
 import { DetailsService } from '../services/details.service';
+import { AppSettings } from 'src/app/app.settings';
 
 @Component({
   selector: 'app-re-activation',
@@ -16,6 +17,7 @@ export class ReActivationComponent {
   countdownExpired = false;
   pendingRoiIncome: number = 0;
 
+  paymentCurrency = AppSettings.PaymentTokenSymbol;
   constructor(private details: DetailsService){ }
 
   async ngOnInit(){
