@@ -215,6 +215,7 @@ contract BBD
         uint256 UserSelfInvestment;
         uint256 UserTeamA_Business;
         uint256 UserTeamB_Business;
+        uint256 RewardAmount;
         bool IsAchieved;
     }
 
@@ -1190,6 +1191,7 @@ contract BBD
                 UserSelfInvestment: user.Investment,
                 UserTeamA_Business: team.TeamABusiness,
                 UserTeamB_Business: team.TeamBBusiness,
+                RewardAmount: r.RewardAmount,
                 IsAchieved: achieved
             });
         }
