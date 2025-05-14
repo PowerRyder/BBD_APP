@@ -16,7 +16,7 @@ import { RefreshService } from 'src/app/services/refresh.service';
 })
 export class ReActivationComponent {
 
-  nextActivationDate: Date = new Date();
+  nextActivationDate: Date = new Date(); //new Date("2025-05-16");//
   countdownExpired = false;
   pendingRoiIncome: number = 0;
 

@@ -6,12 +6,13 @@ import { DepositComponent } from '../deposit/deposit.component';
 import { DashboardTilesComponent } from 'src/app/shared/dashboard-tiles/dashboard-tiles.component';
 import { ReferralLinkComponent } from '../referral-link/referral-link.component';
 import { ReActivationComponent } from '../re-activation/re-activation.component';
+import { NgxGaugeModule } from 'ngx-gauge';
 
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './user-dashboard.component.html',
   standalone: true,
-  imports: [SharedModule, DepositComponent, DashboardTilesComponent, ReferralLinkComponent, ReActivationComponent],
+  imports: [SharedModule, DepositComponent, DashboardTilesComponent, ReferralLinkComponent, ReActivationComponent, NgxGaugeModule],
   styleUrls: ['./user-dashboard.component.scss']
 })
 export class UserDashboardComponent implements OnInit {
@@ -27,6 +28,12 @@ export class UserDashboardComponent implements OnInit {
   paymentCurrency = AppSettings.PaymentTokenSymbol;
   isInternalToken = AppSettings.IsInternalToken;
   internalTokenName = AppSettings.InternalTokenName;
+
+  guageThresholdConfig = {
+        '0': {color: 'green'},
+        '40': {color: 'orange'},
+        '75.5': {color: 'red'}
+    };
   constructor(private details: DetailsService) { }
 
   async ngOnInit() {
@@ -59,6 +66,9 @@ export class UserDashboardComponent implements OnInit {
     dashboardDetails.TotalIncome = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.TotalIncome);
     dashboardDetails.Capping = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.Capping);
     dashboardDetails.AmountWithdrawn = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.AmountWithdrawn);
+
+    dashboardDetails.WithdrawalWalletBalance = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.WithdrawalWalletBalance);
+    dashboardDetails.TopupWalletBalance = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.TopupWalletBalance);
 
 
     // 1. Deposit Badge (Earnings %)

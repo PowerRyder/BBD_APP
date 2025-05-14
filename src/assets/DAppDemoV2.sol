@@ -50,6 +50,9 @@ contract BBD
     bool IsWithdrawalAllowedAfterPrincipleAmount = true;
     address dev;
 
+    uint256 WithdrawalWalletId = 1;
+    uint256 TopupWalletId = 2;
+
     struct User 
     {
         uint256 Id;
@@ -156,6 +159,8 @@ contract BBD
         uint256 TotalIncome;
         uint256 Capping;
         uint256 AmountWithdrawn;
+        uint256 WithdrawalWalletBalance;
+        uint256 TopupWalletBalance;
         string RankName;
     }
 
@@ -1087,6 +1092,8 @@ contract BBD
             TotalIncome: GetTotalIncome(userAddress),
             Capping: u.Investment*(u.IsQualifiedFor4X?4:3),
             AmountWithdrawn: ui.AmountWithdrawn,
+            WithdrawalWalletBalance: GetWalletBalance(userAddress, WithdrawalWalletId),
+            TopupWalletBalance: GetWalletBalance(userAddress, TopupWalletId),
             RankName: map_RankMaster[u.RankId].RankName
         });
     }
@@ -1242,7 +1249,7 @@ contract BBD
         require(doesUserExist(userAddressToTopup), "Invalid user for topup!");
         require(map_Users[userAddressToTopup].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
         require(!map_Users[userAddressToTopup].IsFirstActivationDone, "Only first time topup is allowed from wallet.");
-        require(GetWalletBalance(userAddress, 2)>=amount, "Insufficient funds in wallet!");
+        require(GetWalletBalance(userAddress, TopupWalletId)>=amount, "Insufficient funds in wallet!");
 
         SaveDeposit(userAddressToTopup, packageId, amount);
         map_UserWalletBalance[userAddress][2] -= amount;
@@ -1254,10 +1261,10 @@ contract BBD
 
         require(doesUserExist(userAddress), "Invalid user!");
         require(isUserActive(userAddress), "You are not allowed!");
-        require((map_UserWalletBalance[userAddress][1] >= amount), "Insufficient funds!");
+        require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
         require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
 
-        map_UserWalletBalance[userAddress][1] -= amount;
+        map_UserWalletBalance[userAddress][WithdrawalWalletId] -= amount;
         map_UserIncome[userAddress].AmountWithdrawn += amount;
 
         uint256 deductionAmount = (amount * 5) / 100;
@@ -1296,10 +1303,10 @@ contract BBD
 
         require(Login(from), "Invalid sending user!");
         require(Login(to), "Invalid receiving user!");
-        require(map_UserWalletBalance[from][2]>=value, "Insufficient funds!");
+        require(map_UserWalletBalance[from][TopupWalletId]>=value, "Insufficient funds!");
 
-        map_UserWalletBalance[from][2] -= value;
-        map_UserWalletBalance[to][2] += value;
+        map_UserWalletBalance[from][TopupWalletId] -= value;
+        map_UserWalletBalance[to][TopupWalletId] += value;
     }
 
     function UpdateCreatorAddress(address addr) external onlyOwner
@@ -1320,11 +1327,11 @@ contract BBD
         }
         else if (_type == 3)
         {
-            map_UserWalletBalance[userAddress][1] += amount;
+            map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount;
         } 
         else if (_type == 4)
         {
-            map_UserWalletBalance[userAddress][1] -= amount;
+            map_UserWalletBalance[userAddress][WithdrawalWalletId] -= amount;
         } 
         else if (_type == 5) 
         {
@@ -1340,11 +1347,11 @@ contract BBD
         }
         else if (_type == 8)
         {
-            map_UserWalletBalance[userAddress][2] += amount;
+            map_UserWalletBalance[userAddress][TopupWalletId] += amount;
         } 
         else if (_type == 9)
         {
-            map_UserWalletBalance[userAddress][2] -= amount;
+            map_UserWalletBalance[userAddress][TopupWalletId] -= amount;
         }
         else if(_type == 10)
         {
