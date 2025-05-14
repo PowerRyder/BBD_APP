@@ -49,6 +49,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "CreatorAddress_2",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -603,6 +616,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "ManagementFee",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "MarketingAddress",
 				"outputs": [
 					{
@@ -662,6 +688,29 @@
 					}
 				],
 				"name": "SetSecurityFundContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddressToTopup",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "packageId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "TopupMemberFromWallet",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1309,11 +1358,11 @@
 			]
 		},
 		"src/assets/DAppDemoV2.sol": {
-			"keccak256": "0x874baf622ab220be12f98b1420bf7f547fcaef0e77313546c2f60b75fc3e4319",
+			"keccak256": "0xbd5ff796056570b8b8cf69403b268693bf96aef2b53de2626d55437a90c05086",
 			"license": "None",
 			"urls": [
-				"bzz-raw://c035496b7eaa66de54fa8d53ace7eac040d8a3af2f16e8529db6113f8cdbdfe2",
-				"dweb:/ipfs/QmR7UmdicBcaMbLunytccosrPGTzfdhzguHhADLeqhk1wV"
+				"bzz-raw://9c6f4e543fd40f9494033c51c243522c753d6e9b18d2a4c3bf5d9b35fcfd0d8e",
+				"dweb:/ipfs/QmQk9VHJYnn9Mq2PsyiAqQYYXNYFGtfjQWvTymBUuzD2d4"
 			]
 		}
 	},
