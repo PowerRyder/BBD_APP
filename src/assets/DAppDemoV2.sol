@@ -28,8 +28,10 @@ contract BBD
     uint256 public TotalInvestment = 0;
     uint256 public TotalWithdrawn = 0;
 
-    address public CreatorAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
-    address public MarketingAddress = 0x1419AC3544770Ac32fbC3e70129E7eb0197612F6;
+    address public CreatorAddress = 0xA1bF05780C2De3002086695D212a743EAA6532Ad;
+    address public CreatorAddress_2 = 0x4F6A1cfdF5E55Db0c2ff4575B0887fEa8a967088;
+    address public ManagementFee = 0x985495C028f9B896de454eC448B53FBA6450DA40;
+    address public MarketingAddress = 0x73D1AD5a474E1712d6Cbe18d56b7281AaF190347;
     address public SecurityFundContract = address(0);
 
 
@@ -538,7 +540,7 @@ contract BBD
 
     }
 
-    function SaveDeposit(address userAddress, uint256 packageId, uint256 amount) internal
+    function SaveDeposit(address userAddress, uint256 packageId, uint256 amount) internal returns(bool IsFirstTopup)
     {
         require(
             map_PackageMaster[packageId].IsActive 
@@ -586,6 +588,7 @@ contract BBD
             map_UserTransactionCount[userAddress].DepositsCount++;
             ReactivateInternal(userAddress, timestamp, amount);
 
+            IsFirstTopup = !map_Users[userAddress].IsFirstActivationDone;
             if(!map_Users[userAddress].IsFirstActivationDone)
             {
                 map_Users[userAddress].FirstActivationTimestamp = timestamp;
@@ -846,10 +849,16 @@ contract BBD
         require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
         ReceiveTokens(amount);
 
-        SaveDeposit(userAddress, packageId, amount);
+        bool IsFirstTopup = SaveDeposit(userAddress, packageId, amount);
 
-        SendTokens(CreatorAddress, amount*3/100);
+        SendTokens(CreatorAddress, amount*2/100);
+        SendTokens(CreatorAddress_2, amount*1/100);
         SendTokens(MarketingAddress, amount*5/100);
+
+        if(!IsFirstTopup)
+        {
+            SendTokens(ManagementFee, amount*2/100);
+        }
     }
 
     // function DistributeReferralIncome(address userAddress, uint packageId, uint amount) internal
