@@ -201,6 +201,18 @@ contract BBD
         uint256 Income;
     }
 
+    struct RankInfo {
+        uint256 RankId;
+        string RankName;
+        uint256 ReqSelfInvestment;
+        uint256 ReqTeamA_Business;
+        uint256 ReqTeamB_Business;
+        uint256 UserSelfInvestment;
+        uint256 UserTeamA_Business;
+        uint256 UserTeamB_Business;
+        bool IsAchieved;
+    }
+
     mapping(uint256 => PackageMaster) public map_PackageMaster;
     mapping(uint256 => LevelIncomeMaster) public map_LevelIncomeMaster;
     mapping(uint256 => RankMaster) public map_RankMaster;
@@ -1146,6 +1158,32 @@ contract BBD
                 Percentage: map_LevelIncomeMaster[i].Percentage,
                 Income: map_UserIncome[userAddress].LevelIncome[i],
                 IsLevelAchieved: IsQualifiedForLevelIncome(userAddress, i)
+            });
+        }
+    }
+
+    function GetRankInfo(address userAddress) external view returns (RankInfo[] memory info) {
+        info = new RankInfo[](TotalRanksCount);
+
+        User memory user = map_Users[userAddress];
+        UserTeam memory team = map_UserTeam[userAddress];
+
+        for (uint256 i = 1; i <= TotalRanksCount; i++) {
+            RankMaster memory r = map_RankMaster[i];
+            bool achieved = (user.Investment >= r.ReqSelfInvestment &&
+                            team.TeamABusiness >= r.ReqTeamA_Business &&
+                            team.TeamBBusiness >= r.ReqTeamB_Business);
+
+            info[i - 1] = RankInfo({
+                RankId: r.RankId,
+                RankName: r.RankName,
+                ReqSelfInvestment: r.ReqSelfInvestment,
+                ReqTeamA_Business: r.ReqTeamA_Business,
+                ReqTeamB_Business: r.ReqTeamB_Business,
+                UserSelfInvestment: user.Investment,
+                UserTeamA_Business: team.TeamABusiness,
+                UserTeamB_Business: team.TeamBBusiness,
+                IsAchieved: achieved
             });
         }
     }

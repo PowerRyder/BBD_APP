@@ -113,11 +113,11 @@
 			]
 		},
 		"src/assets/DAppDemoV2.sol": {
-			"keccak256": "0xbd5ff796056570b8b8cf69403b268693bf96aef2b53de2626d55437a90c05086",
+			"keccak256": "0xa795c87fdfe56159ce9e0bff2856115dbd281dd6be6f6a3521b9d2598a31d98f",
 			"license": "None",
 			"urls": [
-				"bzz-raw://9c6f4e543fd40f9494033c51c243522c753d6e9b18d2a4c3bf5d9b35fcfd0d8e",
-				"dweb:/ipfs/QmQk9VHJYnn9Mq2PsyiAqQYYXNYFGtfjQWvTymBUuzD2d4"
+				"bzz-raw://cb9faa3674f7e9813b7204c6e3305f702b1946c6152b32ed280c835f58d80b8c",
+				"dweb:/ipfs/QmZBWSMkcsArC1UAoRHx4wjwKwwhwTfRUDsdyQzU4WgdeT"
 			]
 		}
 	},
