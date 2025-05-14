@@ -144,12 +144,12 @@ body.swal2-shown {
 // }
 
 .mat-mdc-raised-button.mat-info {
-    --mdc-protected-button-container-color: #5e1084 !important;
+    --mdc-protected-button-container-color:#6446ed !important;
     --mdc-protected-button-label-text-color: #fff;
 }
 
 .mat-mdc-raised-button.mat-success {
-    --mdc-protected-button-container-color: #5e1084 !important;
+    --mdc-protected-button-container-color:#6446ed !important;
     --mdc-protected-button-label-text-color: #fff;
 }
 
@@ -441,4 +441,8 @@ mat-form-field {
 
 .reading-block{
     overflow: visible !important;
+}
+
+.mdc-text-field--outlined {
+    border: 1px solid #883ef4 !important;
 }

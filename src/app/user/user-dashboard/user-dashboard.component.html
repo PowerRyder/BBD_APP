@@ -1,5 +1,60 @@
 <!-- <div class="tiles-container d-flex flex-column flex-row"> -->
-<div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
+    
+    <div class="row align-items-center">
+        <div class="col-md-3 col-sm-12 mb-3">
+            <div class="rank-card bg-white text-center p-3">
+                <h4>Rank</h4>
+                <div class="rank-value mt-2">
+                    {{dashboardDetails?.RankName?dashboardDetails?.RankName:'N/A'}}
+                    <mat-icon class="rank-icon">star</mat-icon>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2 col-lg-2">
+            <div class="card">
+                <!-- <span class="bg-primary h-50 w-50 d-flex-center rounded-circle m-auto eshop-icon-box">
+                    <i class="fa fa-usd"></i>
+                </span> -->
+
+
+                <div class="card-body eshop-cards">
+                    <span class="ripple-effect"></span>
+                    <div class="overflow-hidden">
+                        <p class="titlename">Withdrawal Wallet</p>
+                        <h3 class="text-primary mb-0">{{dashboardDetails?.WithdrawalWalletBalance}} {{paymentCurrency}}</h3>
+                        <!-- <h6 class="dollername"> </h6> -->
+                       
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2 col-lg-2">
+            <div class="card">
+                <!-- <span class="bg-primary h-50 w-50 d-flex-center rounded-circle m-auto eshop-icon-box">
+                    <i class="fa fa-usd"></i>
+                </span>
+ -->
+
+                <div class="card-body eshop-cards">
+                    <span class="ripple-effect"></span>
+                    <div class="overflow-hidden">
+                        <p class="titlename">Topup Wallet</p>
+                        <h3 class="text-primary mb-0">{{dashboardDetails?.TopupWalletBalance}} {{paymentCurrency}}</h3>
+                        <!-- <h6 class="dollername"> </h6> -->
+                       
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+      
+       
+        
+    </div>
+    <div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
     <app-dashboard-tiles matIcon="account_balance" title="Deposit" class="col-md-3 col-sm-12"
         [data]="[{key: paymentCurrency, value: dashboardDetails?.Investment}]"
         [badge]="dashboardDetails?.InvestmentBadge" badgeText="Earnings">
@@ -88,19 +143,19 @@
 
 <div class="d-flex flex-column flex-row flex-md-row justify-content-around">
 
-    <div class="col-md-3 col-sm-12">
+    <div class="col-md-3 col-sm-12 d-none">
         <mat-card class="rank-card text-center p-3">
             <h4>Withdrawal Wallet</h4>
             <div class="wallet-balance mt-2">{{dashboardDetails?.WithdrawalWalletBalance}} {{paymentCurrency}}</div>
         </mat-card>
     </div>
-    <div class="col-md-3 col-sm-12">
+    <div class="col-md-3 col-sm-12 d-none">
         <mat-card class="rank-card text-center p-3">
             <h4>Topup Wallet</h4>
             <div class="wallet-balance mt-2">{{dashboardDetails?.TopupWalletBalance}} {{paymentCurrency}}</div>
         </mat-card>
     </div>
-    <div class="col-md-3 col-sm-12">
+    <div class="col-md-3 col-sm-12 d-none">
         <mat-card class="rank-card text-center p-3">
             <h4>Rank</h4>
             <div class="rank-value mt-2">

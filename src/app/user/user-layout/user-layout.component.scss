@@ -127,11 +127,20 @@ footer {
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid #333;
-  z-index: 2;
+  z-index: 0;
 }
 
 .mobile-nav a {
   text-align: left;
-  padding: 12px 0;
+  padding: 12px 10px;
   color: white;
+  display: inline-block;
+}
+
+@media (max-width:768px) {
+    .mat-toolbar-row, .mat-toolbar-single-row {
+      
+        justify-content: space-between;
+        padding: 10px !important;
+    }
 }

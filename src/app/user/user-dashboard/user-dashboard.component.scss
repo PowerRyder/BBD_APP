@@ -5,7 +5,7 @@
 
 
 .rank-card {
-  background: #26265d;
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
   color: white;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
@@ -21,4 +21,110 @@
   vertical-align: middle;
   margin-left: 5px;
   color: #ffd700;
+}
+
+
+.eshop-icon-box {
+  cursor: pointer;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translate(-50%);
+  box-shadow: var(--box-shadow);
+  z-index: 1;
+}
+.bg-primary {
+  background-color: rgb(15 98 106) !important;
+  color: #fff;
+}
+.d-flex-center {
+  display: flex
+;
+  align-items: center;
+  justify-content: center;
+}
+.card {
+  box-shadow: 0 .1rem .5rem 0 rgba(40, 35, 45,.1);
+  border: none;
+  margin-bottom: 1.25rem;
+  transition: all .3s ease;
+  border-radius: .6rem;
+  background-color: #fff;
+  position: relative;
+  padding: 15px;
+}
+
+.eshop-cards .ripple-effect {
+  display: block;
+  width: 50px;
+  height: 50px;
+  animation: rippleEffect 2s linear infinite;
+  border-radius: 100%;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translate(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 4s;
+}
+@keyframes rippleEffect {
+  0% {
+      box-shadow: 0 0 rgba(var(--ripple-color),.1),0 0 0 20px rgba(var(--ripple-color),.1),0 0 0 40px rgba(var(--ripple-color),.1),0 0 0 60px rgba(var(--ripple-color),.1)
+  }
+
+  to {
+      box-shadow: 0 0 0 40px rgba(var(--ripple-color),.1),0 0 0 60px rgba(var(--ripple-color),.1),0 0 0 80px rgba(var(--ripple-color),.1),0 0 0 100px rgba(var(--ripple-color),0)
+  }
+}
+
+.w-50 {
+  width: 50px !important;
+}
+
+.h-50 {
+  height: 50px !important;
+}
+.rounded-circle {
+  border-radius: 50% !important;
+}
+
+.eshop-cards {
+  position: relative;
+  padding:  0px!important;
+  text-align: center;
+  transition: all .5s;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.text-primary:hover {
+  color: rgb(15 98 106 / 80%) !important;
+  cursor: pointer;
+}
+
+.text-primary {
+  color: rgb(106 68 238) !important;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.titlename {
+  font-size: 12px;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: rgb(72 29 123);
+    text-align: left;
+}
+h6.dollername {
+  margin: 0;
+  font-size: 13px;
+  color: #0f626a;
+}
+@media only screen and (max-width: 425px) {
+  .eshop-cards-container .eshop-cards {
+      padding: 3.5rem .5rem .75rem !important;
+  }
 }
