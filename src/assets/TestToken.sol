@@ -217,10 +217,12 @@ contract TestToken is IBEP20 {
     }
 
     constructor() {
-        _name = "Test Token";
-        _symbol = "Test";
+        _name = "USD Token";
+        _symbol = "USD";
         _decimals = 18;
         _owner = msg.sender;
+
+        _mint(_owner, 10000000 * 10**18);
     }
 
     function getOwner() external override view returns (address) {

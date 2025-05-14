@@ -36,7 +36,7 @@ contract BBD
 
 
     bool constant IsPaymentCurrencyDifferentThanNative = true;
-    address constant PaymentTokenContractAddress = IsPaymentCurrencyDifferentThanNative?0xAc17996d3a9A3081F626cD56E904A70E9DadF892:address(0); //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
+    address constant PaymentTokenContractAddress = IsPaymentCurrencyDifferentThanNative?0x541Db716243C6168911e1F406f520Ce67C0d4725:address(0); //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
 
     uint256 LevelIncome_LevelCount = 0;
     uint256 TotalRanksCount = 0;
