@@ -32,13 +32,15 @@ export class UserLayoutComponent implements OnInit {
   app_routes = {
     user_dashboard: app_routes.user_dashboard,
     directs: app_routes.directs,
+    roi_income_history: app_routes.roi_income_history,
     level_income: app_routes.level_income,
+    rank_info: app_routes.rank_info,
     topup: app_routes.topup,
     transfer_fund: app_routes.transfer_fund,
     deposit: app_routes.deposit,
     withdraw: app_routes.withdraw,
-    roi_income_history :app_routes.roi_income_history,
-    rank_info : app_routes.rank_info
+
+
   };
   constructor(private breakpointObserver: BreakpointObserver) {
   }
