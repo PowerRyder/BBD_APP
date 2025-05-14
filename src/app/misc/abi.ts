@@ -57,6 +57,29 @@ export let abi = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddressToTopup",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "packageId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "TopupMemberFromWallet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -186,6 +209,19 @@ export let abi = [
 	},
 	{
 		"inputs": [],
+		"name": "CreatorAddress_2",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "GetContractDetails",
 		"outputs": [
 			{
@@ -238,7 +274,17 @@ export let abi = [
 				"components": [
 					{
 						"internalType": "uint256",
+						"name": "Investment",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "DirectsCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "DirectsInvestment",
 						"type": "uint256"
 					},
 					{
@@ -303,7 +349,22 @@ export let abi = [
 					},
 					{
 						"internalType": "uint256",
+						"name": "Capping",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "AmountWithdrawn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "WithdrawalWalletBalance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "TopupWalletBalance",
 						"type": "uint256"
 					},
 					{
@@ -570,6 +631,77 @@ export let abi = [
 				"internalType": "address",
 				"name": "userAddress",
 				"type": "address"
+			}
+		],
+		"name": "GetRankInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "RankId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "RankName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ReqSelfInvestment",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ReqTeamA_Business",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ReqTeamB_Business",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "UserSelfInvestment",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "UserTeamA_Business",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "UserTeamB_Business",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "RewardAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "IsAchieved",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct BBD.RankInfo[]",
+				"name": "info",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddress",
+				"type": "address"
 			},
 			{
 				"internalType": "uint256",
@@ -619,6 +751,57 @@ export let abi = [
 			},
 			{
 				"internalType": "uint256",
+				"name": "pageIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pageSize",
+				"type": "uint256"
+			}
+		],
+		"name": "GetTeamDetails",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "Srno",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "Address",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Investment",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Business",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct BBD.UserTeamMember[]",
+				"name": "team",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
 				"name": "walletId",
 				"type": "uint256"
 			}
@@ -648,6 +831,19 @@ export let abi = [
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "ManagementFee",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",

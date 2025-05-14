@@ -51,6 +51,14 @@ const routes: Routes = [
       {
         path:app_routes.transfer_fund.path,
         loadComponent:() =>import("./transfer-fund/transfer-fund.component").then(m=>m.TransferFundComponent)
+      },
+      {
+        path:app_routes.roi_income_history.path,
+        loadComponent:()=>import("./roi-income/roi-income.component").then(m=>m.RoiIncomeComponent)
+      },
+      {
+        path:app_routes.rank_info.path,
+        loadComponent:()=>import("./get-rank-info/get-rank-info.component").then(m=>m.GetRankInfoComponent)
       }
     ]
   }

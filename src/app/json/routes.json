@@ -83,5 +83,15 @@
         "path":"transfer-fund",
         "url" :"/u/transfer-fund",
         "title" :"Transfer Fund"
+    },
+    "roi_income_history":{
+        "path":"roi-income-history",
+        "url":"/u/roi-income-history",
+        "title":"ROI Income History"
+    },
+    "rank_info":{
+      "path":"rank-info",
+        "url":"/u/rank-info",
+        "title":"Rank Info"  
     }
 }

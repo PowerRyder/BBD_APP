@@ -51,4 +51,11 @@ export class DetailsService {
   getwalletBalanceAmount(userAddress :string , walletId : number){
     return this.contract.readContract('GetWalletBalance',[userAddress , walletId])
   }
+  getRoiIncomeHistory(userAddress: string, pageIndex: number, pageSize: number){
+    return this.contract.readContract('GetROIIncomeHistory',[userAddress, pageIndex, pageSize])
+  }
+
+  getRankInfo(userAddress :string){
+    return this.contract.readContract('GetRankInfo',[userAddress])
+  }
 }
