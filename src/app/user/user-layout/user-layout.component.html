@@ -48,11 +48,25 @@
           <div mat-line>{{app_routes.directs.title}}</div>
         </mat-list-item>
 
+        <mat-list-item [routerLink]="app_routes.roi_income_history.url" routerLinkActive="active"
+          class="side-nav-menu-item-1" [routerLinkActiveOptions]="{ exact: true }">
+          <mat-icon mat-list-icon>keyboard_double_arrow_right
+          </mat-icon>
+          <div mat-line>{{app_routes.roi_income_history.title}}</div>
+        </mat-list-item>
+        
         <mat-list-item [routerLink]="app_routes.level_income.url" routerLinkActive="active" class="side-nav-menu-item-1"
           [routerLinkActiveOptions]="{ exact: true }">
           <mat-icon mat-list-icon>keyboard_double_arrow_right
           </mat-icon>
           <div mat-line>{{app_routes.level_income.title}}</div>
+        </mat-list-item>
+
+        <mat-list-item [routerLink]="app_routes.rank_info.url" routerLinkActive="active" class="side-nav-menu-item-1"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <mat-icon mat-list-icon>keyboard_double_arrow_right
+          </mat-icon>
+          <div mat-line>{{app_routes.rank_info.title}}</div>
         </mat-list-item>
 
         <mat-list-item [routerLink]="app_routes.transfer_fund.url" routerLinkActive="active"
@@ -62,19 +76,8 @@
           <div mat-line>{{app_routes.transfer_fund.title}}</div>
         </mat-list-item>
 
-        <mat-list-item [routerLink]="app_routes.roi_income_history.url" routerLinkActive="active" class="side-nav-menu-item-1"
-          [routerLinkActiveOptions]="{ exact: true }">
-          <mat-icon mat-list-icon>keyboard_double_arrow_right
-          </mat-icon>
-          <div mat-line>{{app_routes.roi_income_history.title}}</div>
-        </mat-list-item>
 
-        <mat-list-item [routerLink]="app_routes.rank_info.url" routerLinkActive="active" class="side-nav-menu-item-1"
-          [routerLinkActiveOptions]="{ exact: true }">
-          <mat-icon mat-list-icon>keyboard_double_arrow_right
-          </mat-icon>
-          <div mat-line>{{app_routes.rank_info.title}}</div>
-        </mat-list-item>
+
         <!-- 
         <mat-list-item [routerLink]="app_routes.sell_tokens.url" routerLinkActive="active" class="side-nav-menu-item-1"
           *ngIf="isInternalToken" [routerLinkActiveOptions]="{ exact: true }">

@@ -39,13 +39,13 @@ export class RoiIncomeComponent {
     async getData() {
       // console.log(this.packages)
       let res = (await this.details.getRoiIncomeHistory(this.userAddress, this.pageEvent ? this.pageEvent.pageIndex : 1, this.pageEvent ? this.pageEvent.pageSize : this.defaultPageSize)).data;
-      // console.log("result",res)
+      console.log("result",res)
   
       for (let i = 0; i < res.length; i++) {
         let d = res[i];
         this.dataSource.push({
-          Srno: i + 1,
-          Amount: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.Amount),
+          Income :this.contract.convertAmountFromPaymentCurrencyBaseValue(d.Income),
+          OnAmount: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.OnAmount),
           Timestamp: this.shared.convertTimestampToDate(d.Timestamp)
         });
       }

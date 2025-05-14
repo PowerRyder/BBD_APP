@@ -1,33 +1,33 @@
-<!-- <div class="offset-md-2 offset-sm-0 col-md-8"> -->
-<mat-card class="mx-0">
-    <!-- <mat-card-title class="text-align-center">Level Income</mat-card-title> -->
-    <mat-card-content class="card-pad table-responsive">
-        <mat-paginator [length]="data_count" [pageSize]="defaultPageSize" [pageSizeOptions]="pageSizeOptions"
-            [showFirstLastButtons]="showFirstLastButtons" (page)="onPageChange($event)">
-        </mat-paginator>
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card class="mx-0">
+        <!-- <mat-card-title class="text-align-center">Level Income</mat-card-title> -->
+        <mat-card-content class="card-pad table-responsive">
+            <mat-paginator [length]="data_count" [pageSize]="defaultPageSize" [pageSizeOptions]="pageSizeOptions"
+                [showFirstLastButtons]="showFirstLastButtons" (page)="onPageChange($event)">
+            </mat-paginator>
 
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Income</th>
-                    <th>Amount ({{paymentCurrency}})</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let elem of dataSource" [ngClass]="elem.IsLevelAchieved?'text-success':''">
-                    <td>
-                        {{elem.Income}}
-                    </td>
-                    <td>
-                        {{elem.OnAmount}}
-                    </td>
-                    <td>
-                        {{elem.Timestamp}}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </mat-card-content>
-</mat-card>
-<!-- </div> -->
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Income</th>
+                        <th>Amount ({{paymentCurrency}})</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let elem of dataSource" [ngClass]="elem.IsLevelAchieved?'text-success':''">
+                        <td>
+                            {{elem.Income}}
+                        </td>
+                        <td>
+                            {{elem.OnAmount}}
+                        </td>
+                        <td>
+                            {{elem.Timestamp}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+</div>
