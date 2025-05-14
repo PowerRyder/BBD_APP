@@ -46,6 +46,19 @@ export class WithdrawService {
   }
 
   transferFund(fromUserAddress : string , toUserAddress : string, amount : string){
-    return this.contract.writeContract('TransferFunds',[fromUserAddress,toUserAddress,amount],"0")
+    try {
+      this.spinner.show();
+
+      let res = this.contract.writeContract('TransferFunds',[fromUserAddress,toUserAddress,amount],"0")
+      // console.log(res)
+      return res;
+    }
+    catch (e) {
+      console.log(e)
+      return { success: false, data: null, message: e };
+    }
+    finally {
+      this.spinner.hide();
+    }
   }
 }

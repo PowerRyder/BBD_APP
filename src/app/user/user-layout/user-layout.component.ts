@@ -33,6 +33,7 @@ export class UserLayoutComponent implements OnInit {
     user_dashboard: app_routes.user_dashboard,
     directs: app_routes.directs,
     level_income: app_routes.level_income,
+    topup: app_routes.topup,
     transfer_fund: app_routes.transfer_fund,
     deposit: app_routes.deposit,
     withdraw: app_routes.withdraw

@@ -29,6 +29,11 @@ const routes: Routes = [
         title: app_routes.withdrawal_level_income.title
       },
       {
+        path: app_routes.topup.path,
+        loadComponent: () => import('./topup/topup.component').then(m => m.TopupComponent),
+        title: app_routes.topup.title
+      },
+      {
         path: app_routes.deposit.path,
         loadComponent: () => import('./deposit/deposit.component').then(m => m.DepositComponent),
         title: app_routes.deposit.title

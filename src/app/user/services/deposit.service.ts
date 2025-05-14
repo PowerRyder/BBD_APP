@@ -51,4 +51,21 @@ export class DepositService {
       this.spinner.hide();
     }
   }
+  
+  async topup(toUserAddress : string , packageId: number, amount : string){
+    try {
+      this.spinner.show();
+
+      let res = this.contract.writeContract('TopupMemberFromWallet',[toUserAddress, packageId, amount],"0")
+      // console.log(res)
+      return res;
+    }
+    catch (e) {
+      console.log(e)
+      return { success: false, data: null, message: e };
+    }
+    finally {
+      this.spinner.hide();
+    }
+  }
 }

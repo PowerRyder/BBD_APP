@@ -1,37 +1,35 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { FormsModule } from '@angular/forms';
-import { DetailsService } from '../services/details.service';
-import { SharedService } from 'src/app/shared/shared.service';
-import { AppSettings } from 'src/app/app.settings';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { FormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { AccountsService } from 'src/app/accounts/accounts.service';
+import { AppSettings } from 'src/app/app.settings';
 import { RefreshService } from 'src/app/services/refresh.service';
-import { WithdrawService } from '../services/withdraw.service';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedService } from 'src/app/shared/shared.service';
+import { DepositService } from '../services/deposit.service';
+import { DetailsService } from '../services/details.service';
 
 @Component({
-  selector: 'app-transfer-fund',
+  selector: 'app-topup',
   standalone: true,
   imports: [SharedModule, FormsModule],
-  templateUrl: './transfer-fund.component.html',
-  styleUrls: ['./transfer-fund.component.scss']
+  templateUrl: './topup.component.html',
+  styleUrls: ['./topup.component.scss']
 })
-export class TransferFundComponent implements OnInit {
+export class TopupComponent {
 
-  transferfundForm: UntypedFormGroup
+  topupForm: UntypedFormGroup
   paymentCurrency = AppSettings.PaymentTokenSymbol;
   amountAvailableToSend: number = 0;
   // Fundsubscription: Subscription;
   maxAmount: number = 0;
 
-  constructor(public shared: SharedService, private details: DetailsService, private accounts: AccountsService, private refresh: RefreshService, private withdrawService: WithdrawService) {
+  constructor(public shared: SharedService, private details: DetailsService, private accounts: AccountsService, private refresh: RefreshService, private depositService: DepositService) {
     this.createForm()
 
   }
 
   createForm() {
-    this.transferfundForm = new UntypedFormGroup({
+    this.topupForm = new UntypedFormGroup({
       userIdAddress: new UntypedFormControl({ value: '', disabled: false }, this.shared.validators.required),
       amount: new UntypedFormControl({ value: '', disabled: false }, this.shared.validators.required)
     })
@@ -39,7 +37,7 @@ export class TransferFundComponent implements OnInit {
 
   async ngOnInit() {
     // this.Fundsubscription = this.accounts.accountChange.subscribe(async addr => {
-    //   this.transferfundForm.controls['userAddress'].setValue(addr);
+    //   this.topupForm.controls['userAddress'].setValue(addr);
     //   await this.fetchAndSetBalance();
     // })
     await this.fetchAndSetBalance();
@@ -56,14 +54,13 @@ export class TransferFundComponent implements OnInit {
     }
   }
 
-
   async onSubmit() {
-    if (this.transferfundForm.valid) {
+    if (this.topupForm.valid) {
       let from_address = sessionStorage.getItem("UserAddress")
-      let to_address = this.transferfundForm.controls['userIdAddress'].value
-      let amount = this.transferfundForm.controls['amount'].value
+      let to_address = this.topupForm.controls['userIdAddress'].value
+      let amount = this.topupForm.controls['amount'].value
       let sendamount = this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(amount)
-      let result = await this.withdrawService.transferFund(from_address, to_address, sendamount)
+      let result = await this.depositService.topup(to_address, 1, sendamount)
 
       // console.log("result", result)
 

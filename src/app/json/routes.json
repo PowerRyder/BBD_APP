@@ -44,6 +44,11 @@
         "url": "/u/sell-tokens",
         "title": "Sell Tokens"
     },
+    "topup":{
+        "path": "topup",
+        "url": "/u/topup",
+        "title": "Topup"
+    },
     "withdraw":{
         "path": "withdraw",
         "url": "/u/withdraw",

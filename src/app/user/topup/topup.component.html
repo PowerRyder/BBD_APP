@@ -1,8 +1,8 @@
 <div class="offset-md-2 offset-sm-0 col-md-8">
     <mat-card>
-        <mat-card-title class="text-align-center">Transfer Fund</mat-card-title>
+        <mat-card-title class="text-align-center">Topup</mat-card-title>
         <mat-card-content class="card-pad table-responsive">
-            <form [formGroup]=transferfundForm #formDir="ngForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]=topupForm #formDir="ngForm" (ngSubmit)="onSubmit()">
                 <mat-form-field>
                     <mat-label>User Address</mat-label>
                     <input matInput formControlName="userIdAddress" />
@@ -23,7 +23,7 @@
                     </mat-error>
                 </mat-form-field>
                 <div class="d-flex justify-content-center">
-                    <button mat-raised-button color="primary" type="submit">Transfer</button>
+                    <button mat-raised-button color="primary" type="submit">Topup</button>
                 </div>
 
             </form>
