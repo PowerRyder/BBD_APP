@@ -5,7 +5,7 @@ interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
 }
 
-contract SecurityFund {
+contract BBD_SecurityFundContract {
     address public owner;
     address public mainContract;
 

@@ -1316,6 +1316,11 @@ contract BBD
         CreatorAddress = addr;
     }
 
+    function UpdateCreator2Address(address addr) external onlyOwner
+    {
+        CreatorAddress_2 = addr;
+    }
+
     function UpdateMarketingAddress(address addr) external onlyOwner
     {
         MarketingAddress = addr;
