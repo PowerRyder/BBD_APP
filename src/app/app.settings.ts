@@ -8,13 +8,13 @@ export let app_routes = _urls;
 let Chain = Chains;
 
 export class AppSettings {
-    private static readonly IsDevelopment = true;
+    private static readonly IsDevelopment = false;
 
     public static readonly IsDemo = false;
     
     public static readonly CompanyName = "BBD";
     public static readonly Logo = "assets/images/logo.png";
-    public static readonly Website = "https://dapp.neuradigi.com/"
+    public static readonly Website = "https://app.bbdweb3.com/"
 
     public static readonly IsInternalToken = false;
     public static readonly InternalTokenName = "Neuradigi";
