@@ -2,29 +2,37 @@
     <mat-card>
         <mat-card-title class="text-align-center">Credit | Debit</mat-card-title>
         <mat-card-content class="card-pad">
-            <mat-form-field>
-                <mat-label>User Address</mat-label>
-                <input matInput [(ngModel)]="userAddress" />
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Select Wallet</mat-label>
-                <mat-select [(value)]="selectedWallet">
-                    <mat-option [value]="1">Withdrawal Wallet</mat-option>
-                    <mat-option [value]="2">BBD$</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <div class="d-flex justify-content-end">
-                <b>Balance: {{amountAvailableToSend}} {{paymentCurrency}}</b>
-            </div>
-            <mat-form-field>
-                <mat-label>{{paymentToken}} Amount</mat-label>
-                <input matInput [(ngModel)]="amount" type="number" />
-            </mat-form-field>
+            <form [formGroup]="creditdebitForm">
+                <mat-form-field>
+                    <mat-label>User Address</mat-label>
+                    <input matInput formControlName="userAddress" />
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Select Wallet</mat-label>
+                    <mat-select formControlName="selectedWallet">
+                        <mat-option [value]="1">Withdrawal Wallet</mat-option>
+                        <mat-option [value]="2">BBD$</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="d-flex justify-content-end">
+                    <b>Balance: {{amountAvailableToSend}} {{paymentCurrency}}</b>
+                </div>
+                <!-- <div class="d-flex justify-content-end">
+                    <b>Balance ({{ creditdebitForm.controls['selectedWallet'].value === 1 ? 'Withdrawal Wallet' : 'BBD$'
+                        }}): {{ amountAvailableToSend }} {{ paymentCurrency }}</b>
+                </div> -->
 
-            <div class="d-flex justify-content-center">
-                <button mat-raised-button color="primary" (click)="onCreditClick()">Credit</button>
-                <button mat-raised-button color="warn" (click)="onDebitClick()">Debit</button>
-            </div>
+                <mat-form-field>
+                    <mat-label>{{paymentToken}} Amount</mat-label>
+                    <input matInput formControlName="amount" type="number" />
+                </mat-form-field>
+
+                <div class="d-flex justify-content-center">
+                    <button mat-raised-button color="primary" (click)="onCreditClick()">Credit</button>
+                    <button mat-raised-button color="warn" (click)="onDebitClick()">Debit</button>
+                </div>
+            </form>
+
         </mat-card-content>
     </mat-card>
 </div>
