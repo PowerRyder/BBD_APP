@@ -58,4 +58,8 @@ export class DetailsService {
   getRankInfo(userAddress :string){
     return this.contract.readContract('GetRankInfo',[userAddress])
   }
+
+  withdrawAmount(userAddress :string , amount : string , type : number){
+    return this.contract.readContract('Withdraw',[userAddress, amount , type] )
+  }
 }

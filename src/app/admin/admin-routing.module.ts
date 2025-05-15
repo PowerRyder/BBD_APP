@@ -31,6 +31,10 @@ const routes: Routes = [
         path: app_routes.admin_withdraw_funds.path,
         loadComponent: () => import('./withdraw/withdraw.component').then(m => m.WithdrawComponent),
         title: app_routes.admin_withdraw_funds.title
+      },
+      {
+        path:app_routes.update_package_max_amount.path,
+        loadComponent:()=>import("./update-package-max-amount/update-package-max-amount.component").then(m=>m.UpdatePackageMaxAmountComponent)
       }
     ]
   }];

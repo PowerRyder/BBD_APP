@@ -54,6 +54,21 @@
         "url": "/u/withdraw",
         "title": "Withdraw"
     },
+     "transfer_fund":{
+        "path":"transfer-fund",
+        "url" :"/u/transfer-fund",
+        "title" :"BBD$ Transfer"
+    },
+    "roi_income_history":{
+        "path":"roi-income-history",
+        "url":"/u/roi-income-history",
+        "title":"ROI Income "
+    },
+    "rank_info":{
+      "path":"rank-info",
+        "url":"/u/rank-info",
+        "title":"Rank Info"  
+    },
     "admin_dashboard":{
         "path": "dashboard",
         "url": "/a/dashboard",
@@ -79,19 +94,10 @@
         "url": "/a/withdraw-funds",
         "title": "Withdraw Funds"
     },
-    "transfer_fund":{
-        "path":"transfer-fund",
-        "url" :"/u/transfer-fund",
-        "title" :"Transfer Fund"
-    },
-    "roi_income_history":{
-        "path":"roi-income-history",
-        "url":"/u/roi-income-history",
-        "title":"ROI Income "
-    },
-    "rank_info":{
-      "path":"rank-info",
-        "url":"/u/rank-info",
-        "title":"Rank Info"  
+    "update_package_max_amount":{
+        "path":"package-max-amount",
+        "url":"/a/package-max-amount",
+        "title":"Update Package Max Amount"
     }
+   
 }
