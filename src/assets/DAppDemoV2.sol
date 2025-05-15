@@ -769,7 +769,7 @@ contract BBD
                 map_UserTeam[userAddress].TeamABusiness >= r.ReqTeamA_Business &&
                 map_UserTeam[userAddress].TeamBBusiness >= r.ReqTeamB_Business) 
             {
-                uint256 income = CapAndCreditIncomeToWallet(userAddress, r.RewardAmount);
+                uint256 income = r.RewardAmount; //CapAndCreditIncomeToWallet(userAddress, r.RewardAmount);
                 map_UserIncome[userAddress].RankIncome += income;
                 map_Users[userAddress].RankId = nextRankId;
                 Process4X_CappingQualification(userAddress, 0, nextRankId);
@@ -1008,7 +1008,7 @@ contract BBD
         return
             map_UserIncome[userAddress].ReferralIncome +
             map_UserIncome[userAddress].ROIIncome +
-            map_UserIncome[userAddress].RankIncome +
+            // map_UserIncome[userAddress].RankIncome +
             map_UserIncome[userAddress].NewRegistrationBonus +
             map_UserIncome[userAddress].TopmostSponsorsIncome +
             GetTotalLevelIncome(userAddress);
