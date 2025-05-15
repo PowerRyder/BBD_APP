@@ -20,10 +20,20 @@ export class AdminLayoutComponent {
   isInternalToken = AppSettings.IsInternalToken;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches), shareReplay());
 
-  app_routes = app_routes;
+  isMenuOpen = false;
+  // app_routes = app_routes;
+
+  app_routes = {
+    admin_dashboard :app_routes.admin_dashboard,
+    mint_burn :app_routes.admin_mint_burn_internal_tokens,
+    credit_debit :app_routes.admin_credit_debit_amount,
+    block_unblock :app_routes.admin_block_unblock_user,
+    withdrawal_fund : app_routes.admin_withdraw_funds
+
+  };
 
   isSideNavOpen: boolean = false;
-  constructor(private breakpointObserver: BreakpointObserver){
+  constructor(private breakpointObserver: BreakpointObserver) {
   }
 
   async ngOnInit() {
@@ -34,5 +44,9 @@ export class AdminLayoutComponent {
     if (this.sidenav.mode === 'over') {
       this.sidenav.close();
     }
+  }
+
+  get visibleRoutes() {
+    return Object.values(this.app_routes);
   }
 }
