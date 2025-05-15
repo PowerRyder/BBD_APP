@@ -19,7 +19,7 @@ export class AdminLoginComponent {
   isDemo: boolean = AppSettings.IsDemo;
 
   loginForm = new UntypedFormGroup({
-    userId: new UntypedFormControl({ value: '', disabled: true }, this.shared.validators.required)
+    userId: new UntypedFormControl({ value: '', disabled: false }, this.shared.validators.required)
   });
 
   app_routes = app_routes;
