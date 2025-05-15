@@ -922,23 +922,23 @@ contract BBD
     function ProcessNewRegistrationBonus(address userAddress, uint256 amount) internal
     {
         uint256 bonus_amount = 0;
-        if(amount>=3000)
+        if(amount>=ConvertToBase(3000))
         {
             bonus_amount = ConvertToBase(40);
         }
-        else if(amount>=2000)
+        else if(amount>=ConvertToBase(2000))
         {
             bonus_amount = ConvertToBase(30);
         }
-        else if(amount>=1000)
+        else if(amount>=ConvertToBase(1000))
         {
             bonus_amount = ConvertToBase(20);
         }
-        else if(amount>=500)
+        else if(amount>=ConvertToBase(500))
         {
             bonus_amount = ConvertToBase(12);
         }
-        else if(amount>=300)
+        else if(amount>=ConvertToBase(300))
         {
             bonus_amount = ConvertToBase(7);
         }
@@ -960,7 +960,7 @@ contract BBD
         uint256 income_amount = 0;
         while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount) 
         {
-            income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (10 * 100)) : map_LevelIncomeMaster[level].Percentage);
+            income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (100 * 100)) : map_LevelIncomeMaster[level].Percentage);
             if (IsQualifiedForLevelIncome(sponsorAddress, level)) 
             {
                 income_amount = CapAndCreditIncomeToWallet(sponsorAddress, income_amount);
@@ -1029,7 +1029,7 @@ contract BBD
     function ReactivateInternal(address userAddress, uint block_timestamp, uint256 currentDepositAmount) internal returns (bool)
     {
         uint noOfDays = 10 + (map_UserTransactionCount[userAddress].ReactivationCount/2);
-        uint expiryTimestamp = block_timestamp + (noOfDays * 1 days); // Convert days to seconds
+        uint expiryTimestamp = block_timestamp + (noOfDays * 1 minutes); // Convert days to seconds
 
         map_Users[userAddress].ActivationExpiryTimestamp = expiryTimestamp;
         map_UserTransactionCount[userAddress].ReactivationCount++;
