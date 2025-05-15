@@ -140,6 +140,19 @@ export let abi = [
 				"type": "address"
 			}
 		],
+		"name": "UpdateCreator2Address",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
 		"name": "UpdateCreatorAddress",
 		"outputs": [],
 		"stateMutability": "nonpayable",
@@ -371,6 +384,11 @@ export let abi = [
 						"internalType": "string",
 						"name": "RankName",
 						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Capping4X_QualificationEndTimestamp",
+						"type": "uint256"
 					}
 				],
 				"internalType": "struct BBD.UserDashboard",

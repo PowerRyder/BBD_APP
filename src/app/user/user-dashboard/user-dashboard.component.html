@@ -72,6 +72,9 @@
     <div class="col-md-4 col-sm-12">
         <app-re-activation></app-re-activation>
     </div>
+    <div class="col-md-4 col-sm-12">
+        <app-capping4x-end-timer [timerEndTimestamp]="dashboardDetails?.Capping4X_QualificationEndTimestamp"></app-capping4x-end-timer>
+    </div>
     <!-- <div class="col-md-4 col-sm-12 ">
         <app-deposit [showHistory]="false"></app-deposit>
     </div> -->
@@ -218,7 +221,7 @@
             [url]="addressExplorer+contractAddress"></app-referral-link>
     </div>
     <h1>hello</h1>
-     <div class="col-md-4 col-sm-12">
+    <div class="col-md-4 col-sm-12">
         <app-referral-link text="Sponserd Address" [displayValue]="contractAddress"
             [url]="referralLink"></app-referral-link>
     </div>
