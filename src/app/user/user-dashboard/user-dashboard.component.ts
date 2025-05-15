@@ -7,12 +7,13 @@ import { DashboardTilesComponent } from 'src/app/shared/dashboard-tiles/dashboar
 import { ReferralLinkComponent } from '../referral-link/referral-link.component';
 import { ReActivationComponent } from '../re-activation/re-activation.component';
 import { NgxGaugeModule } from 'ngx-gauge';
+import { Capping4xEndTimerComponent } from '../capping4x-end-timer/capping4x-end-timer.component';
 
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './user-dashboard.component.html',
   standalone: true,
-  imports: [SharedModule, DepositComponent, DashboardTilesComponent, ReferralLinkComponent, ReActivationComponent, NgxGaugeModule],
+  imports: [SharedModule, DepositComponent, DashboardTilesComponent, ReferralLinkComponent, ReActivationComponent, NgxGaugeModule, Capping4xEndTimerComponent],
   styleUrls: ['./user-dashboard.component.scss']
 })
 export class UserDashboardComponent implements OnInit {
