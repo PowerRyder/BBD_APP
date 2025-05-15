@@ -7,8 +7,13 @@
 // }
 
 .mat-toolbar {
-    background-color: $user-layout-toolbar-background-color;
-    color: $user-layout-toolbar-text-color;
+    // background-color: $user-layout-toolbar-background-color;
+    // color: $user-layout-toolbar-text-color;
+
+   background-color: transparent;
+    color: #fff;
+    box-shadow: none;
+    border-bottom: 1px solid #000000;
 
     .mat-toolbar-row {
         padding: 0 0 0 16px;
@@ -20,8 +25,8 @@ mat-sidenav-container {
     height: 100%;
     margin-top: 4px;
 
-    mat-sidenav {
-        width: 260px;
+     mat-sidenav {
+        width: 260px;background: #5e1084 !important;
     }
 }
 
