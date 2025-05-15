@@ -34,7 +34,7 @@ export class AppSettings {
 
     public static readonly ZeroAddress = "0x0000000000000000000000000000000000000000";
 
-    public static readonly AdminAddress = "0x1419AC3544770Ac32fbC3e70129E7eb0197612F6";
+    public static readonly AdminAddress = "0xA1bF05780C2De3002086695D212a743EAA6532Ad";
 
     public static readonly ApiBaseUrl = this.IsDevelopment ? 'http://localhost:8000/' : '';
 
