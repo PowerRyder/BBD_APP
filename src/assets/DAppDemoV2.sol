@@ -162,6 +162,7 @@ contract BBD
         uint256 WithdrawalWalletBalance;
         uint256 TopupWalletBalance;
         string RankName;
+        uint256 Capping4X_QualificationEndTimestamp;
     }
 
     struct UserDirects
@@ -1095,7 +1096,8 @@ contract BBD
             AmountWithdrawn: ui.AmountWithdrawn,
             WithdrawalWalletBalance: GetWalletBalance(userAddress, WithdrawalWalletId),
             TopupWalletBalance: GetWalletBalance(userAddress, TopupWalletId),
-            RankName: map_RankMaster[u.RankId].RankName
+            RankName: map_RankMaster[u.RankId].RankName,
+            Capping4X_QualificationEndTimestamp: u.FirstActivationTimestamp + 45 minutes
         });
     }
 
