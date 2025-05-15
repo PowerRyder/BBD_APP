@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { app_routes } from 'src/app/app.settings';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccountsService } from '../accounts.service';
 import { PackageDetails, WalletDetails } from '../models/accounts';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { PackageComponent } from 'src/app/user/package/package.component';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   standalone: true,
-  imports: [SharedModule, PackageComponent],
+  imports: [SharedModule, ],
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
@@ -79,7 +78,7 @@ export class RegisterComponent implements OnInit {
             let res = await this.accounts.register(sponsorAddress, 0);
             // console.log("register", res)
             if (res && res.success) {
-              this.shared.alert.trigger({ action: 'success', message: 'Deposit successful!' }).then(() => {
+              this.shared.alert.trigger({ action: 'success', message: 'Ragistration successful!' }).then(() => {
                 sessionStorage.setItem("UserAddress", this.walletDetails.address);
                 this.router.navigateByUrl(app_routes.user_dashboard.url);
               });

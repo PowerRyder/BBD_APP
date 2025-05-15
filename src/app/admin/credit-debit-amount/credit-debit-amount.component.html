@@ -6,7 +6,16 @@
                 <mat-label>User Address</mat-label>
                 <input matInput [(ngModel)]="userAddress" />
             </mat-form-field>
-
+            <mat-form-field>
+                <mat-label>select wallet</mat-label>
+                <mat-select [(value)]="selectedWallet">
+                    <mat-option [value]="1">Withdrawal Wallet</mat-option>
+                    <mat-option [value]="2">BBD$</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div class="d-flex justify-content-end">
+                <b>Balance: {{amountAvailableToSend}} {{paymentCurrency}}</b>
+            </div>
             <mat-form-field>
                 <mat-label>{{paymentToken}} Amount</mat-label>
                 <input matInput [(ngModel)]="amount" type="number" />
