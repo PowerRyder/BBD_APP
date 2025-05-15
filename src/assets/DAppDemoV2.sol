@@ -963,7 +963,7 @@ contract BBD
             income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (10 * 100)) : map_LevelIncomeMaster[level].Percentage);
             if (IsQualifiedForLevelIncome(sponsorAddress, level)) 
             {
-                CapAndCreditIncomeToWallet(sponsorAddress, income_amount);
+                income_amount = CapAndCreditIncomeToWallet(sponsorAddress, income_amount);
                 map_UserIncome[sponsorAddress].LevelIncome[level] += income_amount;
             } 
             // else 

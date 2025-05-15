@@ -40,7 +40,7 @@ export class UserDashboardComponent implements OnInit {
     this.userAddress = sessionStorage.getItem("UserAddress");
     let dashboardDetails = Object.assign({}, (await this.details.getDashboardDetails(this.userAddress)).data);
 
-    // console.log(userDetails, dashboardDetails)
+    console.log(dashboardDetails)
 
     dashboardDetails.Investment = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.Investment);
     dashboardDetails.InvestmentBadge = ((dashboardDetails?.TotalIncome <= dashboardDetails?.Investment && dashboardDetails?.Investment > 0) ? (dashboardDetails?.TotalIncome * 100 / dashboardDetails?.Investment) : 100).toFixed(1) + '%';
