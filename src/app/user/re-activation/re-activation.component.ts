@@ -16,7 +16,7 @@ import { RefreshService } from 'src/app/services/refresh.service';
 })
 export class ReActivationComponent {
 
-  nextActivationDate: Date = new Date(); //new Date("2025-05-16");//
+  nextActivationDate: Date = new Date("2025-05-16");//new Date(); //
   countdownExpired = false;
   pendingRoiIncome: number = 0;
 
@@ -28,7 +28,7 @@ export class ReActivationComponent {
     let userDetails = (await this.details.getUserDetails(userAddress)).data;
 
     this.pendingRoiIncome = userDetails.PendingRoiIncome || 0;
-
+    return;
     const expiryTimestamp = userDetails.ActivationExpiryTimestamp * 1000;
     const now = Date.now();
 
