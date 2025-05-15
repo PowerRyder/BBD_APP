@@ -799,8 +799,8 @@ contract BBD
         amount = CapIncome(userAddress, amount);
         if(amount>0)
         {
-            map_UserWalletBalance[userAddress][1] += amount*75/100; // 75% to Withdrawal Wallet
-            map_UserWalletBalance[userAddress][2] += amount*25/100; // 25% to Topup Wallet
+            map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount*75/100; // 75% to Withdrawal Wallet
+            map_UserWalletBalance[userAddress][TopupWalletId] += amount*25/100; // 25% to Topup Wallet
         }
 
         return amount;
@@ -961,7 +961,7 @@ contract BBD
         while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount) 
         {
             income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (10 * 100)) : map_LevelIncomeMaster[level].Percentage);
-            if (IsQualifiedForLevelIncome(userAddress, level)) 
+            if (IsQualifiedForLevelIncome(sponsorAddress, level)) 
             {
                 CapAndCreditIncomeToWallet(sponsorAddress, income_amount);
                 map_UserIncome[sponsorAddress].LevelIncome[level] += income_amount;

@@ -50,7 +50,11 @@ export class WithdrawComponent implements OnInit {
 
     let details = (await this.details.getDashboardDetails(sessionStorage.getItem('UserAddress')!)).data;
     if (details) {
-      this.amountAvailableToWithdraw = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(details.TotalIncome - details.AmountWithdrawn);
+
+      details.WithdrawalWalletBalance = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(details.WithdrawalWalletBalance);
+      details.TopupWalletBalance = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(details.TopupWalletBalance);
+
+      this.amountAvailableToWithdraw = details.WithdrawalWalletBalance;
       this.maxAmount = this.amountAvailableToWithdraw;
     }
 
@@ -65,10 +69,10 @@ export class WithdrawComponent implements OnInit {
     this.onAmountChange();
   }
 
-  onAmountChange(){
+  onAmountChange() {
     let amount = Number(this.withdrawForm.controls['amount'].value);
-    this.deductionAmount = amount*this.deductionPercentage/100;
-    this.receivingAmount = amount-this.deductionAmount;
+    this.deductionAmount = amount * this.deductionPercentage / 100;
+    this.receivingAmount = amount - this.deductionAmount;
   }
 
   async onWithdrawClick() {
