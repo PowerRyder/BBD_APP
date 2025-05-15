@@ -16,6 +16,7 @@ import { AccountsService } from 'src/app/accounts/accounts.service';
 })
 export class CreditDebitAmountComponent implements OnInit {
 
+  // 0xb7f746040b00Fdc0bd95a9D821Bc38A48e00b064
   userAddress: string = '';
   amount: number = 0;
   selectedWallet = 1;
@@ -59,9 +60,8 @@ export class CreditDebitAmountComponent implements OnInit {
 
   async onDebitClick() {
     // console.log("okay")
-
     if (this.amount <= this.amountAvailableToSend) {
-      console.log("Amount", this.amount)
+      // console.log("Amount", this.amount)
       const credit_amount = this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(this.amount)
       if (this.selectedWallet = 1) {
 
@@ -75,7 +75,9 @@ export class CreditDebitAmountComponent implements OnInit {
         this.shared.alert.trigger({ action: 'error', message: 'Invalid wallet selection.' });
       }
     } else {
-      console.log("Insufficient Balances !")
+    
+      this.shared.alert.trigger({ action: 'error', message: 'Insufficient Balances !' })
+      // console.log("Insufficient Balances !")
     }
   }
 

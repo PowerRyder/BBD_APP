@@ -60,6 +60,22 @@
 
 
 </div>
+
+<div class="d-flex flex-column flex-row flex-md-row justify-content-around">
+    <!-- <div class="col-md-4 col-sm-12">
+        <mat-card>
+            <ngx-gauge type="arch" [value]="dashboardDetails?.CappingUsedBadge" label="Capping Used" append="%"
+                [thick]="12" [thresholds]="guageThresholdConfig" [margin]="10">
+            </ngx-gauge>
+        </mat-card>
+    </div> -->
+    <div class="col-md-4 col-sm-12">
+        <app-re-activation></app-re-activation>
+    </div>
+    <!-- <div class="col-md-4 col-sm-12 ">
+        <app-deposit [showHistory]="false"></app-deposit>
+    </div> -->
+</div>
 <div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
     <app-dashboard-tiles matIcon="account_balance" title="Deposit" class="col-md-3 col-sm-12"
         [data]="[{key: paymentCurrency, value: dashboardDetails?.Investment}]"
@@ -182,9 +198,9 @@
             </ngx-gauge>
         </mat-card>
     </div>
-    <div class="col-md-4 col-sm-12">
+    <!-- <div class="col-md-4 col-sm-12">
         <app-re-activation></app-re-activation>
-    </div>
+    </div> -->
     <div class="col-md-4 col-sm-12 ">
         <app-deposit [showHistory]="false"></app-deposit>
     </div>
@@ -200,6 +216,11 @@
     <div class="col-md-4 col-sm-12">
         <app-referral-link text="Contract Address" [displayValue]="contractAddress"
             [url]="addressExplorer+contractAddress"></app-referral-link>
+    </div>
+    <h1>hello</h1>
+     <div class="col-md-4 col-sm-12">
+        <app-referral-link text="Sponserd Address" [displayValue]="contractAddress"
+            [url]="referralLink"></app-referral-link>
     </div>
     <!--    
     <mat-card class="col-md-4">
