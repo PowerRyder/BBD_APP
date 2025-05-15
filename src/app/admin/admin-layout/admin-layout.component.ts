@@ -1,3 +1,4 @@
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { Component, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -10,7 +11,15 @@ import { SharedModule } from 'src/app/shared/shared.module';
   templateUrl: './admin-layout.component.html',
   standalone: true,
   imports: [SharedModule],
-  styleUrls: ['./admin-layout.component.scss']
+  styleUrls: ['./admin-layout.component.scss'],
+  animations: [
+      trigger('slideInOut', [
+        state('in', style({ height: '*', opacity: 1, padding: '8px 16px' })),
+        state('out', style({ height: '0px', opacity: 0, padding: '0 16px' })),
+        transition('out => in', [animate('250ms ease-out')]),
+        transition('in => out', [animate('200ms ease-in')])
+      ])
+    ]
 })
 export class AdminLayoutComponent {
 
@@ -25,7 +34,7 @@ export class AdminLayoutComponent {
 
   app_routes = {
     admin_dashboard :app_routes.admin_dashboard,
-    mint_burn :app_routes.admin_mint_burn_internal_tokens,
+    // mint_burn :app_routes.admin_mint_burn_internal_tokens,
     credit_debit :app_routes.admin_credit_debit_amount,
     block_unblock :app_routes.admin_block_unblock_user,
     withdrawal_fund : app_routes.admin_withdraw_funds
