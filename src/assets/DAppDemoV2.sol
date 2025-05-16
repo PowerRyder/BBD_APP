@@ -790,7 +790,7 @@ contract BBD
     {
         if(!map_Users[userAddress].IsQualifiedFor4X 
                 && 
-            (!map_Users[userAddress].IsFirstActivationDone || map_Users[userAddress].FirstActivationTimestamp + 45 days>=block.timestamp) 
+            (!map_Users[userAddress].IsFirstActivationDone || GetCapping4X_QualificationEndTimestamp(userAddress)>=block.timestamp) 
                 && 
             (oneTimeDepositAmount>=ConvertToBase(2000) || achievedRankId>=1))
         {
@@ -993,6 +993,11 @@ contract BBD
             GetTotalLevelIncome(userAddress);
     }
 
+    function GetCapping4X_QualificationEndTimestamp(address userAddress) internal view returns (uint256)
+    {
+        return map_Users[userAddress].FirstActivationTimestamp + 45 minutes;
+    }
+
     function GetContractBalance() internal view returns (uint256) 
     {
         if (IsPaymentCurrencyDifferentThanNative) 
@@ -1115,7 +1120,7 @@ contract BBD
             WithdrawalWalletBalance: GetWalletBalance(userAddress, WithdrawalWalletId),
             TopupWalletBalance: GetWalletBalance(userAddress, TopupWalletId),
             RankName: map_RankMaster[u.RankId].RankName,
-            Capping4X_QualificationEndTimestamp: u.FirstActivationTimestamp + 45 minutes,
+            Capping4X_QualificationEndTimestamp: GetCapping4X_QualificationEndTimestamp(userAddress),
             IsCappingRemaining: IsCappingRemaining(userAddress)
         });
     }
