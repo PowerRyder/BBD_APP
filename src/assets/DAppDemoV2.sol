@@ -63,6 +63,7 @@ contract BBD
         uint256 TotalTeam;
         bool IsBlocked;
         uint256 FirstActivationTimestamp;
+        uint256 LastActivationTimestamp;
         uint256 ActivationExpiryTimestamp;
         uint256 RankId;
         bool IsQualifiedFor4X;
@@ -163,6 +164,7 @@ contract BBD
         uint256 TopupWalletBalance;
         string RankName;
         uint256 Capping4X_QualificationEndTimestamp;
+        bool IsCappingRemaining;
     }
 
     struct UserDirects
@@ -519,6 +521,7 @@ contract BBD
             TotalTeam: 0,
             IsBlocked: false,
             FirstActivationTimestamp: 0,
+            LastActivationTimestamp: 0,
             ActivationExpiryTimestamp: 0,
             RankId: 0,
             IsFirstActivationDone: false,
@@ -819,7 +822,7 @@ contract BBD
             else
             {
                 uint256 total_income = GetTotalIncome(userAddress);
-                uint256 capping_amount = (map_Users[userAddress].IsQualifiedFor4X?4:3)*map_Users[userAddress].Investment;
+                uint256 capping_amount = GetUserCappingAmount(userAddress);
 
                 if(total_income+amount>capping_amount)
                 {
@@ -831,6 +834,10 @@ contract BBD
         return amount;
     }
 
+    function GetUserCappingAmount(address userAddress) internal view returns (uint256)
+    {
+        return (map_Users[userAddress].IsQualifiedFor4X?4:3)*map_Users[userAddress].Investment;
+    }
 
     function IsOwner() internal view returns (bool)
     {
@@ -865,7 +872,7 @@ contract BBD
     {
         address userAddress = msg.sender;
         require(doesUserExist(userAddress), "You are not registered!");
-        require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
+        require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp || !IsCappingRemaining(userAddress), "Deposit is allowed only after the expiry.");
         ReceiveTokens(amount);
 
         bool IsFirstTopup = SaveDeposit(userAddress, packageId, amount);
@@ -880,45 +887,16 @@ contract BBD
         }
     }
 
+    function IsCappingRemaining(address userAddress) internal view returns(bool)
+    {
+        return GetTotalIncome(userAddress)<GetUserCappingAmount(userAddress);
+    }
+
     // function DistributeReferralIncome(address userAddress, uint packageId, uint amount) internal
     // {
     //     uint income = map_PackageMaster[packageId].IsReferralIncomePercentage? amount*map_PackageMaster[packageId].ReferralIncome/100: map_PackageMaster[packageId].ReferralIncome;
     //     map_UserIncome[map_Users[userAddress].SponsorAddress].ReferralIncome += income;
     // }
-
-    function GetPendingROIIncome(address userAddress) internal view returns (uint256)
-    {
-        uint256 onAmount = map_Users[userAddress].Investment;
-        
-        uint256 income_amount = 0;
-        if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
-        {
-            income_amount = onAmount*10/100;
-            income_amount = CapIncome(userAddress, income_amount);
-        }
-
-        return income_amount;
-    }
-
-    function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 currentDepositAmount) internal
-    {
-        uint256 onAmount = map_Users[userAddress].Investment-currentDepositAmount;
-
-        if(onAmount>0)
-        {
-            uint256 income_amount = onAmount*10/100;
-            income_amount = CapAndCreditIncomeToWallet(userAddress, income_amount);
-            map_UserIncome[userAddress].ROIIncome += income_amount;
-
-            map_UserTransactionCount[userAddress].ROIIncomeCount++;
-
-            map_ROIIncomeHistory[userAddress][map_UserTransactionCount[userAddress].ROIIncomeCount] = ROIIncomeDetail({
-                OnAmount: onAmount,
-                Timestamp: block_timestamp,
-                Income: income_amount
-            });
-        }
-    }
 
     function ProcessNewRegistrationBonus(address userAddress, uint256 amount) internal
     {
@@ -1032,11 +1010,51 @@ contract BBD
         uint noOfDays = 10 + (map_UserTransactionCount[userAddress].ReactivationCount/2);
         uint expiryTimestamp = block_timestamp + (noOfDays * 1 minutes); // Convert days to seconds
 
+        uint prev_LastActivationTimestamp = map_Users[userAddress].LastActivationTimestamp;
+        uint prev_ActivationExpiryTimestamp = map_Users[userAddress].ActivationExpiryTimestamp;
+        map_Users[userAddress].LastActivationTimestamp = block_timestamp;
         map_Users[userAddress].ActivationExpiryTimestamp = expiryTimestamp;
         map_UserTransactionCount[userAddress].ReactivationCount++;
-        ProcessROIIncome(userAddress, block_timestamp, currentDepositAmount);
+        ProcessROIIncome(userAddress, block_timestamp, prev_LastActivationTimestamp, prev_ActivationExpiryTimestamp, currentDepositAmount);
         DistributeLevelIncome(userAddress);
         return true;
+    }
+
+    function GetPendingROIIncome(address userAddress) internal view returns (uint256)
+    {
+        uint256 onAmount = map_Users[userAddress].Investment;
+        
+        uint256 income_amount = 0;
+        if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
+        {
+            income_amount = onAmount*10/100;
+            income_amount = CapIncome(userAddress, income_amount);
+        }
+
+        return income_amount;
+    }
+
+    function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 prev_LastActivationTimestamp, uint256 prev_ActivationExpiryTimestamp, uint256 currentDepositAmount) internal
+    {
+        uint256 onAmount = map_Users[userAddress].Investment-currentDepositAmount;
+
+        if(onAmount>0)
+        {
+            uint cycle_duration = (prev_ActivationExpiryTimestamp - prev_LastActivationTimestamp);
+            uint time_Elapsed = ((prev_ActivationExpiryTimestamp<=block_timestamp?prev_ActivationExpiryTimestamp:block_timestamp) - prev_LastActivationTimestamp);
+
+            uint256 income_amount = (onAmount*10*time_Elapsed)/(100*cycle_duration);
+            income_amount = CapAndCreditIncomeToWallet(userAddress, income_amount);
+            map_UserIncome[userAddress].ROIIncome += income_amount;
+
+            map_UserTransactionCount[userAddress].ROIIncomeCount++;
+
+            map_ROIIncomeHistory[userAddress][map_UserTransactionCount[userAddress].ROIIncomeCount] = ROIIncomeDetail({
+                OnAmount: onAmount,
+                Timestamp: block_timestamp,
+                Income: income_amount
+            });
+        }
     }
 
     function Login(address _address) public view returns (bool) 
@@ -1092,12 +1110,13 @@ contract BBD
             RankIncome: ui.RankIncome,
             TopmostSponsorsIncome: ui.TopmostSponsorsIncome,
             TotalIncome: GetTotalIncome(userAddress),
-            Capping: u.Investment*(u.IsQualifiedFor4X?4:3),
+            Capping: GetUserCappingAmount(userAddress),
             AmountWithdrawn: ui.AmountWithdrawn,
             WithdrawalWalletBalance: GetWalletBalance(userAddress, WithdrawalWalletId),
             TopupWalletBalance: GetWalletBalance(userAddress, TopupWalletId),
             RankName: map_RankMaster[u.RankId].RankName,
-            Capping4X_QualificationEndTimestamp: u.FirstActivationTimestamp + 45 minutes
+            Capping4X_QualificationEndTimestamp: u.FirstActivationTimestamp + 45 minutes,
+            IsCappingRemaining: IsCappingRemaining(userAddress)
         });
     }
 
@@ -1309,8 +1328,10 @@ contract BBD
         require(Login(to), "Invalid receiving user!");
         require(map_UserWalletBalance[from][TopupWalletId]>=value, "Insufficient funds!");
 
+        uint256 deduction = value*5/100;
+        uint256 amountTransferred = value-deduction;
         map_UserWalletBalance[from][TopupWalletId] -= value;
-        map_UserWalletBalance[to][TopupWalletId] += value;
+        map_UserWalletBalance[to][TopupWalletId] += amountTransferred;
     }
 
     function UpdateCreatorAddress(address addr) external onlyOwner

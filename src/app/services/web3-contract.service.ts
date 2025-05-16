@@ -214,7 +214,7 @@ export class Web3ContractService {
   }
 
   public convertAmountFromPaymentCurrencyBaseValue(amount: number) {
-    amount = Number(amount / Math.pow(10, AppSettings.PaymentTokenDecimals));
+    amount = Number(Number(amount / Math.pow(10, AppSettings.PaymentTokenDecimals)).toFixed(4));
     return amount;
   }
 
