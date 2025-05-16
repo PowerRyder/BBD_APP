@@ -24,7 +24,11 @@ export class TransferFundComponent implements OnInit {
   amountAvailableToSend: number = 0;
   // Fundsubscription: Subscription;
   maxAmount: number = 0;
+  minAmount: number = 0;
 
+  deductionPercentage: number = 5;
+  deductionAmount: number = 0;
+  receivingAmount: number = 0;
   constructor(public shared: SharedService, private details: DetailsService, private accounts: AccountsService, private refresh: RefreshService, private withdrawService: WithdrawService) {
     this.createForm()
 
@@ -44,6 +48,17 @@ export class TransferFundComponent implements OnInit {
     // })
     await this.fetchAndSetBalance();
 
+  }
+
+  async onMaxClick() {
+    this.transferfundForm.controls['amount'].setValue(this.maxAmount);
+    this.onAmountChange();
+  }
+
+  onAmountChange() {
+    let amount = Number(this.transferfundForm.controls['amount'].value);
+    this.deductionAmount = amount * this.deductionPercentage / 100;
+    this.receivingAmount = amount - this.deductionAmount;
   }
 
   async fetchAndSetBalance() {

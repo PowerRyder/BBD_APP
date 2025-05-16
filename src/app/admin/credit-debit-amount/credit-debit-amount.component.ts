@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { AccountsService } from 'src/app/accounts/accounts.service';
 import { AppSettings } from 'src/app/app.settings';
 import { Web3ContractService } from 'src/app/services/web3-contract.service';
@@ -35,21 +35,52 @@ export class CreditDebitAmountComponent implements OnInit {
   }
 
   async ngOnInit() {
-    // this.fetchAndSetBalance()
-    this.creditdebitForm.get('selectedWallet')?.valueChanges.subscribe(() => {
-      this.fetchBalance();
+    this.creditdebitForm.get('userAddress')?.valueChanges.subscribe((address) => {
+      if (this.isValidEthereumAddress(address)) {
+        this.fetchBalance();
+      } else {
+        this.amountAvailableToSend = 0; 
+      }
     });
-    await this.fetchBalance()
+
+    // Also listen to selectedWallet changes if needed
+    this.creditdebitForm.get('selectedWallet')?.valueChanges.subscribe(() => {
+      const address = this.creditdebitForm.get('userAddress')?.value;
+      if (this.isValidEthereumAddress(address)) {
+        this.fetchBalance();
+      }
+    });
+    // this.fetchAndSetBalance()
+    // this.creditdebitForm.get('selectedWallet')?.valueChanges.subscribe(() => {
+    //   this.fetchBalance();
+    // });
+    // await this.fetchBalance()
+  }
+
+  isValidEthereumAddress(address: string): boolean {
+    return /^0x[a-fA-F0-9]{40}$/.test(address);
   }
 
 
   async fetchBalance() {
     let _userAddress = this.creditdebitForm.controls['userAddress'].value
     let _selectwallet = this.creditdebitForm.controls['selectedWallet'].value
-    let userBalances = (await this.details.getwalletBalanceAmount(_userAddress, _selectwallet)).data
-    if (userBalances) {
-      this.amountAvailableToSend = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(userBalances)
+    if (!this.isValidEthereumAddress(_userAddress)) return;
+
+    try {
+      const res = await this.details.getwalletBalanceAmount(_userAddress, _selectwallet);
+      const userBalances = res.data;
+      if (userBalances) {
+        this.amountAvailableToSend = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(userBalances);
+      }
+    } catch (err) {
+      console.error('Error fetching balance:', err);
+      this.amountAvailableToSend = 0;
     }
+    // let userBalances = (await this.details.getwalletBalanceAmount(_userAddress, _selectwallet)).data
+    // if (userBalances) {
+    //   this.amountAvailableToSend = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(userBalances)
+    // }
   }
 
   async onCreditClick() {

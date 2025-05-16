@@ -16,12 +16,22 @@
                 </div>
                 <mat-form-field>
                     <mat-label>Amount</mat-label>
-                    <input matInput formControlName="amount" type="number" [min]="0" [max]="amountAvailableToSend" />
+                     <input matInput formControlName="amount" type="number" [min]="minAmount" [max]="maxAmount" (change)="onAmountChange()" />
+                    <button mat-button matSuffix mat-raised-button color="warn" type="button" (click)="onMaxClick();">
+                        Max
+                    </button>
+                    <!-- <input matInput formControlName="amount" type="number" [min]="0" [max]="amountAvailableToSend" /> -->
                     <mat-error>
                         <app-text-validation-message fieldName="amount"
                             [formGroupDirective]="formDir"></app-text-validation-message>
                     </mat-error>
                 </mat-form-field>
+                 <div class="d-flex justify-content-between">
+                    <b>Deduction: {{deductionAmount}} {{paymentCurrency}} ({{deductionPercentage}}%)</b>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <b>You Receive: {{receivingAmount}} {{paymentCurrency}}</b>
+                </div>
                 <div class="d-flex justify-content-center">
                     <button mat-raised-button color="primary" type="submit">Transfer</button>
                 </div>
