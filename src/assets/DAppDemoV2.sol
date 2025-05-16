@@ -878,7 +878,7 @@ contract BBD
     function RegisterInternal(address sponsorAddress) internal
     {
         address userAddress = msg.sender;
-        require(Login(sponsorAddress), "Invalid sponsor!");
+        require(Login(sponsorAddress) && map_Users[sponsorAddress].Investment>0, "Invalid sponsor!");
         require(!doesUserExist(userAddress), "Already registered!");
 
         SaveUser(userAddress, sponsorAddress);
