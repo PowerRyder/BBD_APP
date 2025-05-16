@@ -31,10 +31,10 @@ export class UserDashboardComponent implements OnInit {
   internalTokenName = AppSettings.InternalTokenName;
 
   guageThresholdConfig = {
-        '0': {color: 'green'},
-        '40': {color: 'orange'},
-        '75.5': {color: 'red'}
-    };
+    '0': { color: 'green' },
+    '40': { color: 'orange' },
+    '75.5': { color: 'red' }
+  };
   constructor(private details: DetailsService) { }
 
   async ngOnInit() {
@@ -155,5 +155,11 @@ export class UserDashboardComponent implements OnInit {
 
     this.referralLink = AppSettings.Website + app_routes.register.url.slice(1) + '/' + this.userAddress;
   }
+
+  shortenAddress(address: string): string {
+    if (!address) return '';
+    return address.slice(0, 7) + '.....' + address.slice(-5);
+  }
+
 
 }
