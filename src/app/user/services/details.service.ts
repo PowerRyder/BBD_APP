@@ -60,6 +60,7 @@ export class DetailsService {
   }
 
   withdrawAmount(userAddress :string , amount : string , type : number){
-    return this.contract.readContract('Withdraw',[userAddress, amount , type] )
+    console.log(userAddress, amount, type)
+    return this.contract.writeContract('Withdraw',[userAddress, amount , type],"0" )
   }
 }
