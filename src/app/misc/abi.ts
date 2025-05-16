@@ -1,4 +1,4 @@
-export let abi = [
+export let abi =[
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -233,6 +233,11 @@ export let abi = [
 					{
 						"internalType": "bool",
 						"name": "IsCappingRemaining",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "IsQualifiedFor4X",
 						"type": "bool"
 					}
 				],

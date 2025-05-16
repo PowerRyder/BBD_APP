@@ -1,27 +1,41 @@
-<mat-card>
-    <mat-card-title class="text-align-center">4X Capping</mat-card-title>
-    <mat-card-content class="card-pad">
+<div *ngIf="!_isQualifiedFor4X; else qualifiedBlock">
+    <mat-card>
+        <mat-card-title class="text-align-center">4X Capping</mat-card-title>
+        <mat-card-content class="card-pad">
 
-        <div class="d-flex justify-content-center text-info text-center mb-3">
-            <strong>Deposit <b>2000 {{paymentCurrency}}</b> in single transaction or achieve <b>Star 1</b> rank within
-                45 days of your first activation date to increase your capping to 4X.</strong>
-        </div>
-        <div *ngIf="!countdownExpired; else expiredBlock">
-            <div class="d-flex justify-content-center">
-                <h2>Offer expires in...</h2>
+            <div class="d-flex justify-content-center text-info text-center mb-3">
+                <strong>Deposit <b>2000 {{paymentCurrency}}</b> in single transaction or achieve <b>Star 1</b> rank
+                    within
+                    45 days of your first activation date to increase your capping to 4X.</strong>
+            </div>
+            <div *ngIf="!countdownExpired; else expiredBlock">
+                <div class="d-flex justify-content-center">
+                    <h2>Offer expires in...</h2>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <app-flip-clock [targetDate]="timerEndDate" showUpto="days"></app-flip-clock>
+                </div>
+
             </div>
 
-            <div class="d-flex justify-content-center">
-                <app-flip-clock [targetDate]="timerEndDate" showUpto="days"></app-flip-clock>
-            </div>
+            <ng-template #expiredBlock>
+                <div class="d-flex justify-content-center text-danger text-center mb-3">
+                    <h1><strong>Timer Expired</strong></h1>
+                </div>
+            </ng-template>
 
-        </div>
-        
-        <ng-template #expiredBlock>
-            <div class="d-flex justify-content-center text-danger text-center mb-3">
-                <h1><strong>Timer Expired</strong></h1>
-            </div>
-        </ng-template>
+        </mat-card-content>
+    </mat-card>
+</div>
 
-    </mat-card-content>
-</mat-card>
+<ng-template #qualifiedBlock>
+  <div>
+    <mat-card>
+      <mat-card-title class="text-align-center">4X Capping</mat-card-title>
+      <mat-card-content class="card-pad">
+        Congratulations you won 4X Capping!
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-template>

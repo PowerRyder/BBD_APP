@@ -65,7 +65,7 @@ body::before {
     background: linear-gradient(135deg, #1c48e8 0%, #8f2eff 55%, #e03688 85%);
     filter: brightness(0.9) saturate(1.1);
     opacity: 0.9;
-    
+
     background-size: 200% 200%;
     animation: gradientFlow 15s ease infinite;
 }
@@ -144,12 +144,12 @@ body.swal2-shown {
 // }
 
 .mat-mdc-raised-button.mat-info {
-    --mdc-protected-button-container-color:#6446ed !important;
+    --mdc-protected-button-container-color: #6446ed !important;
     --mdc-protected-button-label-text-color: #fff;
 }
 
 .mat-mdc-raised-button.mat-success {
-    --mdc-protected-button-container-color:#6446ed !important;
+    --mdc-protected-button-container-color: #6446ed !important;
     --mdc-protected-button-label-text-color: #fff;
 }
 
@@ -439,10 +439,16 @@ mat-form-field {
     }
 }
 
-.reading-block{
+.reading-block {
     overflow: visible !important;
 }
 
 .mdc-text-field--outlined {
     border: 1px solid #883ef4 !important;
+}
+
+
+app-text-validation-message{
+     position: absolute;
+    top: 1px;
 }

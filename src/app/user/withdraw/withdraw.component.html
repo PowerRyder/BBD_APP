@@ -21,9 +21,9 @@
                     <button mat-button matSuffix mat-raised-button color="warn" type="button" (click)="onMaxClick();">
                         Max
                     </button>
-                    <mat-error>
+                    <mat-error >
                         <app-text-validation-message fieldName="amount"
-                            [formGroupDirective]="formDir"></app-text-validation-message>
+                            [formGroupDirective]="formDir" class="input-span"></app-text-validation-message>
                     </mat-error>
                 </mat-form-field>
                 <div class="d-flex justify-content-between">
