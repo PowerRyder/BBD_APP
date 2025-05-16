@@ -165,6 +165,7 @@ contract BBD
         string RankName;
         uint256 Capping4X_QualificationEndTimestamp;
         bool IsCappingRemaining;
+        bool IsQualifiedFor4X;
     }
 
     struct UserDirects
@@ -1149,7 +1150,8 @@ contract BBD
             TopupWalletBalance: GetWalletBalance(userAddress, TopupWalletId),
             RankName: map_RankMaster[u.RankId].RankName,
             Capping4X_QualificationEndTimestamp: GetCapping4X_QualificationEndTimestamp(userAddress),
-            IsCappingRemaining: IsCappingRemaining(userAddress)
+            IsCappingRemaining: IsCappingRemaining(userAddress),
+            IsQualifiedFor4X: u.IsQualifiedFor4X
         });
     }
 
