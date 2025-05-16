@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FlipClockComponent } from "../../shared/flip-clock/flip-clock.component";
 import { DetailsService } from '../services/details.service';
@@ -16,7 +16,8 @@ import { RefreshService } from 'src/app/services/refresh.service';
 })
 export class ReActivationComponent {
 
-  userAddress: string = '';
+  @Input() IsCappingRemaining: boolean = true;
+  
   nextActivationDate: Date = new Date(); //new Date("2025-05-16");//
   countdownExpired = false;
   pendingRoiIncome: number = 0;
@@ -27,15 +28,13 @@ export class ReActivationComponent {
   async ngOnInit() {
     let userAddress = sessionStorage.getItem("UserAddress");
     let userDetails = (await this.details.getUserDetails(userAddress)).data;
-    this.userAddress = sessionStorage.getItem("UserAddress");
-    let dashboardDetails = Object.assign({}, (await this.details.getDashboardDetails(this.userAddress)).data);
-    console.log("user-dashboard-details", dashboardDetails.IsCappingRemaining)
+
     this.pendingRoiIncome = userDetails.PendingRoiIncome || 0;
     // return;
     const expiryTimestamp = userDetails.ActivationExpiryTimestamp * 1000;
     const now = Date.now();
 
-    if (now >= expiryTimestamp ||  dashboardDetails.IsCappingRemaining) {
+    if (now >= expiryTimestamp || !this.IsCappingRemaining) {
       this.countdownExpired = true;
     
     } else {

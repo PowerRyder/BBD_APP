@@ -1,8 +1,7 @@
-<div *ngIf="!_isQualifiedFor4X; else qualifiedBlock">
-    <mat-card>
-        <mat-card-title class="text-align-center">4X Capping</mat-card-title>
-        <mat-card-content class="card-pad">
-
+<mat-card>
+    <mat-card-title class="text-align-center">4X Capping</mat-card-title>
+    <mat-card-content class="card-pad">
+        <div *ngIf="!IsQualifiedFor4X; else qualifiedBlock">
             <div class="d-flex justify-content-center text-info text-center mb-3">
                 <strong>Deposit <b>2000 {{paymentCurrency}}</b> in single transaction or achieve <b>Star 1</b> rank
                     within
@@ -24,18 +23,15 @@
                     <h1><strong>Timer Expired</strong></h1>
                 </div>
             </ng-template>
+        </div>
 
-        </mat-card-content>
-    </mat-card>
-</div>
+        <ng-template #qualifiedBlock>
+            <div class="d-flex justify-content-center">
+                <h2 class="text-success">
+                    <b><mat-icon>celebration</mat-icon> Congratulations! 4X capping is active!</b>
+                </h2>
+            </div>
+        </ng-template>
 
-<ng-template #qualifiedBlock>
-  <div>
-    <mat-card>
-      <mat-card-title class="text-align-center">4X Capping</mat-card-title>
-      <mat-card-content class="card-pad">
-        Congratulations you won 4X Capping!
-      </mat-card-content>
-    </mat-card>
-  </div>
-</ng-template>
+    </mat-card-content>
+</mat-card>

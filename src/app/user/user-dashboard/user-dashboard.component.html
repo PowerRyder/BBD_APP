@@ -70,7 +70,7 @@
         </mat-card>
     </div> -->
     <div class="col-md-4 col-sm-12">
-        <app-re-activation></app-re-activation>
+        <app-re-activation [IsCappingRemaining]="dashboardDetails?.IsCappingRemaining"></app-re-activation>
     </div>
     <div class="col-md-4 col-sm-12">
         <app-capping4x-end-timer [timerEndTimestamp]="dashboardDetails?.Capping4X_QualificationEndTimestamp"></app-capping4x-end-timer>

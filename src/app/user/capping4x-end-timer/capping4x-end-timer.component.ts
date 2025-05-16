@@ -13,18 +13,17 @@ import { DetailsService } from '../services/details.service';
 })
 export class Capping4xEndTimerComponent implements OnChanges, OnInit {
 
+  @Input() IsQualifiedFor4X: boolean = !false;
   @Input() timerEndTimestamp: number = 0;
   timerEndDate: Date = new Date(); //new Date("2025-05-16");//
   countdownExpired = false;
   userAddress: string = '';
   paymentCurrency = AppSettings.PaymentTokenSymbol;
-  _isQualifiedFor4X: boolean = false;
 
   constructor(private details :DetailsService){}
   async ngOnInit(){
     this.userAddress = sessionStorage.getItem("UserAddress");
-    let dashboardDetails = Object.assign({}, (await this.details.getDashboardDetails(this.userAddress)).data);
-    this._isQualifiedFor4X = dashboardDetails.IsQualifiedFor4X;
+    
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['timerEndTimestamp']) {
