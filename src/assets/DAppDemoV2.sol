@@ -143,6 +143,7 @@ contract BBD
 
     struct UserDashboard
     {
+        address SponsorAddress;
         uint256 Investment;
         uint256 DirectsCount;
         uint256 DirectsInvestment;
@@ -1129,6 +1130,7 @@ contract BBD
         UserIncome memory ui = map_UserIncome[userAddress];
 
         info = UserDashboard({
+            SponsorAddress: u.SponsorAddress,
             Investment: u.Investment,
             DirectsCount: ut.DirectAddresses.length,
             DirectsInvestment: ut.DirectsInvestment,
