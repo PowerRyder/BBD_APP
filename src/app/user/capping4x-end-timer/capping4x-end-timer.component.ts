@@ -13,7 +13,7 @@ import { DetailsService } from '../services/details.service';
 })
 export class Capping4xEndTimerComponent implements OnChanges, OnInit {
 
-  @Input() IsQualifiedFor4X: boolean = !false;
+  @Input() IsQualifiedFor4X: boolean = false;
   @Input() timerEndTimestamp: number = 0;
   timerEndDate: Date = new Date(); //new Date("2025-05-16");//
   countdownExpired = false;
