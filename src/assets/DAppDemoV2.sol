@@ -198,6 +198,7 @@ contract BBD
         uint256 RankId;
         string RankName;
         uint256 ReqSelfInvestment;
+        uint256 ReqTeamCount;
         uint256 ReqTeamA_Business;
         uint256 ReqTeamB_Business;
         uint256 RewardAmount;
@@ -456,6 +457,7 @@ contract BBD
             RankId: TotalRanksCount,
             RankName: "1 Star",
             ReqSelfInvestment: ConvertToBase(300),
+            ReqTeamCount: 20,
             ReqTeamA_Business: ConvertToBase(1000),
             ReqTeamB_Business: ConvertToBase(1000),
             RewardAmount: ConvertToBase(0)
@@ -466,6 +468,7 @@ contract BBD
             RankId: TotalRanksCount,
             RankName: "2 Star",
             ReqSelfInvestment: ConvertToBase(500),
+            ReqTeamCount: 50,
             ReqTeamA_Business: ConvertToBase(5000),
             ReqTeamB_Business: ConvertToBase(5000),
             RewardAmount: ConvertToBase(0)
@@ -475,6 +478,7 @@ contract BBD
         map_RankMaster[TotalRanksCount] = RankMaster({
             RankId: TotalRanksCount,
             RankName: "3 Star",
+            ReqTeamCount: 100,
             ReqSelfInvestment: ConvertToBase(1000),
             ReqTeamA_Business: ConvertToBase(10000),
             ReqTeamB_Business: ConvertToBase(10000),
@@ -485,6 +489,7 @@ contract BBD
         map_RankMaster[TotalRanksCount] = RankMaster({
             RankId: TotalRanksCount,
             RankName: "4 Star",
+            ReqTeamCount: 200,
             ReqSelfInvestment: ConvertToBase(2000),
             ReqTeamA_Business: ConvertToBase(25000),
             ReqTeamB_Business: ConvertToBase(25000),
@@ -495,6 +500,7 @@ contract BBD
         map_RankMaster[TotalRanksCount] = RankMaster({
             RankId: TotalRanksCount,
             RankName: "5 Star",
+            ReqTeamCount: 500,
             ReqSelfInvestment: ConvertToBase(3000),
             ReqTeamA_Business: ConvertToBase(75000),
             ReqTeamB_Business: ConvertToBase(75000),
@@ -769,9 +775,10 @@ contract BBD
         {
             RankMaster memory r = map_RankMaster[nextRankId];
 
-            if (map_Users[userAddress].Investment >= r.ReqSelfInvestment &&
+            if (HasOneTimeInvestment(userAddress, r.ReqSelfInvestment) &&
                 map_UserTeam[userAddress].TeamABusiness >= r.ReqTeamA_Business &&
-                map_UserTeam[userAddress].TeamBBusiness >= r.ReqTeamB_Business) 
+                map_UserTeam[userAddress].TeamBBusiness >= r.ReqTeamB_Business &&
+                map_Users[userAddress].TotalTeam >= r.ReqTeamCount) 
             {
                 uint256 income = r.RewardAmount; //CapAndCreditIncomeToWallet(userAddress, r.RewardAmount);
                 map_UserIncome[userAddress].RankIncome += income;
@@ -803,8 +810,16 @@ contract BBD
         amount = CapIncome(userAddress, amount);
         if(amount>0)
         {
-            map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount*75/100; // 75% to Withdrawal Wallet
-            map_UserWalletBalance[userAddress][TopupWalletId] += amount*25/100; // 25% to Topup Wallet
+            if(map_Users[userAddress].RankId<4)
+            {
+                map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount*75/100; // 75% to Withdrawal Wallet
+                map_UserWalletBalance[userAddress][TopupWalletId] += amount*25/100; // 25% to Topup Wallet
+            }
+            else
+            {
+                map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount*50/100; // 75% to Withdrawal Wallet
+                map_UserWalletBalance[userAddress][TopupWalletId] += amount*50/100; // 25% to Topup Wallet
+            }
         }
 
         return amount;
@@ -890,6 +905,19 @@ contract BBD
     function IsCappingRemaining(address userAddress) internal view returns(bool)
     {
         return GetTotalIncome(userAddress)<GetUserCappingAmount(userAddress);
+    }
+
+    function HasOneTimeInvestment(address userAddress, uint256 amount) internal view returns(bool)
+    {
+        uint256 totalDeposits = map_UserTransactionCount[userAddress].DepositsCount;
+
+        for (uint256 i = 1; i <= totalDeposits; i++) {
+            if (map_UserDeposits[userAddress][i].Amount >= amount) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // function DistributeReferralIncome(address userAddress, uint packageId, uint amount) internal
@@ -1204,9 +1232,7 @@ contract BBD
 
         for (uint256 i = 1; i <= TotalRanksCount; i++) {
             RankMaster memory r = map_RankMaster[i];
-            bool achieved = (user.Investment >= r.ReqSelfInvestment &&
-                            team.TeamABusiness >= r.ReqTeamA_Business &&
-                            team.TeamBBusiness >= r.ReqTeamB_Business);
+            bool achieved = user.RankId>=r.RankId;
 
             info[i - 1] = RankInfo({
                 RankId: r.RankId,
