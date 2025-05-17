@@ -48,12 +48,12 @@ export class WithdrawComponent implements OnInit {
       await this.onConnectWalletClick();
     }, 100);
 
-    let details = (await this.details.getDashboardDetails(sessionStorage.getItem('UserAddress')!)).data;
+    let details = Object.assign({}, (await this.details.getDashboardDetails(sessionStorage.getItem('UserAddress')!)).data);
     if (details) {
-
       details.WithdrawalWalletBalance = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(details.WithdrawalWalletBalance);
       details.TopupWalletBalance = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(details.TopupWalletBalance);
 
+      // console.log(details)
       this.amountAvailableToWithdraw = details.WithdrawalWalletBalance;
       this.maxAmount = this.amountAvailableToWithdraw;
     }

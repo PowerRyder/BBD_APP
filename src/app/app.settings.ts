@@ -8,7 +8,7 @@ export let app_routes = _urls;
 let Chain = Chains;
 
 export class AppSettings {
-    private static readonly IsDevelopment = true;
+    private static readonly IsDevelopment = false;
 
     public static readonly IsDemo = false;
     

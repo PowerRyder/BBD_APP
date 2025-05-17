@@ -8,10 +8,10 @@
                     <tr>
                         <th>RankId</th>
                         <th>Rank Name</th>
-                        <th >Self Investment({{paymentCurrency}})</th>
                         <th>Req Self Investment ({{paymentCurrency}})</th>
                         <th >Req Team A Business ({{paymentCurrency}})</th>
                         <th >Req Team B Business ({{paymentCurrency}})</th>
+                        <!-- <th >One-time Self Investment({{paymentCurrency}})</th> -->
                         <th >Team A Business({{paymentCurrency}})</th>
                         <th >Team B Business({{paymentCurrency}})</th>
                         <th >Reward Amount</th>
@@ -26,9 +26,6 @@
                         <td>
                             {{elem.RankName}}
                         </td>
-                         <td >
-                            {{elem.UserSelfInvestment}}
-                        </td>
                         <td >
                             {{elem.ReqSelfInvestment}}
                         </td>
@@ -39,6 +36,9 @@
                             {{elem.ReqTeamB_Business}}
                         </td>
                        
+                        <!-- <td>
+                            {{elem.HasOneTimeSelfInvestment?elem.ReqSelfInvestment:0}}
+                        </td> -->
                         <td >
                             {{elem.UserTeamA_Business}}
                         </td>

@@ -61,7 +61,7 @@
 
 </div>
 
-<div class="d-flex flex-column flex-row flex-md-row justify-content-around">
+<div *ngIf="dashboardDetails?.IsFirstActivationDone" class="d-flex flex-column flex-row flex-md-row justify-content-around">
     <!-- <div class="col-md-4 col-sm-12">
         <mat-card>
             <ngx-gauge type="arch" [value]="dashboardDetails?.CappingUsedBadge" label="Capping Used" append="%"

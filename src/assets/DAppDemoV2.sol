@@ -167,6 +167,7 @@ contract BBD
         uint256 Capping4X_QualificationEndTimestamp;
         bool IsCappingRemaining;
         bool IsQualifiedFor4X;
+        bool IsFirstActivationDone;
     }
 
     struct UserDirects
@@ -219,6 +220,7 @@ contract BBD
         uint256 ReqTeamA_Business;
         uint256 ReqTeamB_Business;
         uint256 UserSelfInvestment;
+        bool HasOneTimeSelfInvestment;
         uint256 UserTeamA_Business;
         uint256 UserTeamB_Business;
         uint256 RewardAmount;
@@ -1153,7 +1155,8 @@ contract BBD
             RankName: map_RankMaster[u.RankId].RankName,
             Capping4X_QualificationEndTimestamp: GetCapping4X_QualificationEndTimestamp(userAddress),
             IsCappingRemaining: IsCappingRemaining(userAddress),
-            IsQualifiedFor4X: u.IsQualifiedFor4X
+            IsQualifiedFor4X: u.IsQualifiedFor4X,
+            IsFirstActivationDone: u.FirstActivationTimestamp>0
         });
     }
 
@@ -1245,6 +1248,7 @@ contract BBD
                 ReqTeamA_Business: r.ReqTeamA_Business,
                 ReqTeamB_Business: r.ReqTeamB_Business,
                 UserSelfInvestment: user.Investment,
+                HasOneTimeSelfInvestment: HasOneTimeInvestment(userAddress, r.ReqSelfInvestment);
                 UserTeamA_Business: team.TeamABusiness,
                 UserTeamB_Business: team.TeamBBusiness,
                 RewardAmount: r.RewardAmount,
