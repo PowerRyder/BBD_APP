@@ -77,7 +77,14 @@ export class WithdrawComponent implements OnInit {
 
   async onWithdrawClick() {
     if (this.withdrawForm.valid) {
-      let res = await this.withdraw.withdrawIncome(Number(this.withdrawForm.controls['amount'].value));
+      let amount = this.withdrawForm.controls['amount'].value;
+
+      if (Number(amount) < 5) {
+        this.shared.alert.trigger({ action: 'error', message: `Amount must be greater than 5 ${this.paymentCurrency}.` });
+        return;
+      }
+
+      let res = await this.withdraw.withdrawIncome(Number());
       // console.log("register", res)
       if (res && res.success) {
         this.shared.alert.trigger({ action: 'success', message: 'Withdrawal successful!' }).then(() => {

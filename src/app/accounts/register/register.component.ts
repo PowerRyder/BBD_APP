@@ -7,12 +7,13 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccountsService } from '../accounts.service';
 import { PackageDetails, WalletDetails } from '../models/accounts';
+import { DetailsService } from 'src/app/user/services/details.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   standalone: true,
-  imports: [SharedModule, ],
+  imports: [SharedModule,],
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
@@ -28,20 +29,20 @@ export class RegisterComponent implements OnInit {
   app_routes = app_routes;
 
   subscription: Subscription;
-  constructor(private shared: SharedService, private accounts: AccountsService, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private shared: SharedService, private accounts: AccountsService, private router: Router, private activatedRoute: ActivatedRoute, private details: DetailsService) {
   }
 
   async ngOnInit() {
     this.registerForm.controls['sponsorId'].setValue(this.activatedRoute.snapshot.paramMap.get("spId")!);
-    
+
     this.subscription = this.accounts.accountChange.subscribe(async addr => {
       this.registerForm.controls['userAdddress'].setValue(addr);
       let paymentCurrencyBalance = await this.accounts.contract.getPaymentTokenBalance(addr);
 
-      this.walletDetails = {address: addr, balance: paymentCurrencyBalance};
+      this.walletDetails = { address: addr, balance: paymentCurrencyBalance };
     })
 
-    setTimeout(async ()=>{
+    setTimeout(async () => {
       await this.onConnectWalletClick();
     }, 100);
   }
@@ -72,9 +73,13 @@ export class RegisterComponent implements OnInit {
 
       let res = await this.accounts.login(sponsorAddress);
       if (res && res.data) {
-        let res = await this.accounts.login(this.walletDetails.address);
-        if (!res.data) {
-          // if (this.walletDetails.balance >= this.packageDetails.amount) {
+
+        let res_sponsor = (await this.details.getUserDetails(sponsorAddress)).data;
+        console.log(res_sponsor)
+        if (res_sponsor && res_sponsor.Investment > 0) {
+          let res = await this.accounts.login(this.walletDetails.address);
+          if (!res.data) {
+            // if (this.walletDetails.balance >= this.packageDetails.amount) {
             let res = await this.accounts.register(sponsorAddress, 0);
             // console.log("register", res)
             if (res && res.success) {
@@ -83,13 +88,17 @@ export class RegisterComponent implements OnInit {
                 this.router.navigateByUrl(app_routes.user_dashboard.url);
               });
             }
-          // }
-          // else {
-          //   this.shared.alert.trigger({ action: 'error', message: 'Insufficient balance!' });
-          // }
+            // }
+            // else {
+            //   this.shared.alert.trigger({ action: 'error', message: 'Insufficient balance!' });
+            // }
+          }
+          else {
+            this.shared.alert.trigger({ action: 'error', message: 'User already registered!' });
+          }
         }
         else {
-          this.shared.alert.trigger({ action: 'error', message: 'User already registered!' });
+          this.shared.alert.trigger({ action: 'error', message: 'Sponsor is inactive!' });
         }
       }
       else {

@@ -1323,6 +1323,7 @@ contract BBD
 
         require(doesUserExist(userAddress), "Invalid user!");
         require(isUserActive(userAddress), "You are not allowed!");
+        require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
         require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
         require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
 
@@ -1366,6 +1367,7 @@ contract BBD
         require(Login(from), "Invalid sending user!");
         require(Login(to), "Invalid receiving user!");
         require(map_UserWalletBalance[from][TopupWalletId]>=value, "Insufficient funds!");
+        require(value>=ConvertToBase(5), "Minimum amount is 5 USDT!");
 
         uint256 deduction = value*5/100;
         uint256 amountFromSender = value+deduction;

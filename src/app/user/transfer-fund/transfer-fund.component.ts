@@ -68,7 +68,7 @@ export class TransferFundComponent implements OnInit {
       if (balances) {
         this.amountAvailableToSend = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(balances);
 
-        this.maxAmount = this.amountAvailableToSend/1.05;
+        this.maxAmount = this.amountAvailableToSend / 1.05;
       }
     }
   }
@@ -76,13 +76,18 @@ export class TransferFundComponent implements OnInit {
 
   async onSubmit() {
     if (this.transferfundForm.valid) {
-      let from_address = sessionStorage.getItem("UserAddress")
-      let to_address = this.transferfundForm.controls['userIdAddress'].value
-      let amount = this.transferfundForm.controls['amount'].value
-      let sendamount = this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(amount)
-      let result = await this.withdrawService.transferFund(from_address, to_address, sendamount)
+      let from_address = sessionStorage.getItem("UserAddress");
+      let to_address = this.transferfundForm.controls['userIdAddress'].value;
+      let amount = this.transferfundForm.controls['amount'].value;
+      let sendamount = this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(amount);
 
-      // console.log("result", result)
+      
+      if (Number(amount) < 5 || Number(amount) % 5 != 0) {
+        this.shared.alert.trigger({ action: 'error', message: `Amount must be greater than 5 ${this.paymentCurrency} and in multiple of 5.` });
+        return;
+      }
+
+      let result = await this.withdrawService.transferFund(from_address, to_address, sendamount);
 
       if (result && result.success) {
         await this.fetchAndSetBalance()
@@ -94,9 +99,6 @@ export class TransferFundComponent implements OnInit {
       else {
         this.shared.alert.trigger({ action: 'error', message: result.message });
       }
-    }
-    else {
-      this.shared.alert.trigger({ action: 'error', message: 'Insufficient balance!' });
     }
 
   }
