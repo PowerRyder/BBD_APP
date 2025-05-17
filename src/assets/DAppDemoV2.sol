@@ -1248,7 +1248,7 @@ contract BBD
                 ReqTeamA_Business: r.ReqTeamA_Business,
                 ReqTeamB_Business: r.ReqTeamB_Business,
                 UserSelfInvestment: user.Investment,
-                HasOneTimeSelfInvestment: HasOneTimeInvestment(userAddress, r.ReqSelfInvestment);
+                HasOneTimeSelfInvestment: HasOneTimeInvestment(userAddress, r.ReqSelfInvestment),
                 UserTeamA_Business: team.TeamABusiness,
                 UserTeamB_Business: team.TeamBBusiness,
                 RewardAmount: r.RewardAmount,
