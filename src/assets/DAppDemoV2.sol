@@ -1368,9 +1368,9 @@ contract BBD
         require(map_UserWalletBalance[from][TopupWalletId]>=value, "Insufficient funds!");
 
         uint256 deduction = value*5/100;
-        uint256 amountTransferred = value-deduction;
-        map_UserWalletBalance[from][TopupWalletId] -= value;
-        map_UserWalletBalance[to][TopupWalletId] += amountTransferred;
+        uint256 amountFromSender = value+deduction;
+        map_UserWalletBalance[from][TopupWalletId] -= amountFromSender;
+        map_UserWalletBalance[to][TopupWalletId] += value;
     }
 
     function UpdateCreatorAddress(address addr) external onlyOwner

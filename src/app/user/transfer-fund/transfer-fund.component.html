@@ -16,7 +16,8 @@
                 </div>
                 <mat-form-field>
                     <mat-label>Amount</mat-label>
-                     <input matInput formControlName="amount" type="number" [min]="minAmount" [max]="maxAmount" (change)="onAmountChange()" />
+                    <input matInput formControlName="amount" type="number" [min]="minAmount" [max]="maxAmount"
+                        (change)="onAmountChange()" />
                     <button mat-button matSuffix mat-raised-button color="warn" type="button" (click)="onMaxClick();">
                         Max
                     </button>
@@ -26,7 +27,7 @@
                             [formGroupDirective]="formDir"></app-text-validation-message>
                     </mat-error>
                 </mat-form-field>
-                 <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between">
                     <b>Deduction: {{deductionAmount}} {{paymentCurrency}} ({{deductionPercentage}}%)</b>
                 </div>
                 <div class="d-flex justify-content-between">

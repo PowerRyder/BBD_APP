@@ -58,7 +58,7 @@ export class TransferFundComponent implements OnInit {
   onAmountChange() {
     let amount = Number(this.transferfundForm.controls['amount'].value);
     this.deductionAmount = amount * this.deductionPercentage / 100;
-    this.receivingAmount = amount - this.deductionAmount;
+    this.receivingAmount = amount;
   }
 
   async fetchAndSetBalance() {
@@ -67,6 +67,8 @@ export class TransferFundComponent implements OnInit {
       let balances = (await this.details.getwalletBalanceAmount(userAddress, 2)).data;
       if (balances) {
         this.amountAvailableToSend = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(balances);
+
+        this.maxAmount = this.amountAvailableToSend/1.05;
       }
     }
   }
