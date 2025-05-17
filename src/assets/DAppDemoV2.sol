@@ -85,6 +85,8 @@ contract BBD
         uint256 PackageId;
         uint256 Amount;
         uint256 Timestamp;
+        uint256 Capping;
+        uint256 IncomePaid;
     }
 
     struct UserIncome 
@@ -611,7 +613,8 @@ contract BBD
             UserDeposit memory d = UserDeposit({
                 PackageId: packageId,
                 Amount: amount,
-                Timestamp: timestamp
+                Timestamp: timestamp,
+                Capping: (map_Users[userAddress].IsQualifiedFor4X?4:3)*amount
             });
 
             Process4X_CappingQualification(userAddress, amount, 0);
@@ -806,6 +809,13 @@ contract BBD
             (oneTimeDepositAmount>=ConvertToBase(2000) || achievedRankId>=1))
         {
             map_Users[userAddress].IsQualifiedFor4X = true;
+
+            // Increase capping multiplier to 4X for all past deposits
+            uint256 totalDeposits = map_UserTransactionCount[userAddress].DepositsCount;
+            for (uint256 i = 1; i <= totalDeposits; i++) {
+                map_UserDeposits[userAddress][i].Capping = map_UserDeposits[userAddress][i].Amount * 4;
+            }
+            
         }
     }
 
@@ -829,29 +839,83 @@ contract BBD
         return amount;
     }
 
+    function CapIncome(address userAddress, uint256 income) internal returns (uint256) {
+        if (map_Users[userAddress].ActivationExpiryTimestamp <= block.timestamp) {
+            return 0;
+        }
+        
+        uint256 totalDeposits = map_UserTransactionCount[userAddress].DepositsCount;
+        uint256 incomeLeft = income;
 
-    function CapIncome(address userAddress, uint256 amount) internal view returns (uint256)
-    {
-        if(amount>0)
-        {
-            if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
-            {
-                return 0;
-            }
-            else
-            {
-                uint256 total_income = GetTotalIncome(userAddress);
-                uint256 capping_amount = GetUserCappingAmount(userAddress);
+        for (uint256 i = 1; i <= totalDeposits; i++) {
+            UserDeposit storage deposit = map_UserDeposits[userAddress][i];
+            uint256 remainingCap = deposit.Capping > deposit.IncomePaid
+                ? deposit.Capping - deposit.IncomePaid
+                : 0;
 
-                if(total_income+amount>capping_amount)
-                {
-                    amount = capping_amount - total_income;
+            if (remainingCap > 0) {
+                uint256 toPay = incomeLeft <= remainingCap ? incomeLeft : remainingCap;
+                deposit.IncomePaid += toPay;
+                incomeLeft -= toPay;
+
+                if (incomeLeft == 0) {
+                    break;
                 }
             }
         }
 
-        return amount;
+        return income - incomeLeft; // actual amount that could be credited
     }
+
+    function CapIncomeView(address userAddress, uint256 income) internal view returns (uint256) {
+        if (map_Users[userAddress].ActivationExpiryTimestamp <= block.timestamp) {
+            return 0;
+        }
+
+        uint256 totalDeposits = map_UserTransactionCount[userAddress].DepositsCount;
+        uint256 incomeLeft = income;
+        uint256 creditable = 0;
+
+        for (uint256 i = 1; i <= totalDeposits; i++) {
+            UserDeposit memory deposit = map_UserDeposits[userAddress][i];
+            uint256 remainingCap = deposit.Capping > deposit.IncomePaid
+                ? deposit.Capping - deposit.IncomePaid
+                : 0;
+
+            if (remainingCap > 0) {
+                uint256 toPay = incomeLeft <= remainingCap ? incomeLeft : remainingCap;
+                creditable += toPay;
+                incomeLeft -= toPay;
+
+                if (incomeLeft == 0) break;
+            }
+        }
+
+        return creditable;
+    }
+
+    // function CapIncome(address userAddress, uint256 amount) internal view returns (uint256)
+    // {
+    //     if(amount>0)
+    //     {
+    //         if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
+    //         {
+    //             return 0;
+    //         }
+    //         else
+    //         {
+    //             uint256 total_income = GetTotalIncome(userAddress);
+    //             uint256 capping_amount = GetUserCappingAmount(userAddress);
+
+    //             if(total_income+amount>capping_amount)
+    //             {
+    //                 amount = capping_amount - total_income;
+    //             }
+    //         }
+    //     }
+
+    //     return amount;
+    // }
 
     function GetUserCappingAmount(address userAddress) internal view returns (uint256)
     {
@@ -1057,37 +1121,100 @@ contract BBD
         return true;
     }
 
-    function GetPendingROIIncome(address userAddress) internal view returns (uint256)
-    {
-        uint256 onAmount = map_Users[userAddress].Investment;
-        
-        uint256 income_amount = 0;
-        if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
-        {
-            income_amount = onAmount*10/100;
-            income_amount = CapIncome(userAddress, income_amount);
+    function GetPendingROIIncome(address userAddress) internal view returns (uint256) {
+        uint256 block_timestamp = block.timestamp;
+        uint256 totalEligibleAmount = 0;
+        uint256 depositsCount = map_UserTransactionCount[userAddress].DepositsCount;
+
+        for (uint256 i = 1; i <= depositsCount; i++) {
+            UserDeposit memory dep = map_UserDeposits[userAddress][i];
+
+            if (dep.IncomePaid < dep.Capping) {
+                totalEligibleAmount += deposit.Amount;
+            }
         }
 
-        return income_amount;
+        uint256 last = map_Users[userAddress].LastActivationTimestamp;
+        uint256 expiry = map_Users[userAddress].ActivationExpiryTimestamp;
+
+        if (block_timestamp <= last || expiry <= last) return 0;
+
+        uint256 elapsed = (expiry <= block_timestamp ? expiry : block_timestamp) - last;
+        uint256 cycle = expiry - last;
+
+        uint256 income = (totalEligibleAmount * 10 * elapsed) / (100 * cycle);
+        return CapIncomeView(userAddress, income);
     }
 
-    function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 prev_LastActivationTimestamp, uint256 prev_ActivationExpiryTimestamp, uint256 currentDepositAmount) internal
+    // function GetPendingROIIncome(address userAddress) internal view returns (uint256)
+    // {
+    //     uint256 onAmount = map_Users[userAddress].Investment;
+        
+    //     uint256 income_amount = 0;
+    //     if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
+    //     {
+    //         income_amount = onAmount*10/100;
+    //         income_amount = CapIncomeView(userAddress, income_amount);
+    //     }
+
+    //     return income_amount;
+    // }
+
+    // function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 prev_LastActivationTimestamp, uint256 prev_ActivationExpiryTimestamp, uint256 currentDepositAmount) internal
+    // {
+    //     uint256 onAmount = map_Users[userAddress].Investment-currentDepositAmount;
+
+    //     if(onAmount>0)
+    //     {
+    //         uint cycle_duration = (prev_ActivationExpiryTimestamp - prev_LastActivationTimestamp);
+    //         uint time_Elapsed = ((prev_ActivationExpiryTimestamp<=block_timestamp?prev_ActivationExpiryTimestamp:block_timestamp) - prev_LastActivationTimestamp);
+
+    //         uint256 income_amount = (onAmount*10*time_Elapsed)/(100*cycle_duration);
+    //         income_amount = CapAndCreditIncomeToWallet(userAddress, income_amount);
+    //         map_UserIncome[userAddress].ROIIncome += income_amount;
+
+    //         map_UserTransactionCount[userAddress].ROIIncomeCount++;
+
+    //         map_ROIIncomeHistory[userAddress][map_UserTransactionCount[userAddress].ROIIncomeCount] = ROIIncomeDetail({
+    //             OnAmount: onAmount,
+    //             Timestamp: block_timestamp,
+    //             Income: income_amount
+    //         });
+    //     }
+    // }
+
+    function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 prev_LastActivationTimestamp, uint256 prev_ActivationExpiryTimestamp, uint256 currentDepositAmount) internal 
     {
-        uint256 onAmount = map_Users[userAddress].Investment-currentDepositAmount;
+        uint256 totalDeposits = map_UserTransactionCount[userAddress].DepositsCount;
+        uint256 cycle_duration = (prev_ActivationExpiryTimestamp - prev_LastActivationTimestamp);
+        uint256 time_Elapsed = ((prev_ActivationExpiryTimestamp <= block_timestamp ? prev_ActivationExpiryTimestamp : block_timestamp) - prev_LastActivationTimestamp);
 
-        if(onAmount>0)
-        {
-            uint cycle_duration = (prev_ActivationExpiryTimestamp - prev_LastActivationTimestamp);
-            uint time_Elapsed = ((prev_ActivationExpiryTimestamp<=block_timestamp?prev_ActivationExpiryTimestamp:block_timestamp) - prev_LastActivationTimestamp);
+        uint256 totalEligibleAmount = 0;
 
-            uint256 income_amount = (onAmount*10*time_Elapsed)/(100*cycle_duration);
+        // Accumulate only those deposits whose IncomePaid < Capping
+        for (uint256 i = 1; i <= totalDeposits; i++) {
+            UserDeposit memory deposit = map_UserDeposits[userAddress][i];
+
+            // Skip the current deposit just made (to match your previous logic)
+            if (deposit.Amount == currentDepositAmount && deposit.Timestamp == block_timestamp) {
+                continue;
+            }
+
+            if (deposit.IncomePaid < deposit.Capping) {
+                totalEligibleAmount += deposit.Amount;
+            }
+        }
+
+        if (totalEligibleAmount > 0 && cycle_duration > 0) {
+            uint256 income_amount = (totalEligibleAmount * 10 * time_Elapsed) / (100 * cycle_duration);
+
             income_amount = CapAndCreditIncomeToWallet(userAddress, income_amount);
             map_UserIncome[userAddress].ROIIncome += income_amount;
 
             map_UserTransactionCount[userAddress].ROIIncomeCount++;
 
             map_ROIIncomeHistory[userAddress][map_UserTransactionCount[userAddress].ROIIncomeCount] = ROIIncomeDetail({
-                OnAmount: onAmount,
+                OnAmount: totalEligibleAmount,
                 Timestamp: block_timestamp,
                 Income: income_amount
             });

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -132,6 +132,11 @@
 					{
 						"components": [
 							{
+								"internalType": "address",
+								"name": "SponsorAddress",
+								"type": "address"
+							},
+							{
 								"internalType": "uint256",
 								"name": "Investment",
 								"type": "uint256"
@@ -240,6 +245,16 @@
 								"internalType": "bool",
 								"name": "IsCappingRemaining",
 								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "IsQualifiedFor4X",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "IsFirstActivationDone",
+								"type": "bool"
 							}
 						],
 						"internalType": "struct BBD.UserDashboard",
@@ -285,6 +300,11 @@
 							{
 								"internalType": "uint256",
 								"name": "Timestamp",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "Capping",
 								"type": "uint256"
 							}
 						],
@@ -581,6 +601,11 @@
 								"internalType": "uint256",
 								"name": "UserSelfInvestment",
 								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "HasOneTimeSelfInvestment",
+								"type": "bool"
 							},
 							{
 								"internalType": "uint256",
@@ -1092,6 +1117,11 @@
 					},
 					{
 						"internalType": "uint256",
+						"name": "ReqTeamCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "ReqTeamA_Business",
 						"type": "uint256"
 					},
@@ -1161,6 +1191,11 @@
 					{
 						"internalType": "uint256",
 						"name": "Timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Capping",
 						"type": "uint256"
 					}
 				],
@@ -1446,7 +1481,7 @@
 		"compilationTarget": {
 			"src/assets/DAppDemoV2.sol": "BBD"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -1467,11 +1502,11 @@
 			]
 		},
 		"src/assets/DAppDemoV2.sol": {
-			"keccak256": "0xe8c9f81346fc71bb2edb3d95070acb4cf7df5bf8e7c1e643279ac792b032b391",
+			"keccak256": "0x5594f6a394ed301f6070a1c75446a6e8ecd8b86400afb3c2efb023808c74060c",
 			"license": "None",
 			"urls": [
-				"bzz-raw://762659c73670f907375768ca0df8d05c0200510b9cb2ed27f762f25ee45325fc",
-				"dweb:/ipfs/QmcbMf7r1BoSZf6BYuf5bJnpgJveBmXc4y81TrBxJYhYZ9"
+				"bzz-raw://055e971d226494fc2e0a33f3b2f6a33e093e99fe754a5fa1471b5cb5dd58ad6d",
+				"dweb:/ipfs/QmZFnV9gpHDcp9vk2eVio78FLJY5iquSfaipbggKxEdMMg"
 			]
 		}
 	},
