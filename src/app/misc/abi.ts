@@ -1,4 +1,4 @@
-export let abi =[
+export let abi = [
 	{
 		"inputs": [
 			{
@@ -404,6 +404,11 @@ export let abi =[
 						"internalType": "bool",
 						"name": "IsQualifiedFor4X",
 						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "IsFirstActivationDone",
+						"type": "bool"
 					}
 				],
 				"internalType": "struct BBD.UserDashboard",
@@ -699,6 +704,11 @@ export let abi =[
 						"internalType": "uint256",
 						"name": "UserSelfInvestment",
 						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "HasOneTimeSelfInvestment",
+						"type": "bool"
 					},
 					{
 						"internalType": "uint256",
@@ -1439,4 +1449,4 @@ export let abi =[
 		"stateMutability": "view",
 		"type": "function"
 	}
-]
+];
