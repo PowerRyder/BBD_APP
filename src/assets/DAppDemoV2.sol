@@ -614,7 +614,8 @@ contract BBD
                 PackageId: packageId,
                 Amount: amount,
                 Timestamp: timestamp,
-                Capping: (map_Users[userAddress].IsQualifiedFor4X?4:3)*amount
+                Capping: (map_Users[userAddress].IsQualifiedFor4X?4:3)*amount,
+                IncomePaid: 0
             });
 
             Process4X_CappingQualification(userAddress, amount, 0);
@@ -624,7 +625,7 @@ contract BBD
             ReactivateInternal(userAddress, timestamp, amount);
 
             IsFirstTopup = !map_Users[userAddress].IsFirstActivationDone;
-            if(!map_Users[userAddress].IsFirstActivationDone)
+            if(IsFirstTopup)
             {
                 map_Users[userAddress].FirstActivationTimestamp = timestamp;
                 userActivations.push(userAddress);
@@ -1130,7 +1131,7 @@ contract BBD
             UserDeposit memory dep = map_UserDeposits[userAddress][i];
 
             if (dep.IncomePaid < dep.Capping) {
-                totalEligibleAmount += deposit.Amount;
+                totalEligibleAmount += dep.Amount;
             }
         }
 

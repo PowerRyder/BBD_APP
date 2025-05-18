@@ -306,6 +306,11 @@
 								"internalType": "uint256",
 								"name": "Capping",
 								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "IncomePaid",
+								"type": "uint256"
 							}
 						],
 						"internalType": "struct BBD.UserDeposit[]",
@@ -1197,6 +1202,11 @@
 						"internalType": "uint256",
 						"name": "Capping",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "IncomePaid",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -1502,11 +1512,11 @@
 			]
 		},
 		"src/assets/DAppDemoV2.sol": {
-			"keccak256": "0x5594f6a394ed301f6070a1c75446a6e8ecd8b86400afb3c2efb023808c74060c",
+			"keccak256": "0x30d7bc68af902b91d698f63c78183a785087e3dcdef63f77d585172ad9a2fdbd",
 			"license": "None",
 			"urls": [
-				"bzz-raw://055e971d226494fc2e0a33f3b2f6a33e093e99fe754a5fa1471b5cb5dd58ad6d",
-				"dweb:/ipfs/QmZFnV9gpHDcp9vk2eVio78FLJY5iquSfaipbggKxEdMMg"
+				"bzz-raw://d5c5504c6bbdc7b86f7613f0c3ee0b991d68b0551c2e80f493cecea523df8077",
+				"dweb:/ipfs/QmUmGD6XKKo5NeRtUCVJpY8nLpxymMbWSEHQsNsEiUWiSc"
 			]
 		}
 	},
