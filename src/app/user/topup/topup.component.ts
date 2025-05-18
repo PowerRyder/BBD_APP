@@ -60,7 +60,7 @@ export class TopupComponent {
       let to_address = this.topupForm.controls['userIdAddress'].value
       let amount = this.topupForm.controls['amount'].value
       let sendamount = this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(amount)
-      let result = await this.depositService.topup(to_address, 1, sendamount)
+      let result = await this.depositService.topup(1, sendamount)
 
       // console.log("result", result)
 

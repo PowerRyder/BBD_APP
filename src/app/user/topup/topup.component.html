@@ -3,14 +3,14 @@
         <mat-card-title class="text-align-center">Topup</mat-card-title>
         <mat-card-content class="card-pad table-responsive">
             <form [formGroup]=topupForm #formDir="ngForm" (ngSubmit)="onSubmit()">
-                <mat-form-field>
+                <!-- <mat-form-field>
                     <mat-label>User Address</mat-label>
                     <input matInput formControlName="userIdAddress" />
                     <mat-error>
                         <app-text-validation-message fieldName="userIdAddress"
                             [formGroupDirective]="formDir"></app-text-validation-message>
                     </mat-error>
-                </mat-form-field>
+                </mat-form-field> -->
                 <div class="d-flex justify-content-end">
                     <b>Balance: {{amountAvailableToSend}} {{paymentCurrency}}</b>
                 </div>

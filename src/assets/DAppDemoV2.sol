@@ -634,6 +634,8 @@ contract BBD
                 map_Users[userAddress].IsFirstActivationDone = true;
             }
         }
+
+        return IsFirstTopup;
     }
 
     function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal 
@@ -943,6 +945,11 @@ contract BBD
         return !map_Users[_address].IsBlocked;
     }
 
+    function HasUserActivationExpired(address userAddress) internal view returns (bool)
+    {
+        return map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp || !IsCappingRemaining(userAddress);
+    }
+
     function RegisterInternal(address sponsorAddress) internal
     {
         address userAddress = msg.sender;
@@ -956,7 +963,7 @@ contract BBD
     {
         address userAddress = msg.sender;
         require(doesUserExist(userAddress), "You are not registered!");
-        require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp || !IsCappingRemaining(userAddress), "Deposit is allowed only after the expiry.");
+        require(HasUserActivationExpired(userAddress), "Deposit is allowed only after the expiry.");
         ReceiveTokens(amount);
 
         bool IsFirstTopup = SaveDeposit(userAddress, packageId, amount);
@@ -1432,12 +1439,15 @@ contract BBD
         return ReactivateInternal(msg.sender, block.timestamp, 0);
     }
 
-    function TopupMemberFromWallet(address userAddressToTopup, uint256 packageId, uint256 amount) external
+    function TopupMemberFromWallet(uint256 packageId, uint256 amount) external
     {
         address userAddress = msg.sender;
+        address userAddressToTopup = userAddress;
         require(doesUserExist(userAddress), "You are not registered!");
+        require(isUserActive(userAddress), "You are not allowed!");
+        // require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
         require(doesUserExist(userAddressToTopup), "Invalid user for topup!");
-        require(map_Users[userAddressToTopup].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
+        // require(map_Users[userAddressToTopup].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
         require(!map_Users[userAddressToTopup].IsFirstActivationDone, "Only first time topup is allowed from wallet.");
         require(GetWalletBalance(userAddress, TopupWalletId)>=amount, "Insufficient funds in wallet!");
 
@@ -1451,6 +1461,7 @@ contract BBD
 
         require(doesUserExist(userAddress), "Invalid user!");
         require(isUserActive(userAddress), "You are not allowed!");
+        require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
         require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
         require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
         require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
@@ -1493,6 +1504,8 @@ contract BBD
         }
 
         require(Login(from), "Invalid sending user!");
+        require(isUserActive(from), "You are not allowed!");
+        require(!HasUserActivationExpired(from), "Your ID is inactive.");
         require(Login(to), "Invalid receiving user!");
         require(map_UserWalletBalance[from][TopupWalletId]>=value, "Insufficient funds!");
         require(value>=ConvertToBase(5), "Minimum amount is 5 USDT!");
