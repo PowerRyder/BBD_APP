@@ -1551,51 +1551,51 @@ contract BBD
         MarketingAddress = addr;
     }
 
-    function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
-        require(IsOwner(), "You are not allowed");
-        if(_type == 2)
-        {
-            map_PackageMaster[1].MaxAmount = amount;
-        }
-        else if (_type == 3)
-        {
-            map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount;
-        } 
-        else if (_type == 4)
-        {
-            map_UserWalletBalance[userAddress][WithdrawalWalletId] -= amount;
-        } 
-        else if (_type == 5) 
-        {
-            map_Users[userAddress].IsBlocked = true;
-        }
-        else if (_type == 6)
-        {
-            map_Users[userAddress].IsBlocked = false;
-        }
-        else if (_type == 7)
-        {
-            SendTokens(CreatorAddress, amount);
-        }
-        else if (_type == 8)
-        {
-            map_UserWalletBalance[userAddress][TopupWalletId] += amount;
-        } 
-        else if (_type == 9)
-        {
-            map_UserWalletBalance[userAddress][TopupWalletId] -= amount;
-        }
-        else if(_type == 10)
-        {
-            IsWithdrawalAllowedAfterPrincipleAmount = false;
-        }
-        else if(_type == 11)
-        {
-            IsWithdrawalAllowedAfterPrincipleAmount = true;
-        }
-        else if(_type == 12)
-        {
-            dev = userAddress;
-        }
-    }
+    // function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
+    //     require(IsOwner(), "You are not allowed");
+    //     if(_type == 2)
+    //     {
+    //         map_PackageMaster[1].MaxAmount = amount;
+    //     }
+    //     else if (_type == 3)
+    //     {
+    //         map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount;
+    //     } 
+    //     else if (_type == 4)
+    //     {
+    //         map_UserWalletBalance[userAddress][WithdrawalWalletId] -= amount;
+    //     } 
+    //     else if (_type == 5) 
+    //     {
+    //         map_Users[userAddress].IsBlocked = true;
+    //     }
+    //     else if (_type == 6)
+    //     {
+    //         map_Users[userAddress].IsBlocked = false;
+    //     }
+    //     else if (_type == 7)
+    //     {
+    //         SendTokens(CreatorAddress, amount);
+    //     }
+    //     else if (_type == 8)
+    //     {
+    //         map_UserWalletBalance[userAddress][TopupWalletId] += amount;
+    //     } 
+    //     else if (_type == 9)
+    //     {
+    //         map_UserWalletBalance[userAddress][TopupWalletId] -= amount;
+    //     }
+    //     else if(_type == 10)
+    //     {
+    //         IsWithdrawalAllowedAfterPrincipleAmount = false;
+    //     }
+    //     else if(_type == 11)
+    //     {
+    //         IsWithdrawalAllowedAfterPrincipleAmount = true;
+    //     }
+    //     else if(_type == 12)
+    //     {
+    //         dev = userAddress;
+    //     }
+    // }
 }
