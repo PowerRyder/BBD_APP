@@ -248,6 +248,7 @@ contract BBD
     mapping(address => mapping(uint256 => uint256)) public map_UserWalletBalance;
 
     mapping(address => UserTransactionCount) public map_UserTransactionCount;
+    mapping(address => address) public map_TeamALegAddress;
 
     struct TempSponsorCount {
         address sponsor;
@@ -755,24 +756,46 @@ contract BBD
     {
         ProcessRankQualification(userAddress);
         uint256 level = 1;
+        
+        address directAddress = userAddress;
         while (sponsorAddress != address(0))
         {
-            if(map_UserTeam[sponsorAddress].TeamABusiness<amount)
-            {
-                map_UserTeam[sponsorAddress].TeamBBusiness += map_UserTeam[sponsorAddress].TeamABusiness;
-                map_UserTeam[sponsorAddress].TeamABusiness = amount;
-            }
-            else 
-            {
-                map_UserTeam[sponsorAddress].TeamBBusiness += amount;
-            }
-
             map_UserTeam[sponsorAddress].TeamInvestment += amount; //Including Directs
 
             map_UserBusinessOnLevel[sponsorAddress][level] += amount;
 
+            address currentTeamA = map_TeamALegAddress[sponsorAddress];
+
+            uint256 newLegBusiness = map_Users[directAddress].Investment + map_UserTeam[directAddress].TeamInvestment;
+
+            if (currentTeamA == address(0)) {
+                // First leg becoming Team A
+                map_TeamALegAddress[sponsorAddress] = directAddress;
+                map_UserTeam[sponsorAddress].TeamABusiness = newLegBusiness;
+            } else if (directAddress == currentTeamA) {
+                // Add to current Team A
+                map_UserTeam[sponsorAddress].TeamABusiness += amount;
+            } else {
+                uint256 currentTeamABusiness = map_UserTeam[sponsorAddress].TeamABusiness;
+
+                if (newLegBusiness > currentTeamABusiness) {
+                     // Remove this leg’s business from Team B first
+                    map_UserTeam[sponsorAddress].TeamBBusiness -= (map_Users[directAddress].Investment + map_UserTeam[directAddress].TeamInvestment - amount);
+
+                    // Promote current leg to Team A
+                    // Move current A's business to B
+                    map_UserTeam[sponsorAddress].TeamBBusiness += currentTeamABusiness;
+                    map_UserTeam[sponsorAddress].TeamABusiness = newLegBusiness;
+                    map_TeamALegAddress[sponsorAddress] = directAddress;
+                } else {
+                    // Add to Team B
+                    map_UserTeam[sponsorAddress].TeamBBusiness += amount;
+                }
+            }
+
             ProcessRankQualification(sponsorAddress);
 
+            directAddress = sponsorAddress;
             sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
             level++;
         }
