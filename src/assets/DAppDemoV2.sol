@@ -1551,6 +1551,11 @@ contract BBD
         MarketingAddress = addr;
     }
 
+    function UpdatePackageMaxAmount(uint256 amount) external onlyOwner
+    {
+        map_PackageMaster[1].MaxAmount = amount;
+    }
+
     // function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
     //     require(IsOwner(), "You are not allowed");
     //     if(_type == 2)

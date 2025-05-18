@@ -940,7 +940,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "Withdraw",
+				"name": "UpdatePackageMaxAmount",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -948,18 +948,8 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "userAddress",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
 						"name": "amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_type",
 						"type": "uint256"
 					}
 				],
@@ -1526,11 +1516,11 @@
 			]
 		},
 		"src/assets/DAppDemoV2.sol": {
-			"keccak256": "0x0f62b1d23f2e664eba688b6b73761493c36a7ba49bcbd61560b1cd79f416235c",
+			"keccak256": "0x8927476eb6d9f026231c52aea08fe4481c8cb3128704a36cf3043f9fc8e23b65",
 			"license": "None",
 			"urls": [
-				"bzz-raw://43fb90e41aaffd24ce0c69c2af822a10316f577d2864483bbb4eaf8c95ba4f67",
-				"dweb:/ipfs/QmaC7puboGfbqNtEyeYrLrpPYNYkhuSY6qyz75Sc6WnP6V"
+				"bzz-raw://0001124570e474f33acb7292d9d7df11d3e0f4d7f3ed158f6c7842aa33ccba75",
+				"dweb:/ipfs/QmWP4jrFQP9othbZZBZzd544cBEVcsTDMv46cReTNYVqKj"
 			]
 		}
 	},
