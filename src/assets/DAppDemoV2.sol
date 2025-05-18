@@ -1442,16 +1442,14 @@ contract BBD
     function TopupMemberFromWallet(uint256 packageId, uint256 amount) external
     {
         address userAddress = msg.sender;
-        address userAddressToTopup = userAddress;
-        require(doesUserExist(userAddress), "You are not registered!");
-        require(isUserActive(userAddress), "You are not allowed!");
+        require(Login(userAddress), "You are not registered!");
         // require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
-        require(doesUserExist(userAddressToTopup), "Invalid user for topup!");
-        // require(map_Users[userAddressToTopup].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
-        require(!map_Users[userAddressToTopup].IsFirstActivationDone, "Only first time topup is allowed from wallet.");
+        // require(doesUserExist(userAddress), "Invalid user for topup!");
+        // require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
+        require(!map_Users[userAddress].IsFirstActivationDone, "Only first time topup is allowed from wallet.");
         require(GetWalletBalance(userAddress, TopupWalletId)>=amount, "Insufficient funds in wallet!");
 
-        SaveDeposit(userAddressToTopup, packageId, amount);
+        SaveDeposit(userAddress, packageId, amount);
         map_UserWalletBalance[userAddress][2] -= amount;
     }
 
@@ -1459,7 +1457,7 @@ contract BBD
         address userAddress = msg.sender;
         uint256 contractBalance = GetContractBalance();
 
-        require(doesUserExist(userAddress), "Invalid user!");
+        require(Login(userAddress), "Invalid user!");
         require(isUserActive(userAddress), "You are not allowed!");
         require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
         require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
@@ -1504,7 +1502,6 @@ contract BBD
         }
 
         require(Login(from), "Invalid sending user!");
-        require(isUserActive(from), "You are not allowed!");
         require(!HasUserActivationExpired(from), "Your ID is inactive.");
         require(Login(to), "Invalid receiving user!");
         require(map_UserWalletBalance[from][TopupWalletId]>=value, "Insufficient funds!");
