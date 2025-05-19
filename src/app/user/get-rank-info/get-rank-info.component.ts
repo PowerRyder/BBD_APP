@@ -21,8 +21,9 @@ export class GetRankInfoComponent {
   constructor(private details: DetailsService, private contract: Web3ContractService) { }
 
   async ngOnInit() {
-    let res = (await this.details.getRankInfo(sessionStorage.getItem('UserAddress'))).data;
-    console.log(res)
+    let userAddress = sessionStorage.getItem('UserAddress');
+    let res = (await this.details.getRankInfo(userAddress)).data;
+    console.log(userAddress, res)
 
     for (let i = 0; i < res.length; i++) {
       let d = res[i];
