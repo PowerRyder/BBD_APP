@@ -1328,7 +1328,7 @@ contract BBD
                 Srno: i + 1,
                 Address: map_UserTeam[userAddress].DirectAddresses[i],
                 Investment: map_Users[map_UserTeam[userAddress].DirectAddresses[i]].Investment,
-                Business: map_Users[map_UserTeam[userAddress].DirectAddresses[i]].Investment
+                Business: map_UserTeam[map_UserTeam[userAddress].DirectAddresses[i]].TeamInvestment
             });
         }
         // return map_Users[userAddress].DirectAddresses;
@@ -1351,7 +1351,7 @@ contract BBD
                 Srno: i,
                 Address: member,
                 Investment: map_Users[member].Investment,
-                Business: map_Users[member].Investment // Adjust if business differs
+                Business: map_UserTeam[map_UserTeam[member].DirectAddresses[i]].TeamInvestment
             });
         }
     }
