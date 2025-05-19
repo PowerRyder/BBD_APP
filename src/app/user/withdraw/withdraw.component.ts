@@ -84,7 +84,7 @@ export class WithdrawComponent implements OnInit {
         return;
       }
 
-      let res = await this.withdraw.withdrawIncome(Number());
+      let res = await this.withdraw.withdrawIncome(Number(amount));
       // console.log("register", res)
       if (res && res.success) {
         this.shared.alert.trigger({ action: 'success', message: 'Withdrawal successful!' }).then(() => {
