@@ -221,10 +221,12 @@ contract BBD
         uint256 ReqSelfInvestment;
         uint256 ReqTeamA_Business;
         uint256 ReqTeamB_Business;
+        uint256 ReqTeamCount;
         uint256 UserSelfInvestment;
         bool HasOneTimeSelfInvestment;
         uint256 UserTeamA_Business;
         uint256 UserTeamB_Business;
+        uint256 UserTeamCount;
         uint256 RewardAmount;
         bool IsAchieved;
     }
@@ -515,6 +517,39 @@ contract BBD
         });
     }
 
+    function ReceiveTokens(uint256 amount) internal
+    {
+        if (IsPaymentCurrencyDifferentThanNative)
+        {
+            uint256 old_balance = GetContractBalance();
+            IERC20(PaymentTokenContractAddress).transferFrom(msg.sender, address(this), amount);
+            uint256 new_balance = GetContractBalance();
+
+            require(new_balance - old_balance >= amount, "Invalid amount!");
+        } 
+        else
+        {
+            require(msg.value >= amount);
+        }
+    }
+
+    function SendTokens(address userAddress, uint256 amount) internal
+    {
+        if (IsPaymentCurrencyDifferentThanNative)
+        {
+            IERC20(PaymentTokenContractAddress).transfer(userAddress, amount);
+        } 
+        else
+        {
+            payable(userAddress).transfer(amount);
+        }
+    }
+
+    function SendTokensFromSecurityContract(address userAddress, uint256 amount) internal {
+        require(SecurityFundContract != address(0), "Security fund contract not set");
+        ISecurityFund(SecurityFundContract).TransferTokens(PaymentTokenContractAddress, userAddress, amount);
+    }
+
     function InitTopUser() internal
     {
         address userAddress = CreatorAddress;
@@ -590,12 +625,16 @@ contract BBD
 
         uint timestamp = block.timestamp;
 
+        IsFirstTopup = !map_Users[userAddress].IsFirstActivationDone;
         TotalInvestment += amount;
 
         address sponsorAddress = map_Users[userAddress].SponsorAddress;
         
+        map_Users[userAddress].Investment += amount;
+        map_UserTeam[sponsorAddress].DirectsInvestment += amount;
+
         // Only active IDs to be counted
-        if(!map_Users[userAddress].IsFirstActivationDone)
+        if(IsFirstTopup)
         {
             if (sponsorAddress != address(0))
             {
@@ -605,11 +644,9 @@ contract BBD
             UpdateTeamCount(sponsorAddress, userAddress);
         }
 
-        map_Users[userAddress].Investment += amount;
-        map_UserTeam[sponsorAddress].DirectsInvestment += amount;
-
-        UpdateTeamInvestment(sponsorAddress, userAddress, amount);
-
+        UpdateTeamInvestment(userAddress, amount);
+        ProcessRanks(userAddress);
+        
         {
             UserDeposit memory d = UserDeposit({
                 PackageId: packageId,
@@ -625,7 +662,6 @@ contract BBD
             map_UserTransactionCount[userAddress].DepositsCount++;
             ReactivateInternal(userAddress, timestamp, amount);
 
-            IsFirstTopup = !map_Users[userAddress].IsFirstActivationDone;
             if(IsFirstTopup)
             {
                 map_Users[userAddress].FirstActivationTimestamp = timestamp;
@@ -709,39 +745,6 @@ contract BBD
         }
     }
 
-    function ReceiveTokens(uint256 amount) internal
-    {
-        if (IsPaymentCurrencyDifferentThanNative)
-        {
-            uint256 old_balance = GetContractBalance();
-            IERC20(PaymentTokenContractAddress).transferFrom(msg.sender, address(this), amount);
-            uint256 new_balance = GetContractBalance();
-
-            require(new_balance - old_balance >= amount, "Invalid amount!");
-        } 
-        else
-        {
-            require(msg.value >= amount);
-        }
-    }
-
-    function SendTokens(address userAddress, uint256 amount) internal
-    {
-        if (IsPaymentCurrencyDifferentThanNative)
-        {
-            IERC20(PaymentTokenContractAddress).transfer(userAddress, amount);
-        } 
-        else
-        {
-            payable(userAddress).transfer(amount);
-        }
-    }
-
-    function SendTokensFromSecurityContract(address userAddress, uint256 amount) internal {
-        require(SecurityFundContract != address(0), "Security fund contract not set");
-        ISecurityFund(SecurityFundContract).TransferTokens(PaymentTokenContractAddress, userAddress, amount);
-    }
-
     function UpdateTeamCount(address sponsorAddress, address userAddress) internal
     {
         while (sponsorAddress != address(0))
@@ -752,12 +755,20 @@ contract BBD
         }
     }
 
-    function UpdateTeamInvestment(address sponsorAddress, address userAddress, uint256 amount) internal 
+    function ProcessRanks(address userAddress) internal
     {
-        ProcessRankQualification(userAddress);
+        while (userAddress != address(0))
+        {
+            ProcessRankQualification(userAddress);
+            userAddress = map_Users[userAddress].SponsorAddress;
+        }
+    }
+
+    function UpdateTeamInvestment(address directAddress, uint256 amount) internal 
+    {
         uint256 level = 1;
         
-        address directAddress = userAddress;
+        address sponsorAddress = map_Users[directAddress].SponsorAddress;
         while (sponsorAddress != address(0))
         {
             map_UserTeam[sponsorAddress].TeamInvestment += amount; //Including Directs
@@ -792,8 +803,6 @@ contract BBD
                     map_UserTeam[sponsorAddress].TeamBBusiness += amount;
                 }
             }
-
-            ProcessRankQualification(sponsorAddress);
 
             directAddress = sponsorAddress;
             sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
@@ -1405,10 +1414,12 @@ contract BBD
                 ReqSelfInvestment: r.ReqSelfInvestment,
                 ReqTeamA_Business: r.ReqTeamA_Business,
                 ReqTeamB_Business: r.ReqTeamB_Business,
+                ReqTeamCount: r.ReqTeamCount,
                 UserSelfInvestment: user.Investment,
                 HasOneTimeSelfInvestment: HasOneTimeInvestment(userAddress, r.ReqSelfInvestment),
                 UserTeamA_Business: team.TeamABusiness,
                 UserTeamB_Business: team.TeamBBusiness,
+                UserTeamCount: user.TotalTeam,
                 RewardAmount: r.RewardAmount,
                 IsAchieved: achieved
             });
