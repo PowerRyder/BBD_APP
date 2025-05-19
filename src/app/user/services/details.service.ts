@@ -60,7 +60,11 @@ export class DetailsService {
   }
 
   withdrawAmount(userAddress :string , amount : string , type : number){
-    console.log(userAddress, amount, type)
+    // console.log(userAddress, amount, type)
     return this.contract.writeContract('Withdraw',[userAddress, amount , type],"0" )
+  }
+
+  gettopsponseredReport(){
+    return this.contract.readContract('GetTopSponsorsReport',[])
   }
 }

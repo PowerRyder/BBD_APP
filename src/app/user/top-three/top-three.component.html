@@ -1,0 +1,26 @@
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card class="mx-0">
+        <mat-card-title class="text-align-center">Top 3 Sponsers</mat-card-title>
+        <mat-card-content class="card-pad table-responsive">
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Address</th>
+                        <th>Direct Investment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let elem of data">
+                        <td>
+                            {{elem.sponsor}}
+                        </td>
+                        <td>
+                            {{elem.directInvestment}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+</div>

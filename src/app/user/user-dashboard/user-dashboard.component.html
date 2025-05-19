@@ -61,7 +61,8 @@
 
 </div>
 
-<div *ngIf="dashboardDetails?.IsFirstActivationDone" class="d-flex flex-column flex-row flex-md-row justify-content-around">
+<div *ngIf="dashboardDetails?.IsFirstActivationDone"
+    class="d-flex flex-column flex-row flex-md-row justify-content-around">
     <!-- <div class="col-md-4 col-sm-12">
         <mat-card>
             <ngx-gauge type="arch" [value]="dashboardDetails?.CappingUsedBadge" label="Capping Used" append="%"
@@ -73,12 +74,20 @@
         <app-re-activation [IsCappingRemaining]="dashboardDetails?.IsCappingRemaining"></app-re-activation>
     </div>
     <div class="col-md-4 col-sm-12">
-        <app-capping4x-end-timer [timerEndTimestamp]="dashboardDetails?.Capping4X_QualificationEndTimestamp" [IsQualifiedFor4X]="dashboardDetails?.IsQualifiedFor4X"></app-capping4x-end-timer>
+        <app-capping4x-end-timer [timerEndTimestamp]="dashboardDetails?.Capping4X_QualificationEndTimestamp"
+            [IsQualifiedFor4X]="dashboardDetails?.IsQualifiedFor4X"></app-capping4x-end-timer>
     </div>
+
     <!-- <div class="col-md-4 col-sm-12 ">
         <app-deposit [showHistory]="false"></app-deposit>
     </div> -->
 </div>
+<div class="d-flex justify-content-around">
+    
+        <app-top-three></app-top-three>
+   
+</div>
+
 <div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
     <app-dashboard-tiles matIcon="account_balance" title="Deposit" class="col-md-3 col-sm-12"
         [data]="[{key: paymentCurrency, value: dashboardDetails?.Investment}]"

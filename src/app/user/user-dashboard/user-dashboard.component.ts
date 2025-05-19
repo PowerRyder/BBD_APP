@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { AppSettings, app_routes } from 'src/app/app.settings';
-import { DetailsService } from '../services/details.service';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { DepositComponent } from '../deposit/deposit.component';
-import { DashboardTilesComponent } from 'src/app/shared/dashboard-tiles/dashboard-tiles.component';
-import { ReferralLinkComponent } from '../referral-link/referral-link.component';
-import { ReActivationComponent } from '../re-activation/re-activation.component';
 import { NgxGaugeModule } from 'ngx-gauge';
+import { AppSettings, app_routes } from 'src/app/app.settings';
+import { DashboardTilesComponent } from 'src/app/shared/dashboard-tiles/dashboard-tiles.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Capping4xEndTimerComponent } from '../capping4x-end-timer/capping4x-end-timer.component';
+import { DepositComponent } from '../deposit/deposit.component';
+import { ReActivationComponent } from '../re-activation/re-activation.component';
+import { ReferralLinkComponent } from '../referral-link/referral-link.component';
+import { DetailsService } from '../services/details.service';
+import { TopThreeComponent } from "../top-three/top-three.component";
 
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './user-dashboard.component.html',
   standalone: true,
-  imports: [SharedModule, DepositComponent, DashboardTilesComponent, ReferralLinkComponent, ReActivationComponent, NgxGaugeModule, Capping4xEndTimerComponent],
+  imports: [SharedModule, DepositComponent, DashboardTilesComponent, ReferralLinkComponent, ReActivationComponent, NgxGaugeModule, Capping4xEndTimerComponent, TopThreeComponent],
   styleUrls: ['./user-dashboard.component.scss']
 })
 export class UserDashboardComponent implements OnInit {
