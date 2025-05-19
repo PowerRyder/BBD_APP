@@ -61,7 +61,6 @@ contract BBD
         uint256 JoiningTimestamp;
         uint256 Investment;
         uint256 TotalTeam;
-        bool IsBlocked;
         uint256 FirstActivationTimestamp;
         uint256 LastActivationTimestamp;
         uint256 ActivationExpiryTimestamp;
@@ -91,7 +90,6 @@ contract BBD
 
     struct UserIncome 
     {
-        uint256 ReferralIncome;
         uint256 NewRegistrationBonus;
         uint256 ROIIncome;
         uint256[] LevelIncome;
@@ -123,8 +121,6 @@ contract BBD
         bool HasRange;
         uint256 MinAmount;
         uint256 MaxAmount;
-        uint256 ReferralIncome;
-        bool IsReferralIncomePercentage;
     }
 
     struct LevelIncomeMaster
@@ -154,7 +150,6 @@ contract BBD
         uint256 TeamB_Business;
         uint256 TeamInvestment;
         uint256 NewRegistrationBonus;
-        uint256 ReferralIncome;
         uint256 LevelIncome;
         uint256 ROIIncome;
         uint256 PendingROIIncome;
@@ -231,6 +226,11 @@ contract BBD
         bool IsAchieved;
     }
 
+    struct TopSponsors {
+        address sponsor;
+        uint256 directInvestment;
+    }
+
     mapping(uint256 => PackageMaster) public map_PackageMaster;
     mapping(uint256 => LevelIncomeMaster) public map_LevelIncomeMaster;
     mapping(uint256 => RankMaster) public map_RankMaster;
@@ -251,11 +251,6 @@ contract BBD
 
     mapping(address => UserTransactionCount) public map_UserTransactionCount;
     mapping(address => address) public map_TeamALegAddress;
-
-    struct TempSponsorCount {
-        address sponsor;
-        uint256 count;
-    }
 
     address[] private userActivations;
 
@@ -290,9 +285,7 @@ contract BBD
             IsActive: true,
             HasRange: true,
             MinAmount: ConvertToBase(30),
-            MaxAmount: ConvertToBase(3000),
-            ReferralIncome: 0,
-            IsReferralIncomePercentage: true
+            MaxAmount: ConvertToBase(3000)
         });
     }
 
@@ -567,7 +560,6 @@ contract BBD
             JoiningTimestamp: block.timestamp,
             Investment: 0,
             TotalTeam: 0,
-            IsBlocked: false,
             FirstActivationTimestamp: 0,
             LastActivationTimestamp: 0,
             ActivationExpiryTimestamp: 0,
@@ -586,7 +578,6 @@ contract BBD
         });
 
         UserIncome memory ui = UserIncome({
-            ReferralIncome: 0,
             LevelIncome: new uint256[](LevelIncome_LevelCount + 1),
             NewRegistrationBonus: 0,
             ROIIncome: 0,
@@ -678,70 +669,121 @@ contract BBD
 
     function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal 
     {
+        // uint256 timeLimit = block.timestamp - 1 days;
+
+        // TopSponsors[] memory sponsors = new TopSponsors[](userActivations.length);
+        // uint256 sponsorIndex = 0;
+
+        // for (uint256 i = userActivations.length; i > 0; i--) {
+        //     address userAddress = userActivations[i - 1];
+
+        //     if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) {
+        //         break;
+        //     }
+
+        //     uint256 firstActivationAmount = 0;
+        //     address sponsor = map_Users[userAddress].SponsorAddress;
+        //     if (sponsor == address(0)) continue;
+
+        //     bool found = false;
+        //     for (uint256 j = 0; j < sponsorIndex; j++) {
+        //         if (sponsors[j].sponsor == sponsor) {
+        //             sponsors[j].directInvestment += firstActivationAmount;
+        //             found = true;
+        //             break;
+        //         }
+        //     }
+
+        //     if (!found) {
+        //         sponsors[sponsorIndex] = TopSponsors({ sponsor: sponsor, directInvestment: firstActivationAmount });
+        //         sponsorIndex++;
+        //     }
+        // }
+
+        
+        // // Find top 3 sponsors by investment
+        // address[3] memory topSponsors;
+        // uint256[3] memory topInvestments;
+
+        // for (uint256 i = 0; i < sponsorIndex; i++) {
+        //     address sponsor = sponsors[i].sponsor;
+        //     uint256 investment = sponsors[i].directInvestment;
+
+        //     for (uint256 j = 0; j < 3; j++) {
+        //         if (investment > topInvestments[j]) {
+        //             for (uint256 k = 2; k > j; k--) {
+        //                 topInvestments[k] = topInvestments[k - 1];
+        //                 topSponsors[k] = topSponsors[k - 1];
+        //             }
+        //             topInvestments[j] = investment;
+        //             topSponsors[j] = sponsor;
+        //             break;
+        //         }
+        //     }
+        // }
+
+        TopSponsors[3] memory topSponsors = GetTopSponsorsByDirectInvestment();
+
+        // Distribute 2% of `onAmount` => split as 50%, 30%, 20%
+        uint256 totalPool = (onAmount * 2) / 100;
+        uint256[3] memory percentages = [uint256(50), 30, 20]; // 50%, 30%, 20% in basis points (1/100)
+
+        for (uint256 i = 0; i < 3; i++) {
+            address s = topSponsors[i].sponsor;
+            if (s != address(0)) {
+                uint256 income = (totalPool * percentages[i]) / 100;
+                income = CapAndCreditIncomeToWallet(s, income);
+                map_UserIncome[s].TopmostSponsorsIncome += income;
+            }
+        }
+    }
+
+    function GetTopSponsorsByDirectInvestment() internal view returns (TopSponsors[3] memory topSponsors) {
         uint256 timeLimit = block.timestamp - 1 days;
 
-        // Temporary in-memory array to hold sponsor count structs
-        TempSponsorCount[] memory sponsorCounts = new TempSponsorCount[](userActivations.length);
+        TopSponsors[] memory sponsors = new TopSponsors[](userActivations.length);
         uint256 sponsorIndex = 0;
 
-        // Step 1: Loop backwards through activations to count sponsors
         for (uint256 i = userActivations.length; i > 0; i--) {
             address userAddress = userActivations[i - 1];
-
-            if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) {
-                break;
-            }
+            if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) break;
 
             address sponsor = map_Users[userAddress].SponsorAddress;
             if (sponsor == address(0)) continue;
 
+            uint256 firstActivationAmount = map_UserDeposits[userAddress][1].Amount;
+
             bool found = false;
             for (uint256 j = 0; j < sponsorIndex; j++) {
-                if (sponsorCounts[j].sponsor == sponsor) {
-                    sponsorCounts[j].count++;
+                if (sponsors[j].sponsor == sponsor) {
+                    sponsors[j].directInvestment += firstActivationAmount;
                     found = true;
                     break;
                 }
             }
 
             if (!found) {
-                sponsorCounts[sponsorIndex] = TempSponsorCount({ sponsor: sponsor, count: 1 });
+                sponsors[sponsorIndex] = TopSponsors({
+                    sponsor: sponsor,
+                    directInvestment: firstActivationAmount
+                });
                 sponsorIndex++;
             }
         }
 
-        // Step 2: Find top 3 sponsors
-        address[3] memory topSponsors;
-        uint256[3] memory topCounts;
-
+        // Find top 3 sponsors
         for (uint256 i = 0; i < sponsorIndex; i++) {
-            address sponsor = sponsorCounts[i].sponsor;
-            uint256 count = sponsorCounts[i].count;
+            address sponsor = sponsors[i].sponsor;
+            uint256 investment = sponsors[i].directInvestment;
 
             for (uint256 j = 0; j < 3; j++) {
-                if (count > topCounts[j]) {
-                    // Shift lower entries down
+                if (investment > topSponsors[j].directInvestment) {
                     for (uint256 k = 2; k > j; k--) {
-                        topCounts[k] = topCounts[k - 1];
                         topSponsors[k] = topSponsors[k - 1];
                     }
-                    topCounts[j] = count;
-                    topSponsors[j] = sponsor;
+                    topSponsors[j] = TopSponsors({ sponsor: sponsor, directInvestment: investment });
                     break;
                 }
-            }
-        }
-
-        // Step 3: Distribute 2% of `onAmount` => split as 50%, 30%, 20%
-        uint256 totalPool = (onAmount * 2) / 100;
-        uint256[3] memory percentages = [uint256(50), 30, 20]; // 50%, 30%, 20% in basis points (1/100)
-
-        for (uint256 i = 0; i < 3; i++) {
-            address s = topSponsors[i];
-            if (s != address(0)) {
-                uint256 income = (totalPool * percentages[i]) / 100;
-                income = CapAndCreditIncomeToWallet(s, income);
-                map_UserIncome[s].TopmostSponsorsIncome += income;
             }
         }
     }
@@ -930,29 +972,6 @@ contract BBD
         return creditable;
     }
 
-    // function CapIncome(address userAddress, uint256 amount) internal view returns (uint256)
-    // {
-    //     if(amount>0)
-    //     {
-    //         if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
-    //         {
-    //             return 0;
-    //         }
-    //         else
-    //         {
-    //             uint256 total_income = GetTotalIncome(userAddress);
-    //             uint256 capping_amount = GetUserCappingAmount(userAddress);
-
-    //             if(total_income+amount>capping_amount)
-    //             {
-    //                 amount = capping_amount - total_income;
-    //             }
-    //         }
-    //     }
-
-    //     return amount;
-    // }
-
     function GetUserCappingAmount(address userAddress) internal view returns (uint256)
     {
         return (map_Users[userAddress].IsQualifiedFor4X?4:3)*map_Users[userAddress].Investment;
@@ -971,11 +990,6 @@ contract BBD
     function doesUserExist(address _address) internal view returns (bool)
     {
         return map_Users[_address].Id > 0;
-    }
-
-    function isUserActive(address _address) internal view returns (bool)
-    {
-        return !map_Users[_address].IsBlocked;
     }
 
     function HasUserActivationExpired(address userAddress) internal view returns (bool)
@@ -1028,12 +1042,6 @@ contract BBD
 
         return false;
     }
-
-    // function DistributeReferralIncome(address userAddress, uint packageId, uint amount) internal
-    // {
-    //     uint income = map_PackageMaster[packageId].IsReferralIncomePercentage? amount*map_PackageMaster[packageId].ReferralIncome/100: map_PackageMaster[packageId].ReferralIncome;
-    //     map_UserIncome[map_Users[userAddress].SponsorAddress].ReferralIncome += income;
-    // }
 
     function ProcessNewRegistrationBonus(address userAddress, uint256 amount) internal
     {
@@ -1122,7 +1130,6 @@ contract BBD
     {
         // Don't put Pending ROI Income here as it will have circular dependency
         return
-            map_UserIncome[userAddress].ReferralIncome +
             map_UserIncome[userAddress].ROIIncome +
             // map_UserIncome[userAddress].RankIncome +
             map_UserIncome[userAddress].NewRegistrationBonus +
@@ -1187,43 +1194,6 @@ contract BBD
         return CapIncomeView(userAddress, income);
     }
 
-    // function GetPendingROIIncome(address userAddress) internal view returns (uint256)
-    // {
-    //     uint256 onAmount = map_Users[userAddress].Investment;
-        
-    //     uint256 income_amount = 0;
-    //     if(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp)
-    //     {
-    //         income_amount = onAmount*10/100;
-    //         income_amount = CapIncomeView(userAddress, income_amount);
-    //     }
-
-    //     return income_amount;
-    // }
-
-    // function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 prev_LastActivationTimestamp, uint256 prev_ActivationExpiryTimestamp, uint256 currentDepositAmount) internal
-    // {
-    //     uint256 onAmount = map_Users[userAddress].Investment-currentDepositAmount;
-
-    //     if(onAmount>0)
-    //     {
-    //         uint cycle_duration = (prev_ActivationExpiryTimestamp - prev_LastActivationTimestamp);
-    //         uint time_Elapsed = ((prev_ActivationExpiryTimestamp<=block_timestamp?prev_ActivationExpiryTimestamp:block_timestamp) - prev_LastActivationTimestamp);
-
-    //         uint256 income_amount = (onAmount*10*time_Elapsed)/(100*cycle_duration);
-    //         income_amount = CapAndCreditIncomeToWallet(userAddress, income_amount);
-    //         map_UserIncome[userAddress].ROIIncome += income_amount;
-
-    //         map_UserTransactionCount[userAddress].ROIIncomeCount++;
-
-    //         map_ROIIncomeHistory[userAddress][map_UserTransactionCount[userAddress].ROIIncomeCount] = ROIIncomeDetail({
-    //             OnAmount: onAmount,
-    //             Timestamp: block_timestamp,
-    //             Income: income_amount
-    //         });
-    //     }
-    // }
-
     function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 prev_LastActivationTimestamp, uint256 prev_ActivationExpiryTimestamp, uint256 currentDepositAmount) internal 
     {
         uint256 totalDeposits = map_UserTransactionCount[userAddress].DepositsCount;
@@ -1264,7 +1234,7 @@ contract BBD
 
     function Login(address _address) public view returns (bool) 
     {
-        return doesUserExist(_address) && isUserActive(_address);
+        return doesUserExist(_address);
     }
 
     function GetWalletBalance(address userAddress, uint256 walletId) public view returns (uint256) {
@@ -1309,7 +1279,6 @@ contract BBD
             TeamB_Business: ut.TeamBBusiness,
             TeamInvestment: ut.TeamInvestment,
             NewRegistrationBonus: ui.NewRegistrationBonus,
-            ReferralIncome: ui.ReferralIncome,
             LevelIncome: GetTotalLevelIncome(userAddress),
             ROIIncome: ui.ROIIncome,
             PendingROIIncome: GetPendingROIIncome(userAddress),
@@ -1326,6 +1295,10 @@ contract BBD
             IsQualifiedFor4X: u.IsQualifiedFor4X,
             IsFirstActivationDone: u.FirstActivationTimestamp>0
         });
+    }
+
+    function GetTopSponsorsReport() external view returns (TopSponsors[3] memory) {
+        return GetTopSponsorsByDirectInvestment();
     }
 
     function GetDirects(address userAddress) external view returns (UserDirects[] memory directs)
@@ -1493,7 +1466,6 @@ contract BBD
         uint256 contractBalance = GetContractBalance();
 
         require(Login(userAddress), "Invalid user!");
-        require(isUserActive(userAddress), "You are not allowed!");
         require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
         require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
         require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
