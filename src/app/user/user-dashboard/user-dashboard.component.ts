@@ -39,6 +39,11 @@ export class UserDashboardComponent implements OnInit {
   constructor(private details: DetailsService) { }
 
   async ngOnInit() {
+    setTimeout(()=>{
+      this.getDetails();
+    }, 0);
+  }
+  async getDetails() {
     this.userAddress = sessionStorage.getItem("UserAddress");
     let dashboardDetails = Object.assign({}, (await this.details.getDashboardDetails(this.userAddress)).data);
 
