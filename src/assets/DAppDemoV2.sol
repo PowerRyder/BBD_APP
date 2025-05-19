@@ -645,7 +645,6 @@ contract BBD
         }
 
         UpdateTeamInvestment(userAddress, amount);
-        ProcessRanks(userAddress);
         
         {
             UserDeposit memory d = UserDeposit({
@@ -656,10 +655,12 @@ contract BBD
                 IncomePaid: 0
             });
 
-            Process4X_CappingQualification(userAddress, amount, 0);
 
             map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount + 1] = d;
             map_UserTransactionCount[userAddress].DepositsCount++;
+            
+            ProcessRanks(userAddress);
+            Process4X_CappingQualification(userAddress, amount, 0);
             ReactivateInternal(userAddress, timestamp, amount);
 
             if(IsFirstTopup)
