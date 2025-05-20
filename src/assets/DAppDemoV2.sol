@@ -254,7 +254,9 @@ contract BBD
 
     address[] private userActivations;
 
-    
+    IERC20 public BBDTokenContract;
+    uint256 public BBDTokenRate = 10 * 1e18; // tokens per 1 USDT (18 decimals assumed) i.e. 10 BBD per 1 USDT
+
     modifier onlyOwner() {
         require(IsOwner(), "You are not allowed!");
         _;
@@ -1538,6 +1540,31 @@ contract BBD
     function UpdatePackageMaxAmount(uint256 amount) external onlyOwner
     {
         map_PackageMaster[1].MaxAmount = amount;
+    }
+
+    function SetBBDTokenContract(address tokenAddress) external onlyOwner {
+        BBDTokenContract = IERC20(tokenAddress);
+    }
+
+    function SetBBDTokenRate(uint256 rate) external onlyOwner {
+        // rate is how many BBD tokens per 1 USDT (e.g., 10 BBD per 1 USDT => rate = 10e18)
+        require(rate>0, "Rate cannot be zero or negative!");
+        BBDTokenRate = rate;
+    }
+
+    function BuyBBDFromWallet(uint256 amount, uint256 walletId) external {
+        address user = msg.sender;
+        require(Login(user), "Invalid user!");
+
+        require(GetWalletBalance(user, walletId) >= amount, "Insufficient funds!");
+
+        uint256 bbdAmount = (amount * BBDTokenRate) / 1e18;
+        require(BBDTokenContract.balanceOf(address(this)) >= bbdAmount, "Insufficient BBD tokens in contract");
+
+        map_UserWalletBalance[user][walletId] -= amount;
+        BBDTokenContract.transfer(user, bbdAmount);
+
+        emit Transfer(address(this), user, bbdAmount);
     }
 
     // function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
