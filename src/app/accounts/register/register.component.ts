@@ -76,7 +76,7 @@ export class RegisterComponent implements OnInit {
 
         let res_sponsor = (await this.details.getUserDetails(sponsorAddress)).data;
         console.log(res_sponsor)
-        if (res_sponsor && res_sponsor.Investment > 0) {
+        if (res_sponsor && (res_sponsor.Id==1 || res_sponsor.Investment > 0)) {
           let res = await this.accounts.login(this.walletDetails.address);
           if (!res.data) {
             // if (this.walletDetails.balance >= this.packageDetails.amount) {

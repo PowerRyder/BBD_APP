@@ -32,13 +32,13 @@ export class AccountsService {
   async register(sponsorAddress: string, amount: number){
     try{
       this.spinner.show();
-      if(AppSettings.IsPaymentCurrencyDifferentThanNative){
-        let r = await this.contract.approveToken(amount);
-        console.log(r)
-      }
+      // if(AppSettings.IsPaymentCurrencyDifferentThanNative){
+      //   let r = await this.contract.approveToken(amount);
+      //   console.log(r)
+      // }
       let amount_str = this.contract.convertAmountToPaymentCurrencyBaseValue(amount);
       // console.log("amount", amount_str)
-      let res = await this.contract.writeContract('Register', [sponsorAddress], amount_str);
+      let res = await this.contract.writeContract('Register', [sponsorAddress, 1, 0], amount_str);
       // console.log(res)
       return res;
     }
