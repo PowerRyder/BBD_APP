@@ -42,7 +42,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"src/assets/DAppDemoV2.sol": "ISecurityFund"
+			"src/assets/BBD_Contract.sol": "ISecurityFund"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -51,25 +51,17 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 140
 		},
 		"remappings": []
 	},
 	"sources": {
-		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-			"keccak256": "0xe06a3f08a987af6ad2e1c1e774405d4fe08f1694b67517438b467cecf0da0ef7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://df6f0c459663c9858b6cba2cda1d14a7d05a985bed6d2de72bd8e78c25ee79db",
-				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
-			]
-		},
-		"src/assets/DAppDemoV2.sol": {
-			"keccak256": "0x5d7a029bb604679fd1d1788587744ff6432cd4fc2cd0836eea450398216a61af",
+		"src/assets/BBD_Contract.sol": {
+			"keccak256": "0xddbea16f49a2c274f6de92fecb96f47e3a2d1971512e262828723c7b2c10186d",
 			"license": "None",
 			"urls": [
-				"bzz-raw://0ec5406afa24a34b4710c74a062267e7b5f199587aa408598556bb5cc6aea904",
-				"dweb:/ipfs/QmP3BKGkNLQ4kEbJgvCk5gP5bsBUNzhDYZ4JVJgcSF1mB8"
+				"bzz-raw://a1b0bd6a60300bace0a4f7a890b900263f6f1d758db23a81c80ac40d72485253",
+				"dweb:/ipfs/QmXYxx2kTxQKvbupwQzHoPFYLREM8HHnne9pzCRTh2KfBP"
 			]
 		}
 	},

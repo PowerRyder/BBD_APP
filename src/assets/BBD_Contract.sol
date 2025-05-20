@@ -1,8 +1,6 @@
 //SPDX-License-Identifier: None
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
 interface IBEP20 
 {
     function totalSupply() external view returns (uint256);
@@ -14,6 +12,12 @@ interface IBEP20
     function name() external view returns (string memory);
 
     function balanceOf(address account) external view returns (uint256);
+
+    function transfer(address to, uint256 value) external returns (bool);
+
+    function approve(address spender, uint256 value) external returns (bool);
+
+    function transferFrom(address from, address to, uint256 value) external returns (bool);
 }
 
 interface ISecurityFund {
@@ -22,8 +26,6 @@ interface ISecurityFund {
 
 contract BBD
 {
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
     uint256 public TotalUsers = 0;
     uint256 public TotalInvestment = 0;
     uint256 public TotalWithdrawn = 0;
@@ -47,7 +49,7 @@ contract BBD
 
     uint256 constant PaymentCurrencyDecimals = 18;
 
-    bool IsWithdrawalAllowedAfterPrincipleAmount = true;
+    // bool IsWithdrawalAllowedAfterPrincipleAmount = true;
     address dev;
 
     uint256 WithdrawalWalletId = 1;
@@ -104,6 +106,7 @@ contract BBD
         uint256 ROIIncomeCount;
         uint256 IncomeWithdrawalCount;
         uint256 ReactivationCount;
+        uint256 BBD_TokenBuyCount;
     }
 
     struct UserIncomeWithdrawalTransaction
@@ -117,7 +120,6 @@ contract BBD
         uint256 PackageId;
         string Name;
         uint256 Amount;
-        bool IsActive;
         bool HasRange;
         uint256 MinAmount;
         uint256 MaxAmount;
@@ -136,7 +138,7 @@ contract BBD
         uint256 CommunityInvestment;
         uint256 CommunityWithdrawal;
         uint256 ContractBalance;
-        bool IsWithdrawalAllowedAfterPrincipleAmount;
+        // bool IsWithdrawalAllowedAfterPrincipleAmount;
     }
 
     struct UserDashboard
@@ -231,6 +233,13 @@ contract BBD
         uint256 directInvestment;
     }
 
+    struct BBDPurchase {
+        uint256 AmountSpent;
+        uint256 BBDAmountReceived;
+        uint256 Timestamp;
+        uint256 WalletId;
+    }
+
     mapping(uint256 => PackageMaster) public map_PackageMaster;
     mapping(uint256 => LevelIncomeMaster) public map_LevelIncomeMaster;
     mapping(uint256 => RankMaster) public map_RankMaster;
@@ -252,9 +261,11 @@ contract BBD
     mapping(address => UserTransactionCount) public map_UserTransactionCount;
     mapping(address => address) public map_TeamALegAddress;
 
+    mapping(address => mapping(uint256 => BBDPurchase)) public map_BBDPurchaseHistory;
+
     address[] private userActivations;
 
-    IERC20 public BBDTokenContract;
+    IBEP20 public BBDTokenContract;
     uint256 public BBDTokenRate = 10 * 1e18; // tokens per 1 USDT (18 decimals assumed) i.e. 10 BBD per 1 USDT
 
     modifier onlyOwner() {
@@ -284,7 +295,6 @@ contract BBD
             PackageId: TotalNoOfPackages,
             Name: "Package",
             Amount: 0,
-            IsActive: true,
             HasRange: true,
             MinAmount: ConvertToBase(30),
             MaxAmount: ConvertToBase(3000)
@@ -517,7 +527,7 @@ contract BBD
         if (IsPaymentCurrencyDifferentThanNative)
         {
             uint256 old_balance = GetContractBalance();
-            IERC20(PaymentTokenContractAddress).transferFrom(msg.sender, address(this), amount);
+            IBEP20(PaymentTokenContractAddress).transferFrom(msg.sender, address(this), amount);
             uint256 new_balance = GetContractBalance();
 
             require(new_balance - old_balance >= amount, "Invalid amount!");
@@ -532,7 +542,7 @@ contract BBD
     {
         if (IsPaymentCurrencyDifferentThanNative)
         {
-            IERC20(PaymentTokenContractAddress).transfer(userAddress, amount);
+            IBEP20(PaymentTokenContractAddress).transfer(userAddress, amount);
         } 
         else
         {
@@ -592,7 +602,8 @@ contract BBD
             DepositsCount: 0,
             ROIIncomeCount: 0,
             IncomeWithdrawalCount: 0,
-            ReactivationCount: 0
+            ReactivationCount: 0,
+            BBD_TokenBuyCount: 0
         });
 
         map_Users[userAddress] = u;
@@ -603,11 +614,20 @@ contract BBD
 
     }
 
+    function CheckUserExistsAndActivationNotExpired(address userAddress) internal view
+    {
+        require(Login(userAddress), "Invalid sending user!");
+        require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
+    }
+
+    function CheckForWalletBalance(address userAddress, uint256 walletId, uint256 amount) internal view
+    {
+        require((GetWalletBalance(userAddress, walletId) >= amount), "Insufficient funds!");
+    }
+
     function SaveDeposit(address userAddress, uint256 packageId, uint256 amount) internal returns(bool IsFirstTopup)
     {
         require(
-            map_PackageMaster[packageId].IsActive 
-                &&
             ((!map_PackageMaster[packageId].HasRange && map_PackageMaster[packageId].Amount == amount) 
                 ||
             (map_PackageMaster[packageId].HasRange && map_PackageMaster[packageId].MinAmount <= amount && map_PackageMaster[packageId].MaxAmount >= amount)),
@@ -671,59 +691,6 @@ contract BBD
 
     function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal 
     {
-        // uint256 timeLimit = block.timestamp - 1 days;
-
-        // TopSponsors[] memory sponsors = new TopSponsors[](userActivations.length);
-        // uint256 sponsorIndex = 0;
-
-        // for (uint256 i = userActivations.length; i > 0; i--) {
-        //     address userAddress = userActivations[i - 1];
-
-        //     if (map_Users[userAddress].FirstActivationTimestamp < timeLimit) {
-        //         break;
-        //     }
-
-        //     uint256 firstActivationAmount = 0;
-        //     address sponsor = map_Users[userAddress].SponsorAddress;
-        //     if (sponsor == address(0)) continue;
-
-        //     bool found = false;
-        //     for (uint256 j = 0; j < sponsorIndex; j++) {
-        //         if (sponsors[j].sponsor == sponsor) {
-        //             sponsors[j].directInvestment += firstActivationAmount;
-        //             found = true;
-        //             break;
-        //         }
-        //     }
-
-        //     if (!found) {
-        //         sponsors[sponsorIndex] = TopSponsors({ sponsor: sponsor, directInvestment: firstActivationAmount });
-        //         sponsorIndex++;
-        //     }
-        // }
-
-        
-        // // Find top 3 sponsors by investment
-        // address[3] memory topSponsors;
-        // uint256[3] memory topInvestments;
-
-        // for (uint256 i = 0; i < sponsorIndex; i++) {
-        //     address sponsor = sponsors[i].sponsor;
-        //     uint256 investment = sponsors[i].directInvestment;
-
-        //     for (uint256 j = 0; j < 3; j++) {
-        //         if (investment > topInvestments[j]) {
-        //             for (uint256 k = 2; k > j; k--) {
-        //                 topInvestments[k] = topInvestments[k - 1];
-        //                 topSponsors[k] = topSponsors[k - 1];
-        //             }
-        //             topInvestments[j] = investment;
-        //             topSponsors[j] = sponsor;
-        //             break;
-        //         }
-        //     }
-        // }
-
         TopSponsors[3] memory topSponsors = GetTopSponsorsByDirectInvestment();
 
         // Distribute 2% of `onAmount` => split as 50%, 30%, 20%
@@ -1012,7 +979,7 @@ contract BBD
     {
         address userAddress = msg.sender;
         require(doesUserExist(userAddress), "You are not registered!");
-        require(HasUserActivationExpired(userAddress), "Deposit is allowed only after the expiry.");
+        require(HasUserActivationExpired(userAddress), "Wait till expiry.");
         ReceiveTokens(amount);
 
         bool IsFirstTopup = SaveDeposit(userAddress, packageId, amount);
@@ -1148,7 +1115,7 @@ contract BBD
     {
         if (IsPaymentCurrencyDifferentThanNative) 
         {
-            return IERC20(PaymentTokenContractAddress).balanceOf(address(this));
+            return IBEP20(PaymentTokenContractAddress).balanceOf(address(this));
         } 
         else 
         {
@@ -1260,8 +1227,8 @@ contract BBD
             TotalCommunity: TotalUsers,
             CommunityInvestment: TotalInvestment,
             CommunityWithdrawal: TotalWithdrawn,
-            ContractBalance: GetContractBalance(),
-            IsWithdrawalAllowedAfterPrincipleAmount: IsWithdrawalAllowedAfterPrincipleAmount
+            ContractBalance: GetContractBalance()
+            // IsWithdrawalAllowedAfterPrincipleAmount: IsWithdrawalAllowedAfterPrincipleAmount
         });
     }
 
@@ -1409,7 +1376,6 @@ contract BBD
         uint256 startCount = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
         uint256 endCount = startCount >= pageSize ? startCount - pageSize : 0;
 
-        // uint endCount = (startCount+pageSize)<map_UserTransactionCount[userAddress].DepositsCount?(startCount+pageSize):map_UserTransactionCount[userAddress].DepositsCount;
         uint256 arr_index = 0;
         deposits = new UserDeposit[](startCount - endCount);
         for (uint256 i = startCount; i > endCount; i--) {
@@ -1456,8 +1422,9 @@ contract BBD
         // require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
         // require(doesUserExist(userAddress), "Invalid user for topup!");
         // require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
-        require(!map_Users[userAddress].IsFirstActivationDone, "Only first time topup is allowed from wallet.");
-        require(GetWalletBalance(userAddress, BBDWalletId)>=amount, "Insufficient funds in wallet!");
+        require(!map_Users[userAddress].IsFirstActivationDone, "Only first topup is allowed from wallet.");
+        CheckForWalletBalance(userAddress, BBDWalletId, amount);
+        // require(GetWalletBalance(userAddress, BBDWalletId)>=amount, "Insufficient funds in wallet!");
 
         SaveDeposit(userAddress, packageId, amount);
         map_UserWalletBalance[userAddress][2] -= amount;
@@ -1467,11 +1434,11 @@ contract BBD
         address userAddress = msg.sender;
         uint256 contractBalance = GetContractBalance();
 
-        require(Login(userAddress), "Invalid user!");
-        require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
+        CheckUserExistsAndActivationNotExpired(userAddress);
         require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
-        require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
-        require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
+        CheckForWalletBalance(userAddress, WithdrawalWalletId, amount);
+        // require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
+        // require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (IsWithdrawalAllowedAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
 
         map_UserWalletBalance[userAddress][WithdrawalWalletId] -= amount;
         map_UserIncome[userAddress].AmountWithdrawn += amount;
@@ -1509,11 +1476,12 @@ contract BBD
         {
             from = msg.sender;
         }
-
-        require(Login(from), "Invalid sending user!");
-        require(!HasUserActivationExpired(from), "Your ID is inactive.");
+        CheckUserExistsAndActivationNotExpired(from);
+        // require(Login(from), "Invalid sending user!");
+        // require(!HasUserActivationExpired(from), "Your ID is inactive.");
         require(Login(to), "Invalid receiving user!");
-        require(map_UserWalletBalance[from][BBDWalletId]>=value, "Insufficient funds!");
+        CheckForWalletBalance(from, BBDWalletId, value);
+        // require(map_UserWalletBalance[from][BBDWalletId]>=value, "Insufficient funds!");
         require(value>=ConvertToBase(5), "Minimum amount is 5 USDT!");
 
         uint256 deduction = value*5/100;
@@ -1543,28 +1511,48 @@ contract BBD
     }
 
     function SetBBDTokenContract(address tokenAddress) external onlyOwner {
-        BBDTokenContract = IERC20(tokenAddress);
+        BBDTokenContract = IBEP20(tokenAddress);
     }
 
     function SetBBDTokenRate(uint256 rate) external onlyOwner {
         // rate is how many BBD tokens per 1 USDT (e.g., 10 BBD per 1 USDT => rate = 10e18)
-        require(rate>0, "Rate cannot be zero or negative!");
+        require(rate>0, "Rate must be positive!");
         BBDTokenRate = rate;
     }
 
     function BuyBBDFromWallet(uint256 amount, uint256 walletId) external {
-        address user = msg.sender;
-        require(Login(user), "Invalid user!");
-
-        require(GetWalletBalance(user, walletId) >= amount, "Insufficient funds!");
+        address userAddress = msg.sender;
+        require(Login(userAddress), "Invalid user!");
+        CheckForWalletBalance(userAddress, walletId, amount);
+        // require(GetWalletBalance(userAddress, walletId) >= amount, "Insufficient funds!");
 
         uint256 bbdAmount = (amount * BBDTokenRate) / 1e18;
         require(BBDTokenContract.balanceOf(address(this)) >= bbdAmount, "Insufficient BBD tokens in contract");
 
-        map_UserWalletBalance[user][walletId] -= amount;
-        BBDTokenContract.transfer(user, bbdAmount);
+        map_UserWalletBalance[userAddress][walletId] -= amount;
+        BBDTokenContract.transfer(userAddress, bbdAmount);
+        map_UserTransactionCount[userAddress].BBD_TokenBuyCount++;
 
-        emit Transfer(address(this), user, bbdAmount);
+        map_BBDPurchaseHistory[userAddress][map_UserTransactionCount[userAddress].BBD_TokenBuyCount] = BBDPurchase({
+            AmountSpent: amount,
+            BBDAmountReceived: bbdAmount,
+            Timestamp: block.timestamp,
+            WalletId: walletId
+        });
+    }
+
+    function GetBBDPurchaseHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (BBDPurchase[] memory history) {
+        uint256 total = map_UserTransactionCount[userAddress].BBD_TokenBuyCount;
+        uint256 start = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
+        uint256 end = start >= pageSize ? start - pageSize : 0;
+
+        uint256 length = start - end;
+        history = new BBDPurchase[](length);
+
+        uint256 j = 0;
+        for (uint256 i = start; i > end; i--) {
+            history[j++] = map_BBDPurchaseHistory[userAddress][i];
+        }
     }
 
     // function Withdraw(address userAddress, uint256 amount, uint256 _type) external {

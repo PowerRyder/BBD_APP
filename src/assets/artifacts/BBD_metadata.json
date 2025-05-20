@@ -11,29 +11,48 @@
 				"type": "constructor"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
+				"inputs": [],
+				"name": "BBDTokenContract",
+				"outputs": [
 					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "from",
+						"internalType": "contract IBEP20",
+						"name": "",
 						"type": "address"
-					},
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "BBDTokenRate",
+				"outputs": [
 					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"indexed": false,
 						"internalType": "uint256",
-						"name": "value",
+						"name": "",
 						"type": "uint256"
 					}
 				],
-				"name": "Transfer",
-				"type": "event"
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "walletId",
+						"type": "uint256"
+					}
+				],
+				"name": "BuyBBDFromWallet",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			},
 			{
 				"inputs": [],
@@ -80,6 +99,57 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pageIndex",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pageSize",
+						"type": "uint256"
+					}
+				],
+				"name": "GetBBDPurchaseHistory",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "AmountSpent",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "BBDAmountReceived",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "Timestamp",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "WalletId",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct BBD.BBDPurchase[]",
+						"name": "history",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "GetContractDetails",
 				"outputs": [
@@ -104,11 +174,6 @@
 								"internalType": "uint256",
 								"name": "ContractBalance",
 								"type": "uint256"
-							},
-							{
-								"internalType": "bool",
-								"name": "IsWithdrawalAllowedAfterPrincipleAmount",
-								"type": "bool"
 							}
 						],
 						"internalType": "struct BBD.ContractInfo",
@@ -174,11 +239,6 @@
 							{
 								"internalType": "uint256",
 								"name": "NewRegistrationBonus",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "ReferralIncome",
 								"type": "uint256"
 							},
 							{
@@ -482,11 +542,6 @@
 							},
 							{
 								"internalType": "bool",
-								"name": "IsActive",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
 								"name": "HasRange",
 								"type": "bool"
 							},
@@ -499,16 +554,6 @@
 								"internalType": "uint256",
 								"name": "MaxAmount",
 								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "ReferralIncome",
-								"type": "uint256"
-							},
-							{
-								"internalType": "bool",
-								"name": "IsReferralIncomePercentage",
-								"type": "bool"
 							}
 						],
 						"internalType": "struct BBD.PackageMaster[]",
@@ -703,6 +748,31 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "GetTopSponsorsReport",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "sponsor",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "directInvestment",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct BBD.TopSponsors[3]",
+						"name": "",
+						"type": "tuple[3]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -808,6 +878,32 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "SetBBDTokenContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "rate",
+						"type": "uint256"
+					}
+				],
+				"name": "SetBBDTokenRate",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -971,6 +1067,45 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "map_BBDPurchaseHistory",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "AmountSpent",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "BBDAmountReceived",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "WalletId",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
@@ -1024,11 +1159,6 @@
 					},
 					{
 						"internalType": "bool",
-						"name": "IsActive",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
 						"name": "HasRange",
 						"type": "bool"
 					},
@@ -1041,16 +1171,6 @@
 						"internalType": "uint256",
 						"name": "MaxAmount",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "ReferralIncome",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "IsReferralIncomePercentage",
-						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -1257,11 +1377,6 @@
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "ReferralIncome",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
 						"name": "NewRegistrationBonus",
 						"type": "uint256"
 					},
@@ -1381,6 +1496,11 @@
 						"internalType": "uint256",
 						"name": "ReactivationCount",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "BBD_TokenBuyCount",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -1451,11 +1571,6 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "bool",
-						"name": "IsBlocked",
-						"type": "bool"
-					},
-					{
 						"internalType": "uint256",
 						"name": "FirstActivationTimestamp",
 						"type": "uint256"
@@ -1503,7 +1618,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"src/assets/DAppDemoV2.sol": "BBD"
+			"src/assets/BBD_Contract.sol": "BBD"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -1512,25 +1627,17 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 140
 		},
 		"remappings": []
 	},
 	"sources": {
-		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-			"keccak256": "0xe06a3f08a987af6ad2e1c1e774405d4fe08f1694b67517438b467cecf0da0ef7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://df6f0c459663c9858b6cba2cda1d14a7d05a985bed6d2de72bd8e78c25ee79db",
-				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
-			]
-		},
-		"src/assets/DAppDemoV2.sol": {
-			"keccak256": "0x5d7a029bb604679fd1d1788587744ff6432cd4fc2cd0836eea450398216a61af",
+		"src/assets/BBD_Contract.sol": {
+			"keccak256": "0xddbea16f49a2c274f6de92fecb96f47e3a2d1971512e262828723c7b2c10186d",
 			"license": "None",
 			"urls": [
-				"bzz-raw://0ec5406afa24a34b4710c74a062267e7b5f199587aa408598556bb5cc6aea904",
-				"dweb:/ipfs/QmP3BKGkNLQ4kEbJgvCk5gP5bsBUNzhDYZ4JVJgcSF1mB8"
+				"bzz-raw://a1b0bd6a60300bace0a4f7a890b900263f6f1d758db23a81c80ac40d72485253",
+				"dweb:/ipfs/QmXYxx2kTxQKvbupwQzHoPFYLREM8HHnne9pzCRTh2KfBP"
 			]
 		}
 	},
