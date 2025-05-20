@@ -31,7 +31,7 @@ export class UpdateBBDTokenRateComponent implements OnInit{
   }
 
   async onSubmit(){
-    console.log(this.updateBBDTokenRateForm.controls['amount'].value)
+    // console.log(this.updateBBDTokenRateForm.controls['amount'].value)
     let _amount = this.updateBBDTokenRateForm.controls['amount'].value
     let result = await this.details.setBBDTokenRate('0',6 ,_amount)
     console.log("result" , result)
