@@ -1087,7 +1087,7 @@ contract BBD
         
         uint256 level = 1;
         uint256 income_amount = 0;
-        while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount) 
+        while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount && onAmount>0) 
         {
             income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (100 * 100)) : map_LevelIncomeMaster[level].Percentage);
             if (IsQualifiedForLevelIncome(sponsorAddress, level)) 
