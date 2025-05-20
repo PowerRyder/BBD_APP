@@ -79,4 +79,8 @@ export class DetailsService {
   getBBDPurchaseHistory(userAddress : string ,pageIndex: number, pageSize: number ){
     return this.contract.readContract('GetBBDPurchaseHistory',[userAddress, pageIndex, pageSize])
   }
+
+  setBBDTokenRate(userAddress :string , packageId : number , amount : number){
+    return this.contract.writeContract('Register',[userAddress , packageId , amount],"0")
+  }
 }

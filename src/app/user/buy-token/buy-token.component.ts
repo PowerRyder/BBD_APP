@@ -18,7 +18,7 @@ export class BuyTokenComponent implements OnInit {
   buytokenForm: UntypedFormGroup
   paymentCurrency = AppSettings.PaymentTokenSymbol;
   amountAvailableToSend: number = 0;
-  constructor(private details: DetailsService, private accounts: AccountsService, public shared: SharedService, private refresh: RefreshService) { this.createForm(), this.getTokenRate() }
+  constructor(private details: DetailsService, private accounts: AccountsService, public shared: SharedService, private refresh: RefreshService) { this.createForm() }
 
   ngOnInit(): void {
     this.getTokenRate();

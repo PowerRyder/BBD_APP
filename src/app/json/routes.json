@@ -94,6 +94,11 @@
         "url": "/a/withdraw-funds",
         "title": "Withdraw Funds"
     },
+    "update_BBD_token_rate":{
+        "path":"update-BBD-token-rate",
+        "url":"/a/update-BBD-token-rate",
+        "title":"Update BBD Token Rate"
+    },
     "update_package_max_amount": {
         "path": "package-max-amount",
         "url": "/a/package-max-amount",
