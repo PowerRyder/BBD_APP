@@ -51,7 +51,7 @@ contract BBD
     address dev;
 
     uint256 WithdrawalWalletId = 1;
-    uint256 TopupWalletId = 2;
+    uint256 BBDWalletId = 2;
 
     struct User 
     {
@@ -907,12 +907,12 @@ contract BBD
             if(map_Users[userAddress].RankId<4)
             {
                 map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount*75/100; // 75% to Withdrawal Wallet
-                map_UserWalletBalance[userAddress][TopupWalletId] += amount*25/100; // 25% to Topup Wallet
+                map_UserWalletBalance[userAddress][BBDWalletId] += amount*25/100; // 25% to BBD Wallet
             }
             else
             {
                 map_UserWalletBalance[userAddress][WithdrawalWalletId] += amount*50/100; // 75% to Withdrawal Wallet
-                map_UserWalletBalance[userAddress][TopupWalletId] += amount*50/100; // 25% to Topup Wallet
+                map_UserWalletBalance[userAddress][BBDWalletId] += amount*50/100; // 25% to BBD Wallet
             }
         }
 
@@ -1290,7 +1290,7 @@ contract BBD
             Capping: GetUserCappingAmount(userAddress),
             AmountWithdrawn: ui.AmountWithdrawn,
             WithdrawalWalletBalance: GetWalletBalance(userAddress, WithdrawalWalletId),
-            TopupWalletBalance: GetWalletBalance(userAddress, TopupWalletId),
+            TopupWalletBalance: GetWalletBalance(userAddress, BBDWalletId),
             RankName: map_RankMaster[u.RankId].RankName,
             Capping4X_QualificationEndTimestamp: GetCapping4X_QualificationEndTimestamp(userAddress),
             IsCappingRemaining: IsCappingRemaining(userAddress),
@@ -1457,7 +1457,7 @@ contract BBD
         // require(doesUserExist(userAddress), "Invalid user for topup!");
         // require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
         require(!map_Users[userAddress].IsFirstActivationDone, "Only first time topup is allowed from wallet.");
-        require(GetWalletBalance(userAddress, TopupWalletId)>=amount, "Insufficient funds in wallet!");
+        require(GetWalletBalance(userAddress, BBDWalletId)>=amount, "Insufficient funds in wallet!");
 
         SaveDeposit(userAddress, packageId, amount);
         map_UserWalletBalance[userAddress][2] -= amount;
@@ -1513,13 +1513,13 @@ contract BBD
         require(Login(from), "Invalid sending user!");
         require(!HasUserActivationExpired(from), "Your ID is inactive.");
         require(Login(to), "Invalid receiving user!");
-        require(map_UserWalletBalance[from][TopupWalletId]>=value, "Insufficient funds!");
+        require(map_UserWalletBalance[from][BBDWalletId]>=value, "Insufficient funds!");
         require(value>=ConvertToBase(5), "Minimum amount is 5 USDT!");
 
         uint256 deduction = value*5/100;
         uint256 amountFromSender = value+deduction;
-        map_UserWalletBalance[from][TopupWalletId] -= amountFromSender;
-        map_UserWalletBalance[to][TopupWalletId] += value;
+        map_UserWalletBalance[from][BBDWalletId] -= amountFromSender;
+        map_UserWalletBalance[to][BBDWalletId] += value;
     }
 
     function UpdateCreatorAddress(address addr) external onlyOwner
@@ -1595,11 +1595,11 @@ contract BBD
     //     }
     //     else if (_type == 8)
     //     {
-    //         map_UserWalletBalance[userAddress][TopupWalletId] += amount;
+    //         map_UserWalletBalance[userAddress][BBDWalletId] += amount;
     //     } 
     //     else if (_type == 9)
     //     {
-    //         map_UserWalletBalance[userAddress][TopupWalletId] -= amount;
+    //         map_UserWalletBalance[userAddress][BBDWalletId] -= amount;
     //     }
     //     else if(_type == 10)
     //     {
