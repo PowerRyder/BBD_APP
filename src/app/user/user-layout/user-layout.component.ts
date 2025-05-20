@@ -39,7 +39,7 @@ export class UserLayoutComponent implements OnInit {
     transfer_fund: app_routes.transfer_fund,
     deposit: app_routes.deposit,
     withdraw: app_routes.withdraw,
-
+    buy_token :app_routes.buy_token
 
   };
   constructor(private breakpointObserver: BreakpointObserver) {

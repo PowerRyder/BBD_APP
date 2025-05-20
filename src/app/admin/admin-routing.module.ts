@@ -35,6 +35,10 @@ const routes: Routes = [
       {
         path:app_routes.update_package_max_amount.path,
         loadComponent:()=>import("./update-package-max-amount/update-package-max-amount.component").then(m=>m.UpdatePackageMaxAmountComponent)
+      },
+      {
+        path:app_routes.update_BBD_token_rate.path,
+        loadComponent:()=>import("./update-bbd-token-rate/update-bbd-token-rate.component").then(m=>m.UpdateBBDTokenRateComponent)
       }
     ]
   }];
