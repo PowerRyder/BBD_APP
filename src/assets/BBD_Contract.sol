@@ -1079,11 +1079,11 @@ contract BBD
         }
     }
 
-    function DistributeLevelIncome(address userAddress) internal
+    function DistributeLevelIncome(address userAddress, uint256 onAmount) internal
     {
         address sponsorAddress = map_Users[userAddress].SponsorAddress;
 
-        uint256 onAmount = map_Users[userAddress].Investment/(map_Users[userAddress].IsFirstActivationDone?2:1);
+        // uint256 onAmount = map_Users[userAddress].Investment/(map_Users[userAddress].IsFirstActivationDone?2:1);
         
         uint256 level = 1;
         uint256 income_amount = 0;
@@ -1169,8 +1169,8 @@ contract BBD
         map_Users[userAddress].LastActivationTimestamp = block_timestamp;
         map_Users[userAddress].ActivationExpiryTimestamp = expiryTimestamp;
         map_UserTransactionCount[userAddress].ReactivationCount++;
-        ProcessROIIncome(userAddress, block_timestamp, prev_LastActivationTimestamp, prev_ActivationExpiryTimestamp, currentDepositAmount);
-        DistributeLevelIncome(userAddress);
+        uint256 onAmount = ProcessROIIncome(userAddress, block_timestamp, prev_LastActivationTimestamp, prev_ActivationExpiryTimestamp, currentDepositAmount);
+        DistributeLevelIncome(userAddress, onAmount);
         return true;
     }
 
@@ -1199,7 +1199,7 @@ contract BBD
         return CapIncomeView(userAddress, income);
     }
 
-    function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 prev_LastActivationTimestamp, uint256 prev_ActivationExpiryTimestamp, uint256 currentDepositAmount) internal 
+    function ProcessROIIncome(address userAddress, uint256 block_timestamp, uint256 prev_LastActivationTimestamp, uint256 prev_ActivationExpiryTimestamp, uint256 currentDepositAmount) internal returns(uint256)
     {
         uint256 totalDeposits = map_UserTransactionCount[userAddress].DepositsCount;
         uint256 cycle_duration = (prev_ActivationExpiryTimestamp - prev_LastActivationTimestamp);
@@ -1235,6 +1235,8 @@ contract BBD
                 Income: income_amount
             });
         }
+
+        return totalEligibleAmount;
     }
 
     function Login(address _address) public view returns (bool) 
