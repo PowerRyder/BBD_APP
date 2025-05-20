@@ -18,10 +18,22 @@ export class BuyTokenComponent implements OnInit {
   buytokenForm: UntypedFormGroup
   paymentCurrency = AppSettings.PaymentTokenSymbol;
   amountAvailableToSend: number = 0;
-  constructor(private details: DetailsService, private accounts: AccountsService ,public shared :SharedService , private refresh : RefreshService) { this.createForm(), this.getTokenRate() }
+  constructor(private details: DetailsService, private accounts: AccountsService, public shared: SharedService, private refresh: RefreshService) { this.createForm(), this.getTokenRate() }
 
   ngOnInit(): void {
-    this.getTokenRate()
+    this.getTokenRate();
+
+
+    // get total amount After enter Actual amount !
+    this.buytokenForm.get('amountToBuy')?.valueChanges.subscribe(() => {
+      this.EnterAmount();
+    });
+    this.buytokenForm.get('rateOfToken')?.valueChanges.subscribe(() => {
+      this.EnterAmount();
+    });
+
+
+    // fetch balances of user Address !
     this.buytokenForm.get('userAddress')?.valueChanges.subscribe((address) => {
       if (this.isValidEthereumAddress(address)) {
         this.fetchBalance();
@@ -41,7 +53,7 @@ export class BuyTokenComponent implements OnInit {
 
   createForm() {
     this.buytokenForm = new UntypedFormGroup({
-      userAddress: new UntypedFormControl({ value: '', disabled: false }),
+      userAddress: new UntypedFormControl({ value: '', disabled: true }),
       rateOfToken: new UntypedFormControl({ value: '', disabled: false }),
       selectedWallet: new UntypedFormControl({ value: 1, disabled: false }),
       amountToBuy: new UntypedFormControl({ value: '', disabled: false }),
@@ -49,10 +61,6 @@ export class BuyTokenComponent implements OnInit {
     })
   }
 
-  // getTokenRate() {
-  //   let result = this.details.TokenRate()
-  //   console.log("result->", result)
-  // }
 
   async getTokenRate() {
     try {
@@ -95,21 +103,28 @@ export class BuyTokenComponent implements OnInit {
 
   }
 
-  async onSubmit() {
+  async EnterAmount() {
     let rate = this.buytokenForm.controls['rateOfToken'].value;
     let amount = this.buytokenForm.controls['amountToBuy'].value;
-    let _Select_wallet_id =  this.buytokenForm.controls['selectedWallet'].value
     let total = rate * amount
-    // console.log("total Amont ->"  , total)
     this.buytokenForm.get('totalToken')?.setValue(total);
-    let res = await this.details.BuyBBDTokenFromWallet(amount,_Select_wallet_id)
+  }
+
+  async onSubmit() {
+
+    let amount = this.buytokenForm.controls['amountToBuy'].value;
+    let _Select_wallet_id = this.buytokenForm.controls['selectedWallet'].value
+
+    // console.log("total Amont ->"  , total)
+
+    let res = await this.details.BuyBBDTokenFromWallet(amount, _Select_wallet_id)
     if (res && res.success) {
-        this.shared.alert.trigger({action: 'success', message: 'Buy Token successful!'}).then(()=>{
-          this.refresh.refreshComponent();
-        });
-      }
-      else{
-        this.shared.alert.trigger({action: 'error', message: res.message});
-      }
+      this.shared.alert.trigger({ action: 'success', message: 'Buy Token successful!' }).then(() => {
+        this.refresh.refreshComponent();
+      });
+    }
+    else {
+      this.shared.alert.trigger({ action: 'error', message: res.message });
+    }
   }
 }
