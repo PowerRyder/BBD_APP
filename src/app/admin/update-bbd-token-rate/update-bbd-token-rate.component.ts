@@ -4,6 +4,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { DetailsService } from 'src/app/user/services/details.service';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { AccountsService } from 'src/app/accounts/accounts.service';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 @Component({
   selector: 'app-update-bbd-token-rate',
@@ -14,7 +15,7 @@ import { AccountsService } from 'src/app/accounts/accounts.service';
 })
 export class UpdateBBDTokenRateComponent implements OnInit{
   // amount : number = 0
-  constructor(private details : DetailsService , public shared : SharedService, private accounts : AccountsService ){this.createForm()}
+  constructor(private details : DetailsService , public shared : SharedService, private accounts : AccountsService , private refresh : RefreshService){this.createForm()}
 
   updateBBDTokenRateForm : UntypedFormGroup 
 
@@ -33,8 +34,17 @@ export class UpdateBBDTokenRateComponent implements OnInit{
   async onSubmit(){
     // console.log(this.updateBBDTokenRateForm.controls['amount'].value)
     let _amount = this.updateBBDTokenRateForm.controls['amount'].value
-    let result = await this.details.setBBDTokenRate('0',6 ,_amount)
-    console.log("result" , result)
+    let res = await this.details.setBBDTokenRate('0',6 ,_amount)
+    console.log("result" , res)
+
+    if (res && res.success) {
+      this.shared.alert.trigger({ action: 'success', message: 'Update BBD token successful!' }).then(() => {
+        this.refresh.refreshComponent();
+      });
+    }
+    else {
+      this.shared.alert.trigger({ action: 'error', message: res.message });
+    }
   }
 
   async getTokenRate() {
