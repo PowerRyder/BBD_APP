@@ -28,32 +28,15 @@ export class BuyTokenComponent implements OnInit {
     this.buytokenForm.get('amountToBuy')?.valueChanges.subscribe(() => {
       this.EnterAmount();
     });
-    this.buytokenForm.get('rateOfToken')?.valueChanges.subscribe(() => {
-      this.EnterAmount();
-    });
-
-
-    // fetch balances of user Address !
-    this.buytokenForm.get('userAddress')?.valueChanges.subscribe((address) => {
-      if (this.isValidEthereumAddress(address)) {
-        this.fetchBalance();
-      } else {
-        this.amountAvailableToSend = 0;
-      }
-    });
-
+    
     // Also listen to selectedWallet changes if needed
     this.buytokenForm.get('selectedWallet')?.valueChanges.subscribe(() => {
-      const address = this.buytokenForm.get('userAddress')?.value;
-      if (this.isValidEthereumAddress(address)) {
-        this.fetchBalance();
-      }
+      this.fetchBalance();
     });
   }
 
   createForm() {
     this.buytokenForm = new UntypedFormGroup({
-      userAddress: new UntypedFormControl({ value: '', disabled: true }),
       rateOfToken: new UntypedFormControl({ value: '', disabled: false }),
       selectedWallet: new UntypedFormControl({ value: 1, disabled: false }),
       amountToBuy: new UntypedFormControl({ value: '', disabled: false }),
@@ -80,16 +63,10 @@ export class BuyTokenComponent implements OnInit {
     }
   }
 
-
-  isValidEthereumAddress(address: string): boolean {
-    return /^0x[a-fA-F0-9]{40}$/.test(address);
-  }
-
   async fetchBalance() {
-    let _userAddress = this.buytokenForm.controls['userAddress'].value
+    let _userAddress = sessionStorage.getItem('UserAddress')!;
     let _selectwallet = this.buytokenForm.controls['selectedWallet'].value
-    if (!this.isValidEthereumAddress(_userAddress)) return;
-
+    
     try {
       const res = await this.details.getwalletBalanceAmount(_userAddress, _selectwallet);
       const userBalances = res.data;
@@ -100,7 +77,6 @@ export class BuyTokenComponent implements OnInit {
       console.error('Error fetching balance:', err);
       this.amountAvailableToSend = 0;
     }
-
   }
 
   async EnterAmount() {
@@ -119,7 +95,7 @@ export class BuyTokenComponent implements OnInit {
 
     let res = await this.details.BuyBBDTokenFromWallet(amount, _Select_wallet_id)
     if (res && res.success) {
-      this.shared.alert.trigger({ action: 'success', message: 'Buy Token successful!' }).then(() => {
+      this.shared.alert.trigger({ action: 'success', message: 'Buy token successful!' }).then(() => {
         this.refresh.refreshComponent();
       });
     }

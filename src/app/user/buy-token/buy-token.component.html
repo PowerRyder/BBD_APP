@@ -1,6 +1,6 @@
 <div class="offset-md-2 offset-sm-0 col-md-8">
     <mat-card>
-        <mat-card-title class="text-align-center">BBD$ Transfer</mat-card-title>
+        <mat-card-title class="text-align-center">Buy BBD Token</mat-card-title>
         <mat-card-content class="card-pad table-responsive">
             <form [formGroup]=buytokenForm #formDir="ngForm" (ngSubmit)="onSubmit()">
                 <mat-form-field>
@@ -30,7 +30,7 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-label>You Will Get (BBD$)</mat-label>
+                    <mat-label>BBD Token Amount</mat-label>
                     <input matInput formControlName="totalToken" readonly />
                 </mat-form-field>
                 <!-- <div class="d-flex justify-content-end">
