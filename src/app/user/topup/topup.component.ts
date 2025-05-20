@@ -30,7 +30,7 @@ export class TopupComponent {
 
   createForm() {
     this.topupForm = new UntypedFormGroup({
-      userIdAddress: new UntypedFormControl({ value: '', disabled: false }, this.shared.validators.required),
+      // userIdAddress: new UntypedFormControl({ value: '', disabled: false }, this.shared.validators.required),
       amount: new UntypedFormControl({ value: '', disabled: false }, this.shared.validators.required)
     })
   }
@@ -57,7 +57,7 @@ export class TopupComponent {
   async onSubmit() {
     if (this.topupForm.valid) {
       let from_address = sessionStorage.getItem("UserAddress")
-      let to_address = this.topupForm.controls['userIdAddress'].value
+      // let to_address = this.topupForm.controls['userIdAddress'].value
       let amount = this.topupForm.controls['amount'].value
       let sendamount = this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(amount)
       let result = await this.depositService.topup(1, sendamount)
@@ -75,9 +75,5 @@ export class TopupComponent {
         this.shared.alert.trigger({ action: 'error', message: result.message });
       }
     }
-    else {
-      this.shared.alert.trigger({ action: 'error', message: 'Insufficient balance!' });
-    }
-
   }
 }
