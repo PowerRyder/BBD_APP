@@ -1,7 +1,7 @@
 {
     "register": {
-        "path" : "join",
-        "url" : "/join",
+        "path": "join",
+        "url": "/join",
         "title": "Join"
     },
     "login": {
@@ -9,95 +9,99 @@
         "url": "/view",
         "title": "View"
     },
-    "admin_login":{
+    "admin_login": {
         "path": "admin-login",
         "url": "/admin-login",
         "title": "Admin Login"
     },
-    "user_dashboard":{
+    "user_dashboard": {
         "path": "home",
         "url": "/u/home",
         "title": "Home"
     },
-    "directs":{
+    "directs": {
         "path": "directs",
         "url": "/u/directs",
         "title": "Directs"
     },
-    "level_income":{
+    "level_income": {
         "path": "level-income",
         "url": "/u/level-income",
         "title": "Level Income"
     },
-    "withdrawal_level_income":{
+    "withdrawal_level_income": {
         "path": "withdrawal-level-income",
         "url": "/u/withdrawal-level-income",
         "title": "Withdrawal Level Income"
     },
-    "deposit":{
+    "deposit": {
         "path": "deposit",
         "url": "/u/deposit",
         "title": "Deposit"
     },
-    "sell_tokens":{
+    "sell_tokens": {
         "path": "sell-tokens",
         "url": "/u/sell-tokens",
         "title": "Sell Tokens"
     },
-    "topup":{
+    "topup": {
         "path": "topup",
         "url": "/u/topup",
         "title": "Topup"
     },
-    "withdraw":{
+    "withdraw": {
         "path": "withdraw",
         "url": "/u/withdraw",
         "title": "Withdraw"
     },
-     "transfer_fund":{
-        "path":"transfer-fund",
-        "url" :"/u/transfer-fund",
-        "title" :"BBD$ Transfer"
+    "transfer_fund": {
+        "path": "transfer-fund",
+        "url": "/u/transfer-fund",
+        "title": "BBD$ Transfer"
     },
-    "roi_income_history":{
-        "path":"roi-income-history",
-        "url":"/u/roi-income-history",
-        "title":"ROI Income "
+    "roi_income_history": {
+        "path": "roi-income-history",
+        "url": "/u/roi-income-history",
+        "title": "ROI Income "
     },
-    "rank_info":{
-      "path":"rank-info",
-        "url":"/u/rank-info",
-        "title":"Rank Info"  
+    "rank_info": {
+        "path": "rank-info",
+        "url": "/u/rank-info",
+        "title": "Rank Info"
     },
-    "admin_dashboard":{
+    "admin_dashboard": {
         "path": "dashboard",
         "url": "/a/dashboard",
         "title": "Dashboard"
     },
-    "admin_mint_burn_internal_tokens":{
+    "admin_mint_burn_internal_tokens": {
         "path": "mint-burn",
         "url": "/a/mint-burn",
         "title": "Mint | Burn"
     },
-    "admin_credit_debit_amount":{
+    "admin_credit_debit_amount": {
         "path": "credit-debit",
         "url": "/a/credit-debit",
         "title": "Credit | Debit"
     },
-    "admin_block_unblock_user":{
+    "admin_block_unblock_user": {
         "path": "block-unblock",
         "url": "/a/block-unblock",
         "title": "Block | Unblock"
     },
-    "admin_withdraw_funds":{
+    "admin_withdraw_funds": {
         "path": "withdraw-funds",
         "url": "/a/withdraw-funds",
         "title": "Withdraw Funds"
     },
-    "update_package_max_amount":{
-        "path":"package-max-amount",
-        "url":"/a/package-max-amount",
-        "title":"Update Package Max Amount"
+    "update_package_max_amount": {
+        "path": "package-max-amount",
+        "url": "/a/package-max-amount",
+        "title": "Update Package Max Amount"
+    },
+    "buy_token": {
+        "path":"buy-token",
+        "url":"/u/buy-token",
+        "title":"Buy Token"
     }
-   
 }

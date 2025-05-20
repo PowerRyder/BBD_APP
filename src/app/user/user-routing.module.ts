@@ -59,6 +59,10 @@ const routes: Routes = [
       {
         path:app_routes.rank_info.path,
         loadComponent:()=>import("./get-rank-info/get-rank-info.component").then(m=>m.GetRankInfoComponent)
+      },
+      {
+        path:app_routes.buy_token.path,
+        loadComponent:()=>import("./buy-token/buy-token.component").then(m=>m.BuyTokenComponent)
       }
     ]
   }

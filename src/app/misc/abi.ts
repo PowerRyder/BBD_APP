@@ -1,33 +1,186 @@
-export let abi =[
+export let abi = [
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "walletId",
+				"type": "uint256"
+			}
+		],
+		"name": "BuyBBDFromWallet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "packageId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Deposit",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "Reactivate",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sponsorAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "packageId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Register",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "tokenAddress",
+				"type": "address"
+			}
+		],
+		"name": "SetBBDTokenContract",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_security",
+				"type": "address"
+			}
+		],
+		"name": "SetSecurityFundContract",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "packageId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "TopupMemberFromWallet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "TransferFunds",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
 	},
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"indexed": false,
 				"internalType": "uint256",
-				"name": "value",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
-		"name": "Transfer",
-		"type": "event"
+		"name": "Withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "BBDTokenContract",
+		"outputs": [
+			{
+				"internalType": "contract IBEP20",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "BBDTokenRate",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -58,19 +211,52 @@ export let abi =[
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "userAddress",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
-				"name": "packageId",
+				"name": "pageIndex",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "pageSize",
 				"type": "uint256"
 			}
 		],
-		"name": "Deposit",
-		"outputs": [],
-		"stateMutability": "payable",
+		"name": "GetBBDPurchaseHistory",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "AmountSpent",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "BBDAmountReceived",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "WalletId",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct BBD.BBDPurchase[]",
+				"name": "history",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -98,11 +284,6 @@ export let abi =[
 						"internalType": "uint256",
 						"name": "ContractBalance",
 						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "IsWithdrawalAllowedAfterPrincipleAmount",
-						"type": "bool"
 					}
 				],
 				"internalType": "struct BBD.ContractInfo",
@@ -471,11 +652,6 @@ export let abi =[
 					},
 					{
 						"internalType": "bool",
-						"name": "IsActive",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
 						"name": "HasRange",
 						"type": "bool"
 					},
@@ -492,52 +668,6 @@ export let abi =[
 				],
 				"internalType": "struct BBD.PackageMaster[]",
 				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "pageIndex",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "pageSize",
-				"type": "uint256"
-			}
-		],
-		"name": "GetROIIncomeHistory",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "OnAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Timestamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Income",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct BBD.ROIIncomeDetail[]",
-				"name": "history",
 				"type": "tuple[]"
 			}
 		],
@@ -624,6 +754,52 @@ export let abi =[
 				],
 				"internalType": "struct BBD.RankInfo[]",
 				"name": "info",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pageIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pageSize",
+				"type": "uint256"
+			}
+		],
+		"name": "GetROIIncomeHistory",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "OnAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Income",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct BBD.ROIIncomeDetail[]",
+				"name": "history",
 				"type": "tuple[]"
 			}
 		],
@@ -763,213 +939,42 @@ export let abi =[
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "MarketingAddress",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "Reactivate",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "sponsorAddress",
-				"type": "address"
-			}
-		],
-		"name": "Register",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "SecurityFundContract",
-		"outputs": [
-			{
-				"internalType": "address",
 				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_security",
-				"type": "address"
-			}
-		],
-		"name": "SetSecurityFundContract",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "packageId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "TopupMemberFromWallet",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "TotalInvestment",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "TotalUsers",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "TotalWithdrawn",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "value",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "TransferFunds",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			}
-		],
-		"name": "UpdateCreator2Address",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			}
-		],
-		"name": "UpdateCreatorAddress",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			}
-		],
-		"name": "UpdateMarketingAddress",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
+		"name": "map_BBDPurchaseHistory",
+		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "AmountSpent",
 				"type": "uint256"
-			}
-		],
-		"name": "UpdatePackageMaxAmount",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
+			},
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "BBDAmountReceived",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "Timestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "WalletId",
 				"type": "uint256"
 			}
 		],
-		"name": "Withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1028,11 +1033,6 @@ export let abi =[
 			},
 			{
 				"internalType": "bool",
-				"name": "IsActive",
-				"type": "bool"
-			},
-			{
-				"internalType": "bool",
 				"name": "HasRange",
 				"type": "bool"
 			},
@@ -1044,40 +1044,6 @@ export let abi =[
 			{
 				"internalType": "uint256",
 				"name": "MaxAmount",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "map_ROIIncomeHistory",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "OnAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "Timestamp",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "Income",
 				"type": "uint256"
 			}
 		],
@@ -1127,6 +1093,40 @@ export let abi =[
 			{
 				"internalType": "uint256",
 				"name": "RewardAmount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "map_ROIIncomeHistory",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "OnAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "Timestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "Income",
 				"type": "uint256"
 			}
 		],
@@ -1315,98 +1315,6 @@ export let abi =[
 				"type": "address"
 			}
 		],
-		"name": "map_UserTeam",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "DirectsInvestment",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "TeamABusiness",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "TeamBBusiness",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "TeamInvestment",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "map_UserTransactionCount",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "DepositsCount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "ROIIncomeCount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "IncomeWithdrawalCount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "ReactivationCount",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "map_UserWalletBalance",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
 		"name": "map_Users",
 		"outputs": [
 			{
@@ -1468,6 +1376,168 @@ export let abi =[
 				"internalType": "bool",
 				"name": "IsFirstActivationDone",
 				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "map_UserTeam",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "DirectsInvestment",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "TeamABusiness",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "TeamBBusiness",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "TeamInvestment",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "map_UserTransactionCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "DepositsCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ROIIncomeCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "IncomeWithdrawalCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ReactivationCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "BBD_TokenBuyCount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "map_UserWalletBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "MarketingAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "SecurityFundContract",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "TotalInvestment",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "TotalUsers",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "TotalWithdrawn",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",

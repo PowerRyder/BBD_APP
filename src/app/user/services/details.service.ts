@@ -67,4 +67,16 @@ export class DetailsService {
   gettopsponseredReport(){
     return this.contract.readContract('GetTopSponsorsReport',[])
   }
+
+  TokenRate(){
+    return this.contract.readContract('BBDTokenRate',[])
+  }
+
+  BuyBBDTokenFromWallet(amount :number , walletId : number){
+    return this.contract.writeContract('BuyBBDFromWallet',[amount , walletId],"0")
+  }
+
+  getBBDPurchaseHistory(userAddress : string ,pageIndex: number, pageSize: number ){
+    return this.contract.readContract('GetBBDPurchaseHistory',[userAddress, pageIndex, pageSize])
+  }
 }

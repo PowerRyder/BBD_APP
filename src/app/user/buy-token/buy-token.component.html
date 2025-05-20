@@ -1,1 +1,49 @@
-<p>buy-token works!</p>
+<div class="offset-md-2 offset-sm-0 col-md-8">
+    <mat-card>
+        <mat-card-title class="text-align-center">BBD$ Transfer</mat-card-title>
+        <mat-card-content class="card-pad table-responsive">
+            <form [formGroup]=buytokenForm #formDir="ngForm" (ngSubmit)="onSubmit()">
+                <mat-form-field>
+                    <mat-label>Rate Of Token</mat-label>
+                    <input matInput formControlName="rateOfToken" />
+                    <mat-error>
+                        <app-text-validation-message fieldName="userIdAddress"
+                            [formGroupDirective]="formDir"></app-text-validation-message>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Select Wallet</mat-label>
+                    <mat-select formControlName="selectedWallet">
+                        <mat-option [value]="1">Withdrawal Wallet</mat-option>
+                        <mat-option [value]="2">BBD$</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="d-flex justify-content-end">
+                    <b>Balance: {{amountAvailableToSend}} {{paymentCurrency}}</b>
+                </div>
+                <mat-form-field>
+                    <mat-label>Amount To Buy</mat-label>
+                    <input matInput  formControlName="amountToBuy"/>
+                     <mat-error>
+                        <app-text-validation-message fieldName="amountToBuy"
+                            [formGroupDirective]="formDir"></app-text-validation-message>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>You Will Get (BBD$)</mat-label>
+                    <input matInput formControlName="totalToken" readonly />
+                </mat-form-field>
+                <!-- <div class="d-flex justify-content-end">
+                    <b>Balance: {{amountAvailableToSend}} {{paymentCurrency}}</b>
+                </div> -->
+
+                <div class="d-flex justify-content-center">
+                    <button mat-raised-button color="primary" type="submit">Buy Token</button>
+                </div>
+
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<app-bbd-purchase-history></app-bbd-purchase-history>
