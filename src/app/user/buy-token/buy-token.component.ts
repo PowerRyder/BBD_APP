@@ -104,7 +104,7 @@ export class BuyTokenComponent implements OnInit {
     this.buytokenForm.get('totalToken')?.setValue(total);
     let res = await this.details.BuyBBDTokenFromWallet(amount,_Select_wallet_id)
     if (res && res.success) {
-        this.shared.alert.trigger({action: 'success', message: 'Deposit successful!'}).then(()=>{
+        this.shared.alert.trigger({action: 'success', message: 'Buy Token successful!'}).then(()=>{
           this.refresh.refreshComponent();
         });
       }
