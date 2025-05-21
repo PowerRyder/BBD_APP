@@ -37,8 +37,7 @@ contract BBD
     address public SecurityFundContract = address(0);
 
 
-    bool constant IsPaymentCurrencyDifferentThanNative = true;
-    address constant PaymentTokenContractAddress = IsPaymentCurrencyDifferentThanNative?0x4622B46df102fD8648385bc96fd7a837111AeC61:address(0); //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
+    address constant PaymentTokenContractAddress = 0x4622B46df102fD8648385bc96fd7a837111AeC61; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
 
     uint256 LevelIncome_LevelCount = 0;
     uint256 TotalRanksCount = 0;
@@ -267,6 +266,8 @@ contract BBD
 
     IBEP20 public BBDTokenContract;
     uint256 public BBDTokenRate = 10 * 1e18; // tokens per 1 USDT (18 decimals assumed) i.e. 10 BBD per 1 USDT
+
+    uint256 public AmountCollectedForTopSponsors = 0;
 
     modifier onlyOwner() {
         require(IsOwner(), "You are not allowed!");
@@ -524,30 +525,16 @@ contract BBD
 
     function ReceiveTokens(uint256 amount) internal
     {
-        if (IsPaymentCurrencyDifferentThanNative)
-        {
-            uint256 old_balance = GetContractBalance();
-            IBEP20(PaymentTokenContractAddress).transferFrom(msg.sender, address(this), amount);
-            uint256 new_balance = GetContractBalance();
+        uint256 old_balance = GetContractBalance();
+        IBEP20(PaymentTokenContractAddress).transferFrom(msg.sender, address(this), amount);
+        uint256 new_balance = GetContractBalance();
 
-            require(new_balance - old_balance >= amount, "Invalid amount!");
-        } 
-        else
-        {
-            require(msg.value >= amount);
-        }
+        require(new_balance - old_balance >= amount, "Invalid amount!");
     }
 
     function SendTokens(address userAddress, uint256 amount) internal
     {
-        if (IsPaymentCurrencyDifferentThanNative)
-        {
-            IBEP20(PaymentTokenContractAddress).transfer(userAddress, amount);
-        } 
-        else
-        {
-            payable(userAddress).transfer(amount);
-        }
+        IBEP20(PaymentTokenContractAddress).transfer(userAddress, amount);
     }
 
     function SendTokensFromSecurityContract(address userAddress, uint256 amount) internal {
@@ -627,52 +614,50 @@ contract BBD
 
     function SaveDeposit(address userAddress, uint256 packageId, uint256 amount) internal returns(bool IsFirstTopup)
     {
-        require(
-            ((!map_PackageMaster[packageId].HasRange && map_PackageMaster[packageId].Amount == amount) 
-                ||
-            (map_PackageMaster[packageId].HasRange && map_PackageMaster[packageId].MinAmount <= amount && map_PackageMaster[packageId].MaxAmount >= amount)),
-            "Invalid amount!"
-        );
+        uint256 userDepositsCount = map_UserTransactionCount[userAddress].DepositsCount;
+        PackageMaster memory package = map_PackageMaster[packageId];
+        require(((package.MinAmount <= amount && package.MaxAmount >= amount)), "Invalid amount!");
         
-        require(map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount].Amount<=amount, "Amount must be equal to or more than previous deposit amount.");
+        require(map_UserDeposits[userAddress][userDepositsCount].Amount<=amount, "Amount must be equal to or more than previous deposit amount.");
 
         uint timestamp = block.timestamp;
 
-        IsFirstTopup = !map_Users[userAddress].IsFirstActivationDone;
+        User memory user = map_Users[userAddress];
+        IsFirstTopup = !user.IsFirstActivationDone;
         TotalInvestment += amount;
 
-        address sponsorAddress = map_Users[userAddress].SponsorAddress;
+        address sponsorAddress = user.SponsorAddress;
         
         map_Users[userAddress].Investment += amount;
         map_UserTeam[sponsorAddress].DirectsInvestment += amount;
 
         // Only active IDs to be counted
-        if(IsFirstTopup)
+        // if(IsFirstTopup)
+        // {
+        if (IsFirstTopup && sponsorAddress != address(0))
         {
-            if (sponsorAddress != address(0))
-            {
-                map_UserTeam[sponsorAddress].DirectAddresses.push(userAddress);
-            }
-
-            UpdateTeamCount(sponsorAddress, userAddress);
+            map_UserTeam[sponsorAddress].DirectAddresses.push(userAddress);
         }
 
-        UpdateTeamInvestment(userAddress, amount);
-        
+        //     UpdateTeamCount(sponsorAddress, userAddress);
+        // }
+
         {
             UserDeposit memory d = UserDeposit({
                 PackageId: packageId,
                 Amount: amount,
                 Timestamp: timestamp,
-                Capping: (map_Users[userAddress].IsQualifiedFor4X?4:3)*amount,
+                Capping: (user.IsQualifiedFor4X?4:3)*amount,
                 IncomePaid: 0
             });
 
 
-            map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount + 1] = d;
+            map_UserDeposits[userAddress][userDepositsCount + 1] = d;
             map_UserTransactionCount[userAddress].DepositsCount++;
             
-            ProcessRanks(userAddress);
+            UpdateTeamInvestment(userAddress, amount, IsFirstTopup);
+        
+            // ProcessRanks(userAddress);
             Process4X_CappingQualification(userAddress, amount, 0);
             ReactivateInternal(userAddress, timestamp, amount);
 
@@ -681,7 +666,8 @@ contract BBD
                 map_Users[userAddress].FirstActivationTimestamp = timestamp;
                 userActivations.push(userAddress);
                 ProcessNewRegistrationBonus(userAddress, amount);
-                Process24HoursTopmostSponsorsIncome(amount);
+                AmountCollectedForTopSponsors += amount;
+                // Process24HoursTopmostSponsorsIncome(amount);
                 map_Users[userAddress].IsFirstActivationDone = true;
             }
         }
@@ -689,10 +675,11 @@ contract BBD
         return IsFirstTopup;
     }
 
-    function Process24HoursTopmostSponsorsIncome(uint256 onAmount) internal 
+    function Process24HoursTopmostSponsorsIncome() external onlyOwner
     {
         TopSponsors[3] memory topSponsors = GetTopSponsorsByDirectInvestment();
 
+        uint256 onAmount = AmountCollectedForTopSponsors;
         // Distribute 2% of `onAmount` => split as 50%, 30%, 20%
         uint256 totalPool = (onAmount * 2) / 100;
         uint256[3] memory percentages = [uint256(50), 30, 20]; // 50%, 30%, 20% in basis points (1/100)
@@ -705,6 +692,8 @@ contract BBD
                 map_UserIncome[s].TopmostSponsorsIncome += income;
             }
         }
+
+        AmountCollectedForTopSponsors = 0;
     }
 
     function GetTopSponsorsByDirectInvestment() internal view returns (TopSponsors[3] memory topSponsors) {
@@ -757,32 +746,38 @@ contract BBD
         }
     }
 
-    function UpdateTeamCount(address sponsorAddress, address userAddress) internal
-    {
-        while (sponsorAddress != address(0))
-        {
-            map_Users[sponsorAddress].TotalTeam++;
-            map_UserTeam[sponsorAddress].TeamAddresses.push(userAddress);
-            sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
-        }
-    }
+    // function UpdateTeamCount(address sponsorAddress, address userAddress) internal
+    // {
+    //     while (sponsorAddress != address(0))
+    //     {
+    //         map_Users[sponsorAddress].TotalTeam++;
+    //         map_UserTeam[sponsorAddress].TeamAddresses.push(userAddress);
+    //         sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
+    //     }
+    // }
 
-    function ProcessRanks(address userAddress) internal
-    {
-        while (userAddress != address(0))
-        {
-            ProcessRankQualification(userAddress);
-            userAddress = map_Users[userAddress].SponsorAddress;
-        }
-    }
+    // function ProcessRanks(address userAddress) internal
+    // {
+    //     while (userAddress != address(0))
+    //     {
+    //         ProcessRankQualification(userAddress);
+    //         userAddress = map_Users[userAddress].SponsorAddress;
+    //     }
+    // }
 
-    function UpdateTeamInvestment(address directAddress, uint256 amount) internal 
+    function UpdateTeamInvestment(address directAddress, uint256 amount, bool IsFirstTopup) internal 
     {
         uint256 level = 1;
-        
+        ProcessRankQualification(directAddress);
         address sponsorAddress = map_Users[directAddress].SponsorAddress;
         while (sponsorAddress != address(0))
         {
+            if(IsFirstTopup)
+            {
+                map_Users[sponsorAddress].TotalTeam++;
+                map_UserTeam[sponsorAddress].TeamAddresses.push(userAddress);
+            }
+
             map_UserTeam[sponsorAddress].TeamInvestment += amount; //Including Directs
 
             map_UserBusinessOnLevel[sponsorAddress][level] += amount;
@@ -803,7 +798,7 @@ contract BBD
 
                 if (newLegBusiness > currentTeamABusiness) {
                      // Remove this leg’s business from Team B first
-                    map_UserTeam[sponsorAddress].TeamBBusiness -= (map_Users[directAddress].Investment + map_UserTeam[directAddress].TeamInvestment - amount);
+                    map_UserTeam[sponsorAddress].TeamBBusiness -= (newLegBusiness - amount)//(map_Users[directAddress].Investment + map_UserTeam[directAddress].TeamInvestment - amount);
 
                     // Promote current leg to Team A
                     // Move current A's business to B
@@ -815,6 +810,8 @@ contract BBD
                     map_UserTeam[sponsorAddress].TeamBBusiness += amount;
                 }
             }
+
+            ProcessRankQualification(sponsorAddress);
 
             directAddress = sponsorAddress;
             sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
@@ -1089,7 +1086,7 @@ contract BBD
         uint256 income_amount = 0;
         while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount && onAmount>0) 
         {
-            income_amount = (IsLevelIncomePercentage ? ((onAmount * map_LevelIncomeMaster[level].Percentage) / (100 * 100)) : map_LevelIncomeMaster[level].Percentage);
+            income_amount = ((onAmount * map_LevelIncomeMaster[level].Percentage) / (100 * 100));
             if (IsQualifiedForLevelIncome(sponsorAddress, level)) 
             {
                 income_amount = CapAndCreditIncomeToWallet(sponsorAddress, income_amount);
@@ -1149,14 +1146,7 @@ contract BBD
 
     function GetContractBalance() internal view returns (uint256) 
     {
-        if (IsPaymentCurrencyDifferentThanNative) 
-        {
-            return IBEP20(PaymentTokenContractAddress).balanceOf(address(this));
-        } 
-        else 
-        {
-            return address(this).balance;
-        }
+        return IBEP20(PaymentTokenContractAddress).balanceOf(address(this));
     }
 
     function ReactivateInternal(address userAddress, uint block_timestamp, uint256 currentDepositAmount) internal returns (bool)
