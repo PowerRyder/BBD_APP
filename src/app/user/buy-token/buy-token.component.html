@@ -1,8 +1,11 @@
 <div class="offset-md-2 offset-sm-0 col-md-8">
     <mat-card>
         <mat-card-title class="text-align-center">Buy BBD Token</mat-card-title>
-        <mat-card-content class="card-pad table-responsive">
+        <mat-card-content class="card-pad">
             <form [formGroup]=buytokenForm #formDir="ngForm" (ngSubmit)="onSubmit()">
+                <div class="d-flex justify-content-center">
+                    Rate : 1 USDT ~ {{buytokenForm.controls['rateOfToken'].value}} BBD Token
+                </div>
                 <mat-form-field>
                     <mat-label>Rate Of Token</mat-label>
                     <input matInput formControlName="rateOfToken" />
@@ -22,7 +25,7 @@
                     <b>Balance: {{amountAvailableToSend}} {{paymentCurrency}}</b>
                 </div>
                 <mat-form-field>
-                    <mat-label>Amount To Buy</mat-label>
+                    <mat-label>Amount (USDT)</mat-label>
                     <input matInput  formControlName="amountToBuy"/>
                      <mat-error>
                         <app-text-validation-message fieldName="amountToBuy"

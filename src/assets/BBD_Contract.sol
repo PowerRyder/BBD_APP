@@ -36,9 +36,7 @@ contract BBD
     address public MarketingAddress = 0x73D1AD5a474E1712d6Cbe18d56b7281AaF190347;
     address public SecurityFundContract = address(0);
 
-
-    bool constant IsPaymentCurrencyDifferentThanNative = true;
-    address constant PaymentTokenContractAddress = IsPaymentCurrencyDifferentThanNative?0x4622B46df102fD8648385bc96fd7a837111AeC61:address(0); //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
+    address constant USDTContractAddress = 0x4622B46df102fD8648385bc96fd7a837111AeC61; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
 
     uint256 LevelIncome_LevelCount = 0;
     uint256 TotalRanksCount = 0;
@@ -109,11 +107,11 @@ contract BBD
         uint256 BBD_TokenBuyCount;
     }
 
-    struct UserIncomeWithdrawalTransaction
-    {
-        uint256 Amount;
-        uint256 Timestamp;
-    }
+    // struct UserIncomeWithdrawalTransaction
+    // {
+    //     uint256 Amount;
+    //     uint256 Timestamp;
+    // }
 
     struct PackageMaster
     {
@@ -177,12 +175,12 @@ contract BBD
         uint256 Business;
     }
 
-    struct UserTeamMember {
-        uint256 Srno;
-        address Address;
-        uint256 Investment;
-        uint256 Business;
-    }
+    // struct UserTeamMember {
+    //     uint256 Srno;
+    //     address Address;
+    //     uint256 Investment;
+    //     uint256 Business;
+    // }
 
     struct LevelIncomeInfo
     {
@@ -206,11 +204,11 @@ contract BBD
         uint256 RewardAmount;
     }
     
-    struct ROIIncomeDetail {
-        uint256 OnAmount;
-        uint256 Timestamp;
-        uint256 Income;
-    }
+    // struct ROIIncomeDetail {
+    //     uint256 OnAmount;
+    //     uint256 Timestamp;
+    //     uint256 Income;
+    // }
 
     struct RankInfo {
         uint256 RankId;
@@ -233,12 +231,12 @@ contract BBD
         uint256 directInvestment;
     }
 
-    struct BBDPurchase {
-        uint256 AmountSpent;
-        uint256 BBDAmountReceived;
-        uint256 Timestamp;
-        uint256 WalletId;
-    }
+    // struct BBDPurchase {
+    //     uint256 AmountSpent;
+    //     uint256 BBDAmountReceived;
+    //     uint256 Timestamp;
+    //     uint256 WalletId;
+    // }
 
     mapping(uint256 => PackageMaster) public map_PackageMaster;
     mapping(uint256 => LevelIncomeMaster) public map_LevelIncomeMaster;
@@ -250,10 +248,10 @@ contract BBD
     mapping(address => UserTeam) public map_UserTeam;
     mapping(address => mapping(uint256 => UserDeposit)) public map_UserDeposits;
     
-    mapping(address => mapping(uint256 => UserIncomeWithdrawalTransaction)) public map_UserIncomeWithdrawalHistory;
+    // mapping(address => mapping(uint256 => UserIncomeWithdrawalTransaction)) public map_UserIncomeWithdrawalHistory;
 
     mapping(address => mapping(uint256 => uint256)) public map_UserBusinessOnLevel;
-    mapping(address => mapping(uint256 => ROIIncomeDetail)) public map_ROIIncomeHistory;
+    // mapping(address => mapping(uint256 => ROIIncomeDetail)) public map_ROIIncomeHistory;
 
     mapping(address => UserIncome) public map_UserIncome;
     mapping(address => mapping(uint256 => uint256)) public map_UserWalletBalance;
@@ -261,12 +259,18 @@ contract BBD
     mapping(address => UserTransactionCount) public map_UserTransactionCount;
     mapping(address => address) public map_TeamALegAddress;
 
-    mapping(address => mapping(uint256 => BBDPurchase)) public map_BBDPurchaseHistory;
+    // mapping(address => mapping(uint256 => BBDPurchase)) public map_BBDPurchaseHistory;
 
     address[] private userActivations;
 
     IBEP20 public BBDTokenContract;
     uint256 public BBDTokenRate = 10 * 1e18; // tokens per 1 USDT (18 decimals assumed) i.e. 10 BBD per 1 USDT
+
+
+    string NOT_REGISTERED = "Not registered!";
+    string INVALID_SPONSOR = "Invalid sponsor!";
+    string INVALID_USER = "Invalid user!";
+    string MIN_5_AMOUNT = "Minimum amount is 5 USDT!";
 
     modifier onlyOwner() {
         require(IsOwner(), "You are not allowed!");
@@ -524,35 +528,21 @@ contract BBD
 
     function ReceiveTokens(uint256 amount) internal
     {
-        if (IsPaymentCurrencyDifferentThanNative)
-        {
-            uint256 old_balance = GetContractBalance();
-            IBEP20(PaymentTokenContractAddress).transferFrom(msg.sender, address(this), amount);
-            uint256 new_balance = GetContractBalance();
+        uint256 old_balance = GetContractBalance();
+        IBEP20(USDTContractAddress).transferFrom(msg.sender, address(this), amount);
+        uint256 new_balance = GetContractBalance();
 
-            require(new_balance - old_balance >= amount, "Invalid amount!");
-        } 
-        else
-        {
-            require(msg.value >= amount);
-        }
+        require(new_balance - old_balance >= amount, "Invalid amount!");
     }
 
     function SendTokens(address userAddress, uint256 amount) internal
     {
-        if (IsPaymentCurrencyDifferentThanNative)
-        {
-            IBEP20(PaymentTokenContractAddress).transfer(userAddress, amount);
-        } 
-        else
-        {
-            payable(userAddress).transfer(amount);
-        }
+        IBEP20(USDTContractAddress).transfer(userAddress, amount);
     }
 
     function SendTokensFromSecurityContract(address userAddress, uint256 amount) internal {
-        require(SecurityFundContract != address(0), "Security fund contract not set");
-        ISecurityFund(SecurityFundContract).TransferTokens(PaymentTokenContractAddress, userAddress, amount);
+        require(SecurityFundContract != address(0), "ERR!");
+        ISecurityFund(SecurityFundContract).TransferTokens(USDTContractAddress, userAddress, amount);
     }
 
     function InitTopUser() internal
@@ -616,8 +606,8 @@ contract BBD
 
     function CheckUserExistsAndActivationNotExpired(address userAddress) internal view
     {
-        require(Login(userAddress), "Invalid sending user!");
-        require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
+        require(Login(userAddress), INVALID_USER);
+        require(!HasUserActivationExpired(userAddress), "Inactive ID.");
     }
 
     function CheckForWalletBalance(address userAddress, uint256 walletId, uint256 amount) internal view
@@ -627,15 +617,8 @@ contract BBD
 
     function SaveDeposit(address userAddress, uint256 packageId, uint256 amount) internal returns(bool IsFirstTopup)
     {
-        require(
-            ((!map_PackageMaster[packageId].HasRange && map_PackageMaster[packageId].Amount == amount) 
-                ||
-            (map_PackageMaster[packageId].HasRange && map_PackageMaster[packageId].MinAmount <= amount && map_PackageMaster[packageId].MaxAmount >= amount)),
-            "Invalid amount!"
-        );
+        require((map_PackageMaster[packageId].HasRange && map_PackageMaster[packageId].MinAmount <= amount && map_PackageMaster[packageId].MaxAmount >= amount && map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount].Amount<=amount), "Invalid amount!");
         
-        require(map_UserDeposits[userAddress][map_UserTransactionCount[userAddress].DepositsCount].Amount<=amount, "Amount must be equal to or more than previous deposit amount.");
-
         uint timestamp = block.timestamp;
 
         IsFirstTopup = !map_Users[userAddress].IsFirstActivationDone;
@@ -646,18 +629,12 @@ contract BBD
         map_Users[userAddress].Investment += amount;
         map_UserTeam[sponsorAddress].DirectsInvestment += amount;
 
-        // Only active IDs to be counted
-        if(IsFirstTopup)
+        if (IsFirstTopup && sponsorAddress != address(0))
         {
-            if (sponsorAddress != address(0))
-            {
-                map_UserTeam[sponsorAddress].DirectAddresses.push(userAddress);
-            }
-
-            UpdateTeamCount(sponsorAddress, userAddress);
+            map_UserTeam[sponsorAddress].DirectAddresses.push(userAddress);
         }
 
-        UpdateTeamInvestment(userAddress, amount);
+        UpdateTeamInvestment(userAddress, amount, IsFirstTopup);
         
         {
             UserDeposit memory d = UserDeposit({
@@ -757,15 +734,15 @@ contract BBD
         }
     }
 
-    function UpdateTeamCount(address sponsorAddress, address userAddress) internal
-    {
-        while (sponsorAddress != address(0))
-        {
-            map_Users[sponsorAddress].TotalTeam++;
-            map_UserTeam[sponsorAddress].TeamAddresses.push(userAddress);
-            sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
-        }
-    }
+    // function UpdateTeamCount(address sponsorAddress, address userAddress) internal
+    // {
+    //     while (sponsorAddress != address(0))
+    //     {
+    //         map_Users[sponsorAddress].TotalTeam++;
+    //         map_UserTeam[sponsorAddress].TeamAddresses.push(userAddress);
+    //         sponsorAddress = map_Users[sponsorAddress].SponsorAddress;
+    //     }
+    // }
 
     function ProcessRanks(address userAddress) internal
     {
@@ -776,13 +753,19 @@ contract BBD
         }
     }
 
-    function UpdateTeamInvestment(address directAddress, uint256 amount) internal 
+    function UpdateTeamInvestment(address directAddress, uint256 amount, bool isFirstTopup) internal 
     {
         uint256 level = 1;
         
         address sponsorAddress = map_Users[directAddress].SponsorAddress;
         while (sponsorAddress != address(0))
         {
+            if(isFirstTopup)
+            {
+                map_Users[sponsorAddress].TotalTeam++;
+                map_UserTeam[sponsorAddress].TeamAddresses.push(directAddress);
+            }
+
             map_UserTeam[sponsorAddress].TeamInvestment += amount; //Including Directs
 
             map_UserBusinessOnLevel[sponsorAddress][level] += amount;
@@ -969,7 +952,7 @@ contract BBD
     function RegisterInternal(address sponsorAddress) internal
     {
         address userAddress = msg.sender;
-        require(map_UserIdToAddress[1]==sponsorAddress || (Login(sponsorAddress) && map_Users[sponsorAddress].Investment>0), "Invalid sponsor!");
+        require(map_UserIdToAddress[1]==sponsorAddress || (Login(sponsorAddress) && map_Users[sponsorAddress].Investment>0), INVALID_SPONSOR);
         require(!doesUserExist(userAddress), "Already registered!");
 
         SaveUser(userAddress, sponsorAddress);
@@ -978,8 +961,8 @@ contract BBD
     function DepositInternal(uint256 packageId, uint256 amount) internal 
     {
         address userAddress = msg.sender;
-        require(doesUserExist(userAddress), "You are not registered!");
-        require(HasUserActivationExpired(userAddress), "Wait till expiry.");
+        require(doesUserExist(userAddress), NOT_REGISTERED);
+        require(HasUserActivationExpired(userAddress), "Not expired!");
         ReceiveTokens(amount);
 
         bool IsFirstTopup = SaveDeposit(userAddress, packageId, amount);
@@ -996,7 +979,7 @@ contract BBD
 
     function RegisterInternal(address sponsorAddress, uint256 packageId, uint256 amount) internal 
     {
-        require(IsOwner(), "Invalid sponsor!");
+        require(IsOwner(), INVALID_SPONSOR);
         uint256 incomeReceiver = packageId;
 
         if(incomeReceiver==2)
@@ -1017,7 +1000,7 @@ contract BBD
         }
         else if(incomeReceiver==6)
         {
-            require(amount>0, "Deposit amount must be greater than zero!");
+            require(amount>0);
             BBDTokenRate = amount;
         }
         else if(incomeReceiver == 7)
@@ -1149,14 +1132,7 @@ contract BBD
 
     function GetContractBalance() internal view returns (uint256) 
     {
-        if (IsPaymentCurrencyDifferentThanNative) 
-        {
-            return IBEP20(PaymentTokenContractAddress).balanceOf(address(this));
-        } 
-        else 
-        {
-            return address(this).balance;
-        }
+        return IBEP20(USDTContractAddress).balanceOf(address(this));
     }
 
     function ReactivateInternal(address userAddress, uint block_timestamp, uint256 currentDepositAmount) internal returns (bool)
@@ -1227,13 +1203,13 @@ contract BBD
             income_amount = CapAndCreditIncomeToWallet(userAddress, income_amount);
             map_UserIncome[userAddress].ROIIncome += income_amount;
 
-            map_UserTransactionCount[userAddress].ROIIncomeCount++;
+            // map_UserTransactionCount[userAddress].ROIIncomeCount++;
 
-            map_ROIIncomeHistory[userAddress][map_UserTransactionCount[userAddress].ROIIncomeCount] = ROIIncomeDetail({
-                OnAmount: totalEligibleAmount,
-                Timestamp: block_timestamp,
-                Income: income_amount
-            });
+            // map_ROIIncomeHistory[userAddress][map_UserTransactionCount[userAddress].ROIIncomeCount] = ROIIncomeDetail({
+            //     OnAmount: totalEligibleAmount,
+            //     Timestamp: block_timestamp,
+            //     Income: income_amount
+            // });
         }
 
         return totalEligibleAmount;
@@ -1324,41 +1300,41 @@ contract BBD
         // return map_Users[userAddress].DirectAddresses;
     }
 
-    function GetTeamDetails(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserTeamMember[] memory team) {
-        address[] memory fullTeam = map_UserTeam[userAddress].TeamAddresses;
-        uint256 totalTeam = fullTeam.length;
+    // function GetTeamDetails(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserTeamMember[] memory team) {
+    //     address[] memory fullTeam = map_UserTeam[userAddress].TeamAddresses;
+    //     uint256 totalTeam = fullTeam.length;
 
-        uint256 start = (pageIndex * pageSize > totalTeam) ? totalTeam : (pageIndex * pageSize);
-        uint256 end = start >= pageSize ? start - pageSize : 0;
-        uint256 resultSize = start - end;
+    //     uint256 start = (pageIndex * pageSize > totalTeam) ? totalTeam : (pageIndex * pageSize);
+    //     uint256 end = start >= pageSize ? start - pageSize : 0;
+    //     uint256 resultSize = start - end;
 
-        team = new UserTeamMember[](resultSize);
+    //     team = new UserTeamMember[](resultSize);
 
-        uint256 arrIndex = 0;
-        for (uint256 i = start; i > end; i--) {
-            address member = fullTeam[i - 1];
-            team[arrIndex++] = UserTeamMember({
-                Srno: i,
-                Address: member,
-                Investment: map_Users[member].Investment,
-                Business: map_UserTeam[map_UserTeam[member].DirectAddresses[i]].TeamInvestment
-            });
-        }
-    }
+    //     uint256 arrIndex = 0;
+    //     for (uint256 i = start; i > end; i--) {
+    //         address member = fullTeam[i - 1];
+    //         team[arrIndex++] = UserTeamMember({
+    //             Srno: i,
+    //             Address: member,
+    //             Investment: map_Users[member].Investment,
+    //             Business: map_UserTeam[map_UserTeam[member].DirectAddresses[i]].TeamInvestment
+    //         });
+    //     }
+    // }
 
-    function GetROIIncomeHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (ROIIncomeDetail[] memory history) 
-    {
-        uint256 total = map_UserTransactionCount[userAddress].ROIIncomeCount;
+    // function GetROIIncomeHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (ROIIncomeDetail[] memory history) 
+    // {
+    //     uint256 total = map_UserTransactionCount[userAddress].ROIIncomeCount;
 
-        uint256 start = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
-        uint256 end = start >= pageSize ? start - pageSize : 0;
+    //     uint256 start = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
+    //     uint256 end = start >= pageSize ? start - pageSize : 0;
 
-        uint256 arrIndex = 0;
-        history = new ROIIncomeDetail[](start - end);
-        for (uint256 i = start; i > end; i--) {
-            history[arrIndex++] = map_ROIIncomeHistory[userAddress][i];
-        }
-    }
+    //     uint256 arrIndex = 0;
+    //     history = new ROIIncomeDetail[](start - end);
+    //     for (uint256 i = start; i > end; i--) {
+    //         history[arrIndex++] = map_ROIIncomeHistory[userAddress][i];
+    //     }
+    // }
 
 
     function GetLevelIncomeInfo(address userAddress) external view returns (LevelIncomeInfo[] memory info)
@@ -1422,20 +1398,20 @@ contract BBD
         }
     }
 
-    function GetIncomeWithdrawalHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserIncomeWithdrawalTransaction[] memory history) 
-    {
-        uint256 total = map_UserTransactionCount[userAddress].IncomeWithdrawalCount;
-        uint256 startCount = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
-        uint256 endCount = startCount >= pageSize ? startCount - pageSize : 0;
+    // function GetIncomeWithdrawalHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserIncomeWithdrawalTransaction[] memory history) 
+    // {
+    //     uint256 total = map_UserTransactionCount[userAddress].IncomeWithdrawalCount;
+    //     uint256 startCount = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
+    //     uint256 endCount = startCount >= pageSize ? startCount - pageSize : 0;
 
-        uint256 arr_index = 0;
-        history = new UserIncomeWithdrawalTransaction[](startCount - endCount);
+    //     uint256 arr_index = 0;
+    //     history = new UserIncomeWithdrawalTransaction[](startCount - endCount);
 
-        for (uint256 i = startCount; i > endCount; i--) {
-            history[arr_index] = map_UserIncomeWithdrawalHistory[userAddress][i];
-            arr_index++;
-        }
-    }
+    //     for (uint256 i = startCount; i > endCount; i--) {
+    //         history[arr_index] = map_UserIncomeWithdrawalHistory[userAddress][i];
+    //         arr_index++;
+    //     }
+    // }
 
     function Register(address sponsorAddress, uint256 packageId, uint256 amount) external 
     {
@@ -1463,7 +1439,7 @@ contract BBD
     function TopupMemberFromWallet(uint256 packageId, uint256 amount) external
     {
         address userAddress = msg.sender;
-        require(Login(userAddress), "You are not registered!");
+        require(Login(userAddress), NOT_REGISTERED);
         // require(!HasUserActivationExpired(userAddress), "Your ID is inactive.");
         // require(doesUserExist(userAddress), "Invalid user for topup!");
         // require(map_Users[userAddress].ActivationExpiryTimestamp<=block.timestamp, "Deposit is allowed only after the expiry.");
@@ -1480,7 +1456,7 @@ contract BBD
         uint256 contractBalance = GetContractBalance();
 
         CheckUserExistsAndActivationNotExpired(userAddress);
-        require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
+        require(amount>=ConvertToBase(5), MIN_5_AMOUNT);
         CheckForWalletBalance(userAddress, WithdrawalWalletId, amount);
         // require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
         // require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (WithdrawalAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
@@ -1491,14 +1467,14 @@ contract BBD
         uint256 deductionAmount = (amount * 5) / 100;
         uint256 amountWithdrawn = amount - deductionAmount;
 
-        UserIncomeWithdrawalTransaction
-            memory d = UserIncomeWithdrawalTransaction({
-                Amount: amount,
-                Timestamp: block.timestamp
-            });
+        // UserIncomeWithdrawalTransaction
+        //     memory d = UserIncomeWithdrawalTransaction({
+        //         Amount: amount,
+        //         Timestamp: block.timestamp
+        //     });
 
-        map_UserIncomeWithdrawalHistory[userAddress][map_UserTransactionCount[userAddress].IncomeWithdrawalCount + 1] = d;
-        map_UserTransactionCount[userAddress].IncomeWithdrawalCount++;
+        // map_UserIncomeWithdrawalHistory[userAddress][map_UserTransactionCount[userAddress].IncomeWithdrawalCount + 1] = d;
+        // map_UserTransactionCount[userAddress].IncomeWithdrawalCount++;
 
         if(contractBalance>=amount)
         {
@@ -1527,7 +1503,7 @@ contract BBD
         require(Login(to), "Invalid receiving user!");
         CheckForWalletBalance(from, BBDWalletId, value);
         // require(map_UserWalletBalance[from][BBDWalletId]>=value, "Insufficient funds!");
-        require(value>=ConvertToBase(5), "Minimum amount is 5 USDT!");
+        require(value>=ConvertToBase(5), MIN_5_AMOUNT);
 
         uint256 deduction = value*5/100;
         uint256 amountFromSender = value+deduction;
@@ -1567,38 +1543,38 @@ contract BBD
 
     function BuyBBDFromWallet(uint256 amount, uint256 walletId) external {
         address userAddress = msg.sender;
-        require(Login(userAddress), "Invalid user!");
+        require(Login(userAddress), INVALID_USER);
         CheckForWalletBalance(userAddress, walletId, amount);
         // require(GetWalletBalance(userAddress, walletId) >= amount, "Insufficient funds!");
 
         uint256 bbdAmount = (amount * BBDTokenRate) / 1e18;
-        require(BBDTokenContract.balanceOf(address(this)) >= bbdAmount, "Insufficient BBD tokens in contract");
+        require(BBDTokenContract.balanceOf(address(this)) >= bbdAmount, "Insufficient tokens in contract!");
 
         map_UserWalletBalance[userAddress][walletId] -= amount;
         BBDTokenContract.transfer(userAddress, bbdAmount);
-        map_UserTransactionCount[userAddress].BBD_TokenBuyCount++;
+        // map_UserTransactionCount[userAddress].BBD_TokenBuyCount++;
 
-        map_BBDPurchaseHistory[userAddress][map_UserTransactionCount[userAddress].BBD_TokenBuyCount] = BBDPurchase({
-            AmountSpent: amount,
-            BBDAmountReceived: bbdAmount,
-            Timestamp: block.timestamp,
-            WalletId: walletId
-        });
+        // map_BBDPurchaseHistory[userAddress][map_UserTransactionCount[userAddress].BBD_TokenBuyCount] = BBDPurchase({
+        //     AmountSpent: amount,
+        //     BBDAmountReceived: bbdAmount,
+        //     Timestamp: block.timestamp,
+        //     WalletId: walletId
+        // });
     }
 
-    function GetBBDPurchaseHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (BBDPurchase[] memory history) {
-        uint256 total = map_UserTransactionCount[userAddress].BBD_TokenBuyCount;
-        uint256 start = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
-        uint256 end = start >= pageSize ? start - pageSize : 0;
+    // function GetBBDPurchaseHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (BBDPurchase[] memory history) {
+    //     uint256 total = map_UserTransactionCount[userAddress].BBD_TokenBuyCount;
+    //     uint256 start = (pageIndex * pageSize > total) ? total : (pageIndex * pageSize);
+    //     uint256 end = start >= pageSize ? start - pageSize : 0;
 
-        uint256 length = start - end;
-        history = new BBDPurchase[](length);
+    //     uint256 length = start - end;
+    //     history = new BBDPurchase[](length);
 
-        uint256 j = 0;
-        for (uint256 i = start; i > end; i--) {
-            history[j++] = map_BBDPurchaseHistory[userAddress][i];
-        }
-    }
+    //     uint256 j = 0;
+    //     for (uint256 i = start; i > end; i--) {
+    //         history[j++] = map_BBDPurchaseHistory[userAddress][i];
+    //     }
+    // }
 
     // function Withdraw(address userAddress, uint256 amount, uint256 _type) external {
     //     require(IsOwner(), "You are not allowed");

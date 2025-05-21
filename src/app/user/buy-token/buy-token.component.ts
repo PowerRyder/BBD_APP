@@ -37,10 +37,10 @@ export class BuyTokenComponent implements OnInit {
 
   createForm() {
     this.buytokenForm = new UntypedFormGroup({
-      rateOfToken: new UntypedFormControl({ value: '', disabled: false }),
+      rateOfToken: new UntypedFormControl({ value: '', disabled: true }),
       selectedWallet: new UntypedFormControl({ value: 1, disabled: false }),
       amountToBuy: new UntypedFormControl({ value: '', disabled: false }),
-      totalToken: new UntypedFormControl({ value: '', disabled: false })
+      totalToken: new UntypedFormControl({ value: '', disabled: true })
     })
   }
 

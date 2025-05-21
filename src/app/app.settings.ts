@@ -19,8 +19,8 @@ export class AppSettings {
     public static readonly IsInternalToken = false;
     public static readonly InternalTokenName = "Neuradigi";
 
-    public static readonly IsTestNetworkEnabled = true;
-    public static readonly ContractAddress = this.IsTestNetworkEnabled ? '0x1D861F3F4e48C24981f171242419Cc59512fC9E4' : '0x2DD1788E21E89728bD997f4d7Aa8c24e4591bC8B';  //0xF9aF94304fc7A1aadB3c40f0e7840455a756D60c
+    public static readonly IsTestNetworkEnabled = false;
+    public static readonly ContractAddress = this.IsTestNetworkEnabled ? '0x1D861F3F4e48C24981f171242419Cc59512fC9E4' : '0xff4f43DeD834AFf8eaF5d9Fd4a672b260909c9a7';  //0xF9aF94304fc7A1aadB3c40f0e7840455a756D60c
     public static readonly ABI: any = abi;
 
     public static readonly IsPaymentCurrencyDifferentThanNative = true;
@@ -28,7 +28,7 @@ export class AppSettings {
     static CHAIN = this.IsTestNetworkEnabled ? Chain.BEP20.TestNet : Chain.BEP20.MainNet;
 
     public static readonly PaymentTokenSymbol = this.IsPaymentCurrencyDifferentThanNative ? "USDT" : this.CHAIN.NativeCurrency.Symbol;
-    public static readonly PaymentTokenContractAddress = this.IsTestNetworkEnabled ? '0x4622B46df102fD8648385bc96fd7a837111AeC61' : '0x570A5D26f7765Ecb712C0924E4De545B89fD43dF';
+    public static readonly PaymentTokenContractAddress = this.IsTestNetworkEnabled ? '0x4622B46df102fD8648385bc96fd7a837111AeC61' : '0x541Db716243C6168911e1F406f520Ce67C0d4725';
     public static readonly PaymentTokenABI: any = paymentTokenAbi;
     public static readonly PaymentTokenDecimals = 18;
 

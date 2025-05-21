@@ -269,7 +269,7 @@ export class Web3ContractService {
         value: value,
         gasPrice: _gasPrice
       }, function (error: any, _estimatedGas: any) {
-        // console.log(error, _estimatedGas);
+        console.log(error, _estimatedGas);
         estimatedGas = _estimatedGas;
       });
 

@@ -51,17 +51,17 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 140
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"src/assets/BBD_Contract.sol": {
-			"keccak256": "0xe355c88ac026818c0a1e9269f95cf2b98c49d21f04d3a2a405706706ce75d6fb",
+			"keccak256": "0x3bb2b239919452a764e12949b9802914db0c2f85d546f0cfc43c4062479aec40",
 			"license": "None",
 			"urls": [
-				"bzz-raw://f03962583b43774b8c6fd36d7f1c2288460b0a3879da19a63bf006fd32fcbe08",
-				"dweb:/ipfs/QmVcaKq1yEmUsuU8z4Ax5ytYaPcSU1HLmfJVWzSo2EhSV8"
+				"bzz-raw://22f60fac0f94c38a1104c86b5548955fc7529e42d6c10e724cd3c612ecd1b704",
+				"dweb:/ipfs/QmesC5WxDatPxMF46SFqehWWpvHoQPBEpxzN5tbxDWSJo8"
 			]
 		}
 	},
