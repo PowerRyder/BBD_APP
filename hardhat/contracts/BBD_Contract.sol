@@ -37,7 +37,7 @@ contract BBD
     address public SecurityFundContract = address(0);
 
 
-    address constant USDTContractAddress = 0x541Db716243C6168911e1F406f520Ce67C0d4725; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
+    address constant USDTContractAddress = 0xbe923b00582b773aB812b44d8F6bE5002959399a; //0x541Db716243C6168911e1F406f520Ce67C0d4725; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
 
     uint256 LevelIncome_LevelCount = 0;
     uint256 TotalRanksCount = 0;
