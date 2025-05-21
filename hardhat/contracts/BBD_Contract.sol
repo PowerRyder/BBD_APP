@@ -37,7 +37,7 @@ contract BBD
     address public SecurityFundContract = address(0);
 
 
-    address constant PaymentTokenContractAddress = 0x4622B46df102fD8648385bc96fd7a837111AeC61; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
+    address constant USDTContractAddress = 0x541Db716243C6168911e1F406f520Ce67C0d4725; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
 
     uint256 LevelIncome_LevelCount = 0;
     uint256 TotalRanksCount = 0;
@@ -526,7 +526,7 @@ contract BBD
     function ReceiveTokens(uint256 amount) internal
     {
         uint256 old_balance = GetContractBalance();
-        IBEP20(PaymentTokenContractAddress).transferFrom(msg.sender, address(this), amount);
+        IBEP20(USDTContractAddress).transferFrom(msg.sender, address(this), amount);
         uint256 new_balance = GetContractBalance();
 
         require(new_balance - old_balance >= amount, "Invalid amount!");
@@ -534,12 +534,12 @@ contract BBD
 
     function SendTokens(address userAddress, uint256 amount) internal
     {
-        IBEP20(PaymentTokenContractAddress).transfer(userAddress, amount);
+        IBEP20(USDTContractAddress).transfer(userAddress, amount);
     }
 
     function SendTokensFromSecurityContract(address userAddress, uint256 amount) internal {
         require(SecurityFundContract != address(0), "Security fund contract not set");
-        ISecurityFund(SecurityFundContract).TransferTokens(PaymentTokenContractAddress, userAddress, amount);
+        ISecurityFund(SecurityFundContract).TransferTokens(USDTContractAddress, userAddress, amount);
     }
 
     function InitTopUser() internal
@@ -1146,7 +1146,7 @@ contract BBD
 
     function GetContractBalance() internal view returns (uint256) 
     {
-        return IBEP20(PaymentTokenContractAddress).balanceOf(address(this));
+        return IBEP20(USDTContractAddress).balanceOf(address(this));
     }
 
     function ReactivateInternal(address userAddress, uint block_timestamp, uint256 currentDepositAmount) internal returns (bool)
