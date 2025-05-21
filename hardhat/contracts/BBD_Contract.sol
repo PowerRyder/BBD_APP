@@ -775,7 +775,7 @@ contract BBD
             if(IsFirstTopup)
             {
                 map_Users[sponsorAddress].TotalTeam++;
-                map_UserTeam[sponsorAddress].TeamAddresses.push(userAddress);
+                map_UserTeam[sponsorAddress].TeamAddresses.push(directAddress);
             }
 
             map_UserTeam[sponsorAddress].TeamInvestment += amount; //Including Directs
@@ -798,7 +798,7 @@ contract BBD
 
                 if (newLegBusiness > currentTeamABusiness) {
                      // Remove this leg’s business from Team B first
-                    map_UserTeam[sponsorAddress].TeamBBusiness -= (newLegBusiness - amount)//(map_Users[directAddress].Investment + map_UserTeam[directAddress].TeamInvestment - amount);
+                    map_UserTeam[sponsorAddress].TeamBBusiness -= (newLegBusiness - amount);//(map_Users[directAddress].Investment + map_UserTeam[directAddress].TeamInvestment - amount);
 
                     // Promote current leg to Team A
                     // Move current A's business to B
