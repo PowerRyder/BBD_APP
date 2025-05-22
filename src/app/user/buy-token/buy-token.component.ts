@@ -88,7 +88,7 @@ export class BuyTokenComponent implements OnInit {
 
   async onSubmit() {
 
-    let amount = this.buytokenForm.controls['amountToBuy'].value;
+    let amount =  this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(this.buytokenForm.controls['amountToBuy'].value);
     let _Select_wallet_id = this.buytokenForm.controls['selectedWallet'].value
 
     // console.log("total Amont ->"  , total)

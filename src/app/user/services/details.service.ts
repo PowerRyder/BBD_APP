@@ -72,7 +72,7 @@ export class DetailsService {
     return this.contract.readContract('BBDTokenRate',[])
   }
 
-  BuyBBDTokenFromWallet(amount :number , walletId : number){
+  BuyBBDTokenFromWallet(amount:string , walletId : number){
     return this.contract.writeContract('BuyBBDFromWallet',[amount , walletId],"0")
   }
 

@@ -44,7 +44,7 @@ export class BBDPurchaseHistoryComponent {
       let d = res[i];
       this.dataSource.push({
         Srno: i + 1,
-        AmountSpent: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.Amount),
+        AmountSpent: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.AmountSpent),
         BBDAmountReceived : this.contract.convertAmountFromPaymentCurrencyBaseValue(d.BBDAmountReceived),
         Timestamp: this.shared.convertTimestampToDate(d.Timestamp),
        
