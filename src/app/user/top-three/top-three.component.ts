@@ -18,7 +18,7 @@ export class TopThreeComponent implements OnInit {
   async ngOnInit() {
    let details = await (await this.details.gettopsponseredReport()).data
     this.data = details
-    console.log("deta", this.data)
+    // console.log("deta", this.data)
   }
 
 }
