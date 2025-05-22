@@ -8,5 +8,8 @@
             <a [href]="url" target="_blank" class="mr-2" mat-raised-button color="info">Open</a>
             <button mat-raised-button color="info" (click)="copyToClipboard(displayValue)">Copy</button>
         </div>
+        <div class="d-flex justify-content-center" *ngIf="!url">
+            <button mat-raised-button color="info">&nbsp;</button>
+        </div>
     </mat-card-content>
 </mat-card>
