@@ -1082,6 +1082,8 @@ contract BBD
 
         // uint256 onAmount = map_Users[userAddress].Investment/(map_Users[userAddress].IsFirstActivationDone?2:1);
         
+        onAmount = onAmount/(map_Users[userAddress].IsFirstActivationDone?2:1);
+        
         uint256 level = 1;
         uint256 income_amount = 0;
         while (sponsorAddress != address(0) && level <= LevelIncome_LevelCount && onAmount>0) 
