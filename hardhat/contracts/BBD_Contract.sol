@@ -1228,7 +1228,7 @@ contract BBD
             });
         }
 
-        return totalEligibleAmount;
+        return totalEligibleAmount + currentDepositAmount;
     }
 
     function Login(address _address) public view returns (bool) 
