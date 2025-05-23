@@ -28,7 +28,7 @@ export class BuyTokenComponent implements OnInit {
     this.buytokenForm.get('amountToBuy')?.valueChanges.subscribe(() => {
       this.EnterAmount();
     });
-    
+
     // Also listen to selectedWallet changes if needed
     this.buytokenForm.get('selectedWallet')?.valueChanges.subscribe(() => {
       this.fetchBalance();
@@ -39,7 +39,7 @@ export class BuyTokenComponent implements OnInit {
     this.buytokenForm = new UntypedFormGroup({
       rateOfToken: new UntypedFormControl({ value: '', disabled: true }),
       selectedWallet: new UntypedFormControl({ value: 1, disabled: false }),
-      amountToBuy: new UntypedFormControl({ value: '', disabled: false }),
+      amountToBuy: new UntypedFormControl({ value: '', disabled: false }, this.shared.validators.required),
       totalToken: new UntypedFormControl({ value: '', disabled: true })
     })
   }
@@ -66,7 +66,7 @@ export class BuyTokenComponent implements OnInit {
   async fetchBalance() {
     let _userAddress = sessionStorage.getItem('UserAddress')!;
     let _selectwallet = this.buytokenForm.controls['selectedWallet'].value
-    
+
     try {
       const res = await this.details.getwalletBalanceAmount(_userAddress, _selectwallet);
       const userBalances = res.data;
@@ -87,20 +87,21 @@ export class BuyTokenComponent implements OnInit {
   }
 
   async onSubmit() {
+    if (this.buytokenForm.valid) {
+      let amount = this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(this.buytokenForm.controls['amountToBuy'].value);
+      let _Select_wallet_id = this.buytokenForm.controls['selectedWallet'].value
 
-    let amount =  this.accounts.contract.convertAmountToPaymentCurrencyBaseValue(this.buytokenForm.controls['amountToBuy'].value);
-    let _Select_wallet_id = this.buytokenForm.controls['selectedWallet'].value
+      // console.log("total Amont ->"  , total)
 
-    // console.log("total Amont ->"  , total)
-
-    let res = await this.details.BuyBBDTokenFromWallet(amount, _Select_wallet_id)
-    if (res && res.success) {
-      this.shared.alert.trigger({ action: 'success', message: 'Buy token successful!' }).then(() => {
-        this.refresh.refreshComponent();
-      });
-    }
-    else {
-      this.shared.alert.trigger({ action: 'error', message: res.message });
+      let res = await this.details.BuyBBDTokenFromWallet(amount, _Select_wallet_id)
+      if (res && res.success) {
+        this.shared.alert.trigger({ action: 'success', message: 'Buy token successful!' }).then(() => {
+          this.refresh.refreshComponent();
+        });
+      }
+      else {
+        this.shared.alert.trigger({ action: 'error', message: res.message });
+      }
     }
   }
 }
