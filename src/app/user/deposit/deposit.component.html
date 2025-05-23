@@ -1,4 +1,4 @@
-<div [class]="showHistory?'offset-md-2 offset-sm-0 col-md-8':''">
+<div [class]="showHistory?'offset-md-2 offset-sm-0 col-md-8 ':''" style="height: 100%;">
     <mat-card>
         <mat-card-title class="text-align-center">Deposit</mat-card-title>
         <mat-card-content class="card-pad">
@@ -9,7 +9,7 @@
             <app-package (packageCallback)="packageCallback($event)"
                 (accountCallback)="accountCallback($event)"></app-package>
 
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center mt-4">
                 <button mat-raised-button color="success" (click)="onDepositClick()">Deposit</button>
             </div>
             <!-- <div *ngIf="walletDetails && walletDetails.address!='' && packageDetails && packageDetails.packageId>0">
