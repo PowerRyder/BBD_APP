@@ -192,7 +192,7 @@
 <!-- </div> -->
 <div class="row">
     <div class="col-md-3 col-sm-12">
-        <mat-card>
+        <mat-card style="height: 95%;" class="d-flex justify-content-center align-items-center">
             <ngx-gauge type="arch" [value]="dashboardDetails?.CappingUsedBadge" label="Capping Used" append="%"
                 [thick]="12" [thresholds]="guageThresholdConfig" [margin]="10">
             </ngx-gauge>
@@ -201,7 +201,7 @@
     <!-- <div class="col-md-4 col-sm-12">
         <app-re-activation></app-re-activation>
     </div> -->
-    <div class="col-md-3 col-sm-12 h-100">
+    <div class="col-md-9 col-sm-12 h-100">
         <app-deposit [showHistory]="false"></app-deposit>
     </div>
 </div>
