@@ -21,4 +21,9 @@ export class TopThreeComponent implements OnInit {
     // console.log("deta", this.data)
   }
 
+   shortenAddress(address: string): string {
+    if (!address) return '';
+    return address.slice(0, 7) + '.....' + address.slice(-5);
+  }
+
 }

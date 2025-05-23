@@ -13,7 +13,7 @@
                 <tbody>
                     <tr *ngFor="let elem of data">
                         <td>
-                            {{elem.sponsor}}
+                            {{shortenAddress(elem.sponsor)}}
                         </td>
                         <td>
                             {{accounts.contract.convertAmountFromPaymentCurrencyBaseValue(elem.directInvestment)}}

@@ -29,5 +29,10 @@ export class DirectsComponent implements OnInit {
     console.log(this.dataSource)
   }
 
+    shortenAddress(address: string): string {
+    if (!address) return '';
+    return address.slice(0, 7) + '.....' + address.slice(-5);
+  }
+
 
 }
