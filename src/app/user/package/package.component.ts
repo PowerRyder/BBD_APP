@@ -88,6 +88,10 @@ export class PackageComponent implements OnInit {
   }
 
   addAmount(amount: number) {
+    if(!this.packageForm.controls['amount'].value){
+      this.packageForm.controls['amount'].setValue(amount);
+      return;
+    }
     if (this.packageForm.controls['amount'].value + amount <= this.maxAmount) {
       this.packageForm.controls['amount'].setValue(this.packageForm.controls['amount'].value + amount);
     }
