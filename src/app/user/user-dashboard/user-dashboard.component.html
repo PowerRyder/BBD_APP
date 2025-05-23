@@ -64,16 +64,16 @@
 <div *ngIf="dashboardDetails?.IsFirstActivationDone"
     class="d-flex flex-column flex-row flex-md-row justify-content-around">
     <div class="col-md-4 col-sm-12">
-        <app-top-three></app-top-three>
-    </div>
-
-    <div class="col-md-4 col-sm-12">
         <app-re-activation [IsCappingRemaining]="dashboardDetails?.IsCappingRemaining"></app-re-activation>
     </div>
     <div class="col-md-4 col-sm-12">
         <app-capping4x-end-timer [timerEndTimestamp]="dashboardDetails?.Capping4X_QualificationEndTimestamp"
             [IsQualifiedFor4X]="dashboardDetails?.IsQualifiedFor4X"></app-capping4x-end-timer>
     </div>
+    <div class="col-md-4 col-sm-12">
+        <app-top-three></app-top-three>
+    </div>
+
 </div>
 
 <div class="tiles-wrap d-flex flex-column flex-row flex-md-row flex-wrap justify-content-center">
