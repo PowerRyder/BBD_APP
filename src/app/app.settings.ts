@@ -20,7 +20,7 @@ export class AppSettings {
     public static readonly InternalTokenName = "Neuradigi";
 
     public static readonly IsTestNetworkEnabled = false;
-    public static readonly ContractAddress = this.IsTestNetworkEnabled ? '0x1D861F3F4e48C24981f171242419Cc59512fC9E4' : '0xE5e31823316B2Ba599AC0CfaB19c0719D432Bb35';  //0xF9aF94304fc7A1aadB3c40f0e7840455a756D60c
+    public static readonly ContractAddress = this.IsTestNetworkEnabled ? '0x1D861F3F4e48C24981f171242419Cc59512fC9E4' : '0x74F552A6cc94550BF130b3f1456Df40d1D1C3DA8';  //0xF9aF94304fc7A1aadB3c40f0e7840455a756D60c
     public static readonly ABI: any = abi;
 
     public static readonly IsPaymentCurrencyDifferentThanNative = true;
