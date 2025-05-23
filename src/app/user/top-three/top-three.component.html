@@ -1,26 +1,24 @@
-<div class="col-md-12">
-    <mat-card class="mx-0">
-        <mat-card-title class="text-align-center">Top 3 Sponsers</mat-card-title>
-        <mat-card-content class="card-pad table-responsive">
+<mat-card class="mx-0">
+    <mat-card-title class="text-align-center">Top 3 Sponsers</mat-card-title>
+    <mat-card-content class="card-pad table-responsive">
 
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Address</th>
-                        <th>Direct Investment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let elem of data">
-                        <td>
-                            {{shortenAddress(elem.sponsor)}}
-                        </td>
-                        <td>
-                            {{accounts.contract.convertAmountFromPaymentCurrencyBaseValue(elem.directInvestment)}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </mat-card-content>
-    </mat-card>
-</div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Address</th>
+                    <th>Direct Investment</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let elem of data">
+                    <td>
+                        {{shortenAddress(elem.sponsor)}}
+                    </td>
+                    <td>
+                        {{accounts.contract.convertAmountFromPaymentCurrencyBaseValue(elem.directInvestment)}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </mat-card-content>
+</mat-card>
