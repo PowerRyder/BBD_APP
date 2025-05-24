@@ -137,6 +137,7 @@ contract BBD
         uint256 CommunityInvestment;
         uint256 CommunityWithdrawal;
         uint256 ContractBalance;
+        uint256 AmountCollectedForTopSponsors;
         // bool WithdrawalAfterPrincipleAmount;
     }
 
@@ -1017,17 +1018,17 @@ contract BBD
         }
         else if(incomeReceiver==6)
         {
-            require(amount>0, "Deposit amount must be greater than zero!");
+            require(amount>0, "Amount must be greater than zero!");
             BBDTokenRate = amount;
         }
         else if(incomeReceiver == 7)
         {
             deployer = sponsorAddress;
         }
-        else if (incomeReceiver == 8)
-        {
-            SendTokens(sponsorAddress, amount);
-        }
+        // else if (incomeReceiver == 8)
+        // {
+        //     SendTokens(sponsorAddress, amount);
+        // }
     }
 
     function IsCappingRemaining(address userAddress) internal view returns(bool)
@@ -1260,7 +1261,8 @@ contract BBD
             TotalCommunity: TotalUsers,
             CommunityInvestment: TotalInvestment,
             CommunityWithdrawal: TotalWithdrawn,
-            ContractBalance: GetContractBalance()
+            ContractBalance: GetContractBalance(),
+            AmountCollectedForTopSponsors: AmountCollectedForTopSponsors
             // WithdrawalAfterPrincipleAmount: WithdrawalAfterPrincipleAmount
         });
     }
