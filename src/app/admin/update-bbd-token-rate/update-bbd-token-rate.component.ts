@@ -5,6 +5,7 @@ import { DetailsService } from 'src/app/user/services/details.service';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { AccountsService } from 'src/app/accounts/accounts.service';
 import { RefreshService } from 'src/app/services/refresh.service';
+import { AppSettings } from 'src/app/app.settings';
 
 @Component({
   selector: 'app-update-bbd-token-rate',
@@ -15,6 +16,8 @@ import { RefreshService } from 'src/app/services/refresh.service';
 })
 export class UpdateBBDTokenRateComponent implements OnInit{
   // amount : number = 0
+
+  sponseredAddress = AppSettings
   constructor(private details : DetailsService , public shared : SharedService, private accounts : AccountsService , private refresh : RefreshService){this.createForm()}
 
   updateBBDTokenRateForm : UntypedFormGroup 
@@ -26,15 +29,16 @@ export class UpdateBBDTokenRateComponent implements OnInit{
   
   createForm(){
     this.updateBBDTokenRateForm = new UntypedFormGroup({
-      amount : new UntypedFormControl({value : 0  , disabled :false}),
-      rateOfToken : new UntypedFormControl({value : 0  , disabled :false})
+      amount : new UntypedFormControl({value : ''  , disabled :false},this.shared.validators.required),
+      rateOfToken : new UntypedFormControl({value : ''  , disabled :false})
     })
   }
 
   async onSubmit(){
     // console.log(this.updateBBDTokenRateForm.controls['amount'].value)
     let _amount = this.updateBBDTokenRateForm.controls['amount'].value
-    let res = await this.details.setBBDTokenRate('0',6 ,_amount)
+    let  convert_usd = this.details.contract.convertAmountToPaymentCurrencyBaseValue(_amount)
+    let res = await this.details.setBBDTokenRate(AppSettings.ZeroAddress,6 ,convert_usd)
     console.log("result" , res)
 
     if (res && res.success) {

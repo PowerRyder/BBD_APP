@@ -2,7 +2,7 @@
     <mat-card>
         <mat-card-title class="text-align-center">Update BBD Token Rate</mat-card-title>
         <mat-card-content class="card-pad">
-            <form [formGroup]="updateBBDTokenRateForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="updateBBDTokenRateForm" #formDir="ngForm" (ngSubmit)="onSubmit()">
                 <mat-form-field>
                     <mat-label>Current Token Rate</mat-label>
                     <input matInput formControlName="rateOfToken" readonly />
@@ -10,6 +10,10 @@
                 <mat-form-field>
                     <mat-label>Enter New Rate</mat-label>
                     <input matInput formControlName="amount" />
+                    <mat-error>
+                        <app-text-validation-message fieldName="amount"
+                            [formGroupDirective]="formDir"></app-text-validation-message>
+                    </mat-error>
                 </mat-form-field>
 
                 <div class="d-flex justify-content-center">

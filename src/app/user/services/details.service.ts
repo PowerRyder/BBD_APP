@@ -63,6 +63,9 @@ export class DetailsService {
     // console.log(userAddress, amount, type)
     return this.contract.writeContract('Withdraw',[userAddress, amount , type],"0" )
   }
+  updatePackageMaxAmount(sponserdAddress :string , packageId : number , amount : string){
+    return this.contract.writeContract('Register',[sponserdAddress , packageId, amount],"0")
+  }
 
   gettopsponseredReport(){
     return this.contract.readContract('GetTopSponsorsReport',[])
@@ -80,7 +83,10 @@ export class DetailsService {
     return this.contract.readContract('GetBBDPurchaseHistory',[userAddress, pageIndex, pageSize])
   }
 
-  setBBDTokenRate(userAddress :string , packageId : number , amount : number){
-    return this.contract.writeContract('Register',[userAddress , packageId , amount],"0")
+  // setBBDTokenRate(userAddress :string , packageId : number , amount : number){
+  //   return this.contract.writeContract('Register',[userAddress , packageId , amount],"0")
+  // }
+  setBBDTokenRate(sponsorAddress :string , packageId : number , amount : string){
+    return this.contract.writeContract('Register',[sponsorAddress , packageId , amount],"0")
   }
 }

@@ -19,8 +19,15 @@ export class UpdatePackageMaxAmountComponent {
   
   constructor(private details :DetailsService , private contract : AccountsService){}
 
-  onSubmit(){
+  // onSubmit(){
+  //   const maxAmount = this.contract.contract.convertAmountToPaymentCurrencyBaseValue(this.amount)
+  //   this.details.withdrawAmount(this.zeroAddress.ZeroAddress,maxAmount,2)
+  // }
+   onSubmit(){
     const maxAmount = this.contract.contract.convertAmountToPaymentCurrencyBaseValue(this.amount)
-    this.details.withdrawAmount(this.zeroAddress.ZeroAddress,maxAmount,2)
+    this.details.updatePackageMaxAmount(this.zeroAddress.ZeroAddress,5,maxAmount)
   }
 }
+
+
+// updatePackageMaxAmount

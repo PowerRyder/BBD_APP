@@ -35,9 +35,9 @@ export class AdminLayoutComponent {
   app_routes = {
     admin_dashboard :app_routes.admin_dashboard,
     // mint_burn :app_routes.admin_mint_burn_internal_tokens,
-    credit_debit :app_routes.admin_credit_debit_amount,
-    block_unblock :app_routes.admin_block_unblock_user,
-    withdrawal_fund : app_routes.admin_withdraw_funds,
+    // credit_debit :app_routes.admin_credit_debit_amount,
+    // block_unblock :app_routes.admin_block_unblock_user,
+    // withdrawal_fund : app_routes.admin_withdraw_funds,
     update_package_max_amount : app_routes.update_package_max_amount,
     update_BBD_token_rate : app_routes.update_BBD_token_rate
   };
