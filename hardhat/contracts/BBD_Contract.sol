@@ -833,6 +833,7 @@ contract BBD
             {
                 uint256 income = r.RewardAmount; //CapAndCreditIncomeToWallet(userAddress, r.RewardAmount);
                 map_UserIncome[userAddress].RankIncome += income;
+                map_UserWalletBalance[userAddress][BBDWalletId] += income;
                 map_Users[userAddress].RankId = nextRankId;
                 Process4X_CappingQualification(userAddress, 0, nextRankId);
                 nextRankId++;
