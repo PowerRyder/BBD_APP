@@ -12,6 +12,9 @@
     <app-dashboard-tiles matIcon="account_balance" title="Total Withdrawal" class="col-md-3 col-sm-12"
         [data]="[{key: paymentCurrency, value: contractDetails?.CommunityWithdrawal}]"></app-dashboard-tiles>
 
+    <app-dashboard-tiles matIcon="account_balance" title="Amount For Top Sponsors" class="col-md-3 col-sm-12"
+        [data]="[{key: paymentCurrency, value: contractDetails?.AmountCollectedForTopSponsors}]"></app-dashboard-tiles>
+
     <app-dashboard-tiles matIcon="token" title="Total Supply" class="col-md-3 col-sm-12" *ngIf="isInternalToken"
         [data]="[{key: internalTokenName, value: contractDetails?.InternalTokenTotalSupply}]"></app-dashboard-tiles>
 
