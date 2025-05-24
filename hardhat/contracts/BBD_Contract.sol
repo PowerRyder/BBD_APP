@@ -268,6 +268,7 @@ contract BBD
     uint256 public BBDTokenRate = 10 * 1e18; // tokens per 1 USDT (18 decimals assumed) i.e. 10 BBD per 1 USDT
 
     uint256 public AmountCollectedForTopSponsors = 0;
+    uint256 public TopSponsorsLastProcessingTimestamp = 0;
 
     modifier onlyOwner() {
         require(IsOwner(), "You are not allowed!");
@@ -694,10 +695,11 @@ contract BBD
         }
 
         AmountCollectedForTopSponsors = 0;
+        TopSponsorsLastProcessingTimestamp = block.timestamp;
     }
 
     function GetTopSponsorsByDirectInvestment() internal view returns (TopSponsors[3] memory topSponsors) {
-        uint256 timeLimit = block.timestamp - 1 days;
+        uint256 timeLimit = TopSponsorsLastProcessingTimestamp; //block.timestamp - 1 days;
 
         TopSponsors[] memory sponsors = new TopSponsors[](userActivations.length);
         uint256 sponsorIndex = 0;
