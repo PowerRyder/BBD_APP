@@ -1480,7 +1480,7 @@ contract BBD
         require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
         CheckForWalletBalance(userAddress, WithdrawalWalletId, amount);
         // require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
-        // require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (WithdrawalAfterPrincipleAmount && contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
+        require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
 
         map_UserWalletBalance[userAddress][WithdrawalWalletId] -= amount;
         map_UserIncome[userAddress].AmountWithdrawn += amount;
