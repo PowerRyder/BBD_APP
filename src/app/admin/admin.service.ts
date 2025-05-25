@@ -129,4 +129,21 @@ export class AdminService {
     }
   }
 
+  async process24HoursTopmostSponsorsIncome() {
+    try {
+      this.spinner.show();
+
+      let res = await this.contract.writeContract('Process24HoursTopmostSponsorsIncome', [], "0");
+      // console.log(res)
+      return res;
+    }
+    catch (e) {
+      console.log(e)
+      return { success: false, data: null, message: e };
+    }
+    finally {
+      this.spinner.hide();
+    }
+  }
+
 }

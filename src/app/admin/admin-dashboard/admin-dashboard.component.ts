@@ -5,6 +5,8 @@ import { DashboardTilesComponent } from 'src/app/shared/dashboard-tiles/dashboar
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReferralLinkComponent } from 'src/app/user/referral-link/referral-link.component';
 import { DetailsService } from 'src/app/user/services/details.service';
+import { AdminService } from '../admin.service';
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -23,7 +25,7 @@ export class AdminDashboardComponent {
   internalTokenName = AppSettings.InternalTokenName;
 
   contractDetails: any;
-  constructor(private details: DetailsService, private web3: Web3ContractService){ }
+  constructor(private details: DetailsService, private web3: Web3ContractService, private admin: AdminService, private shared: SharedService){ }
 
   ngOnInit(){
     this.getData();
@@ -40,5 +42,16 @@ export class AdminDashboardComponent {
 
     console.log(contractDetails)
     this.contractDetails = contractDetails;
+  }
+
+  async onProcessTopSponsorsClick(){
+    const res = await this.admin.process24HoursTopmostSponsorsIncome();
+    
+    if (res && res.success) {
+      this.shared.alert.trigger({ action: 'success', message: 'Credit successful' });
+    } else {
+      this.shared.alert.trigger({ action: 'error', message: res?.message || 'Credit failed' });
+    }
+
   }
 }
