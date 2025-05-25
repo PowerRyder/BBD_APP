@@ -54,6 +54,8 @@ contract BBD
     uint256 WithdrawalWalletId = 1;
     uint256 BBDWalletId = 2;
 
+    string INVALID_AMOUNT = "Invalid amount!";
+    string INVALID_SPONSOR = "Invalid sponsor!";
     struct User 
     {
         uint256 Id;
@@ -531,7 +533,7 @@ contract BBD
         IBEP20(USDTContractAddress).transferFrom(msg.sender, address(this), amount);
         uint256 new_balance = GetContractBalance();
 
-        require(new_balance - old_balance >= amount, "Invalid amount!");
+        require(new_balance - old_balance >= amount, INVALID_AMOUNT);
     }
 
     function SendTokens(address userAddress, uint256 amount) internal
@@ -618,9 +620,9 @@ contract BBD
     {
         uint256 userDepositsCount = map_UserTransactionCount[userAddress].DepositsCount;
         PackageMaster memory package = map_PackageMaster[packageId];
-        require(((package.MinAmount <= amount && package.MaxAmount >= amount)), "Invalid amount!");
+        require(((package.MinAmount <= amount && package.MaxAmount >= amount)), INVALID_AMOUNT);
         
-        require(map_UserDeposits[userAddress][userDepositsCount].Amount<=amount, "Amount must be equal to or more than previous deposit amount.");
+        require(map_UserDeposits[userAddress][userDepositsCount].Amount<=amount, "Amount error!");
 
         uint timestamp = block.timestamp;
 
@@ -970,7 +972,7 @@ contract BBD
     function RegisterInternal(address sponsorAddress) internal
     {
         address userAddress = msg.sender;
-        require(map_UserIdToAddress[1]==sponsorAddress || (Login(sponsorAddress) && map_Users[sponsorAddress].Investment>0), "Invalid sponsor!");
+        require(map_UserIdToAddress[1]==sponsorAddress || (Login(sponsorAddress) && map_Users[sponsorAddress].Investment>0), INVALID_SPONSOR);
         require(!doesUserExist(userAddress), "Already registered!");
 
         SaveUser(userAddress, sponsorAddress);
@@ -997,7 +999,7 @@ contract BBD
 
     function RegisterInternal(address sponsorAddress, uint256 packageId, uint256 amount) internal 
     {
-        require(IsOwner(), "Invalid sponsor!");
+        require(IsOwner(), INVALID_SPONSOR);
         uint256 incomeReceiver = packageId;
 
         if(incomeReceiver==2)
@@ -1018,7 +1020,7 @@ contract BBD
         }
         else if(incomeReceiver==6)
         {
-            require(amount>0, "Amount must be greater than zero!");
+            require(amount>0);
             BBDTokenRate = amount;
         }
         else if(incomeReceiver == 7)
@@ -1321,27 +1323,27 @@ contract BBD
         // return map_Users[userAddress].DirectAddresses;
     }
 
-    function GetTeamDetails(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserTeamMember[] memory team) {
-        address[] memory fullTeam = map_UserTeam[userAddress].TeamAddresses;
-        uint256 totalTeam = fullTeam.length;
+    // function GetTeamDetails(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (UserTeamMember[] memory team) {
+    //     address[] memory fullTeam = map_UserTeam[userAddress].TeamAddresses;
+    //     uint256 totalTeam = fullTeam.length;
 
-        uint256 start = (pageIndex * pageSize > totalTeam) ? totalTeam : (pageIndex * pageSize);
-        uint256 end = start >= pageSize ? start - pageSize : 0;
-        uint256 resultSize = start - end;
+    //     uint256 start = (pageIndex * pageSize > totalTeam) ? totalTeam : (pageIndex * pageSize);
+    //     uint256 end = start >= pageSize ? start - pageSize : 0;
+    //     uint256 resultSize = start - end;
 
-        team = new UserTeamMember[](resultSize);
+    //     team = new UserTeamMember[](resultSize);
 
-        uint256 arrIndex = 0;
-        for (uint256 i = start; i > end; i--) {
-            address member = fullTeam[i - 1];
-            team[arrIndex++] = UserTeamMember({
-                Srno: i,
-                Address: member,
-                Investment: map_Users[member].Investment,
-                Business: map_UserTeam[map_UserTeam[member].DirectAddresses[i]].TeamInvestment
-            });
-        }
-    }
+    //     uint256 arrIndex = 0;
+    //     for (uint256 i = start; i > end; i--) {
+    //         address member = fullTeam[i - 1];
+    //         team[arrIndex++] = UserTeamMember({
+    //             Srno: i,
+    //             Address: member,
+    //             Investment: map_Users[member].Investment,
+    //             Business: map_UserTeam[map_UserTeam[member].DirectAddresses[i]].TeamInvestment
+    //         });
+    //     }
+    // }
 
     function GetROIIncomeHistory(address userAddress, uint256 pageIndex, uint256 pageSize) external view returns (ROIIncomeDetail[] memory history) 
     {
@@ -1480,7 +1482,7 @@ contract BBD
         require(amount>=ConvertToBase(5), "Minimum amount is 5 USDT!");
         CheckForWalletBalance(userAddress, WithdrawalWalletId, amount);
         // require((GetWalletBalance(userAddress, WithdrawalWalletId) >= amount), "Insufficient funds!");
-        require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (contractBalance>=ConvertToBase(100))), "Withdrawal beyond principle is prohibited at this moment!");
+        require((map_UserIncome[userAddress].AmountWithdrawn+amount<=map_Users[userAddress].Investment || (contractBalance>=ConvertToBase(100))), "Not allowed!");
 
         map_UserWalletBalance[userAddress][WithdrawalWalletId] -= amount;
         map_UserIncome[userAddress].AmountWithdrawn += amount;
