@@ -27,6 +27,7 @@
       [routerLinkActiveOptions]="{ exact: true }" [routerLink]="route.url" (click)="isMenuOpen = false">
       {{ route.title }}
     </a>
+    <a mat-button href="https://polygonscan.com/gastracker" target="_blank">Gas Tracker</a>
   </div>
 
 
@@ -55,7 +56,7 @@
           </mat-icon>
           <div mat-line>{{app_routes.roi_income_history.title}}</div>
         </mat-list-item>
-        
+
         <mat-list-item [routerLink]="app_routes.level_income.url" routerLinkActive="active" class="side-nav-menu-item-1"
           [routerLinkActiveOptions]="{ exact: true }">
           <mat-icon mat-list-icon>keyboard_double_arrow_right
@@ -76,10 +77,9 @@
           </mat-icon>
           <div mat-line>{{app_routes.transfer_fund.title}}</div>
         </mat-list-item>
-        <mat-list-item [routerLink]="app_routes.buy_token.url" routerLinkActive="active"
-          class="side-nav-menu-item-1" [routerLinkActiveOptions]="{ exact: true }">
-          <mat-icon
-            mat-list-icon>keyboard_double_arrow_right
+        <mat-list-item [routerLink]="app_routes.buy_token.url" routerLinkActive="active" class="side-nav-menu-item-1"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <mat-icon mat-list-icon>keyboard_double_arrow_right
           </mat-icon>
           <div mat-line>{{app_routes.buy_token.title}}</div>
         </mat-list-item>

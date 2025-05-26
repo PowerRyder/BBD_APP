@@ -49,7 +49,7 @@ export class WithdrawService {
     try {
       this.spinner.show();
 
-      let res = this.contract.writeContract('TransferFunds',[fromUserAddress,toUserAddress,amount],"0")
+      let res = this.contract.writeContract('TransferBBD',[fromUserAddress,toUserAddress,amount],"0")
       // console.log(res)
       return res;
     }

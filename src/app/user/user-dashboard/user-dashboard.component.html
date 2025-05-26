@@ -7,7 +7,11 @@
             <h4>Rank</h4>
             <div class="rank-value mt-2">
                 {{dashboardDetails?.RankName?dashboardDetails?.RankName:'N/A'}}
-                <mat-icon class="rank-icon">star</mat-icon>
+                <ng-container *ngFor="let star of [].constructor(dashboardDetails?.RankId)">
+                    <mat-icon class="rank-icon">star</mat-icon>
+                </ng-container>
+                <!-- <mat-icon class="rank-icon"
+                    *ngFor="let star of [].constructor(dashboardDetails?.RankId)">star</mat-icon> -->
 
             </div>
         </div>
@@ -218,7 +222,8 @@
             [url]="addressExplorer+contractAddress"></app-referral-link>
     </div>
     <div class="col-md-3 col-sm-12">
-        <app-referral-link text="Sponsor Address" [displayValue]="shortenAddress(dashboardDetails?.SponsorAddress)"></app-referral-link>
+        <app-referral-link text="Sponsor Address"
+            [displayValue]="shortenAddress(dashboardDetails?.SponsorAddress)"></app-referral-link>
     </div>
     <!--    
     <mat-card class="col-md-4">

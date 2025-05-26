@@ -24,7 +24,7 @@ interface ISecurityFund {
     function TransferTokens(address token, address user, uint256 amount) external;
 }
 
-contract BBD
+contract TestBB
 {
     uint256 public TotalUsers = 0;
     uint256 public TotalInvestment = 0;
@@ -169,6 +169,7 @@ contract BBD
         bool IsCappingRemaining;
         bool IsQualifiedFor4X;
         bool IsFirstActivationDone;
+        uint256 RankId;
     }
 
     struct UserDirects
@@ -1299,7 +1300,8 @@ contract BBD
             Capping4X_QualificationEndTimestamp: GetCapping4X_QualificationEndTimestamp(userAddress),
             IsCappingRemaining: IsCappingRemaining(userAddress),
             IsQualifiedFor4X: u.IsQualifiedFor4X,
-            IsFirstActivationDone: u.FirstActivationTimestamp>0
+            IsFirstActivationDone: u.FirstActivationTimestamp>0,
+            RankId: u.RankId
         });
     }
 
@@ -1514,7 +1516,7 @@ contract BBD
         SecurityFundContract = _security;
     }
 
-    function TransferFunds(address from, address to, uint256 value) external 
+    function TransferBBD(address from, address to, uint256 value) external 
     {
         if(!IsOwner())
         {

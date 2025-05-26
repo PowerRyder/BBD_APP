@@ -16,7 +16,7 @@
                 </div>
 
                 <mat-form-field>
-                    <mat-label>Amount To Withdraw ({{paymentCurrency}})</mat-label>
+                    <mat-label>Enter Amount ({{paymentCurrency}})</mat-label>
                     <input matInput formControlName="amount" type="number" [min]="minAmount" [max]="maxAmount" (change)="onAmountChange()" />
                     <button mat-button matSuffix mat-raised-button color="warn" type="button" (click)="onMaxClick();">
                         Max

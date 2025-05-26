@@ -39,7 +39,7 @@ export class UserDashboardComponent implements OnInit {
   constructor(private details: DetailsService) { }
 
   async ngOnInit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       this.getDetails();
     }, 0);
   }
@@ -47,8 +47,8 @@ export class UserDashboardComponent implements OnInit {
     this.userAddress = sessionStorage.getItem("UserAddress");
     let dashboardDetails = Object.assign({}, (await this.details.getDashboardDetails(this.userAddress)).data);
 
-    console.log(dashboardDetails)
-
+    // console.log(dashboardDetails)
+    dashboardDetails.RankId = Number(dashboardDetails.RankId);
     dashboardDetails.Investment = this.details.contract.convertAmountFromPaymentCurrencyBaseValue(dashboardDetails.Investment);
     dashboardDetails.InvestmentBadge = ((dashboardDetails?.TotalIncome <= dashboardDetails?.Investment && dashboardDetails?.Investment > 0) ? (dashboardDetails?.TotalIncome * 100 / dashboardDetails?.Investment) : 100).toFixed(1) + '%';
 
@@ -166,6 +166,4 @@ export class UserDashboardComponent implements OnInit {
     if (!address) return '';
     return address.slice(0, 7) + '.....' + address.slice(-5);
   }
-
-
 }
