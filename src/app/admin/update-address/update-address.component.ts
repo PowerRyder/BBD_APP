@@ -33,7 +33,7 @@ export class UpdateAddressComponent {
     let res = await this.details.updateAddress(_sponsered_address, _selectwallet, 0);
 
     if (res && res.success) {
-      this.shared.alert.trigger({ action: 'success', message: 'Update BBD token successful!' }).then(() => {
+      this.shared.alert.trigger({ action: 'success', message: 'Address updated successfully!' }).then(() => {
         this.refresh.refreshComponent();
       });
     }
