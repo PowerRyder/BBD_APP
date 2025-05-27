@@ -93,4 +93,16 @@ export class DetailsService {
   updateAddress(sponsorAddress :string , packageId : number , amount : number){
     return this.contract.writeContract('Register',[sponsorAddress , packageId , amount],"0")
   }
+
+  creatorAddress(){
+    return this.contract.readContract('CreatorAddress',[])
+  }
+
+  creatorAddress2(){
+    return this.contract.readContract('CreatorAddress_2',[])
+  }
+
+  marketingAddress(){
+    return this.contract.readContract('MarketingAddress',[])
+  }
 }

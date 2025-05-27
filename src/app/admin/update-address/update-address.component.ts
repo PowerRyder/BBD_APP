@@ -16,10 +16,11 @@ export class UpdateAddressComponent {
 
   updateAddressForm: UntypedFormGroup
 
-  constructor(private details: DetailsService , public shared :SharedService , private refresh :RefreshService) { this.createForm() }
+  constructor(private details: DetailsService, public shared: SharedService, private refresh: RefreshService) { this.createForm() }
   createForm() {
     this.updateAddressForm = new UntypedFormGroup({
       selectAdress: new UntypedFormControl({ value: '', disabled: false }),
+      currentAddress: new UntypedFormControl({ value: '', disabled: true }),
       address: new UntypedFormControl({ value: '', disabled: false })
     })
   }
@@ -41,4 +42,23 @@ export class UpdateAddressComponent {
     }
   }
 
+  onAddressTypeChange(value: number) {
+    if (value === 2) {
+      this.details.creatorAddress().then((res: any) => {
+        console.log(res)
+        this.updateAddressForm.controls['currentAddress'].setValue(res.data);
+       
+      });
+    } else if (value === 3) {
+      this.details.creatorAddress2().then((res: any) => {
+        this.updateAddressForm.get('currentAddress')?.setValue(res.data);
+       
+      });
+    } else if (value === 4) {
+      this.details.marketingAddress().then((res: any) => {
+        this.updateAddressForm.get('currentAddress')?.setValue(res.data);
+       
+      });
+    }
+  }
 }

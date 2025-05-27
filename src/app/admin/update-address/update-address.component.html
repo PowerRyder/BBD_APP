@@ -5,11 +5,15 @@
             <form [formGroup]="updateAddressForm" #formDir="ngForm" (ngSubmit)="onSubmit()">
                 <mat-form-field>
                     <mat-label>Choose Address Type</mat-label>
-                    <mat-select formControlName="selectAdress">
+                    <mat-select formControlName="selectAdress" (selectionChange)="onAddressTypeChange($event.value)">
                         <mat-option [value]="2">Creator Address</mat-option>
                         <mat-option [value]="3">Creator Address 2</mat-option>
                         <mat-option [value]="4">Marketing Address</mat-option>
                     </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>current Address </mat-label>
+                    <input matInput formControlName="currentAddress" />
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Enter New Address</mat-label>
