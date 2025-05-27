@@ -20,8 +20,8 @@ export class UpdateAddressComponent {
   createForm() {
     this.updateAddressForm = new UntypedFormGroup({
       selectAdress: new UntypedFormControl({ value: '', disabled: false },this.shared.validators.required),
-      currentAddress: new UntypedFormControl({ value: '', disabled: true },this.shared.validators.required),
-      address: new UntypedFormControl({ value: '', disabled: false })
+      currentAddress: new UntypedFormControl({ value: '', disabled: true }),
+      address: new UntypedFormControl({ value: '', disabled: false },this.shared.validators.required)
     })
   }
 
