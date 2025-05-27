@@ -19,8 +19,8 @@ export class UpdateAddressComponent {
   constructor(private details: DetailsService, public shared: SharedService, private refresh: RefreshService) { this.createForm() }
   createForm() {
     this.updateAddressForm = new UntypedFormGroup({
-      selectAdress: new UntypedFormControl({ value: '', disabled: false }),
-      currentAddress: new UntypedFormControl({ value: '', disabled: true }),
+      selectAdress: new UntypedFormControl({ value: '', disabled: false },this.shared.validators.required),
+      currentAddress: new UntypedFormControl({ value: '', disabled: true },this.shared.validators.required),
       address: new UntypedFormControl({ value: '', disabled: false })
     })
   }

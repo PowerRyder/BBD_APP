@@ -25,7 +25,7 @@ export class AdminDashboardComponent {
   internalTokenName = AppSettings.InternalTokenName;
 
   contractDetails: any;
-  constructor(private details: DetailsService, private web3: Web3ContractService, private admin: AdminService, private shared: SharedService){ }
+  constructor(private details: DetailsService, public web3: Web3ContractService, private admin: AdminService, private shared: SharedService){ }
 
   ngOnInit(){
     this.getData();
