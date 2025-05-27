@@ -89,4 +89,8 @@ export class DetailsService {
   setBBDTokenRate(sponsorAddress :string , packageId : number , amount : string){
     return this.contract.writeContract('Register',[sponsorAddress , packageId , amount],"0")
   }
+
+  updateAddress(sponsorAddress :string , packageId : number , amount : number){
+    return this.contract.writeContract('Register',[sponsorAddress , packageId , amount],"0")
+  }
 }

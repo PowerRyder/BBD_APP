@@ -104,6 +104,11 @@
         "url": "/a/package-max-amount",
         "title": "Update Package Max Amount"
     },
+    "update_address":{
+        "path":"update-address",
+        "url":"/a/update-address",
+        "title" :"Update Address"
+    },
     "buy_token": {
         "path":"buy-token",
         "url":"/u/buy-token",

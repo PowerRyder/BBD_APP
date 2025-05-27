@@ -1,0 +1,30 @@
+<div class="offset-md-3 offset-sm-0 col-md-6">
+    <mat-card>
+        <mat-card-title class="text-align-center">Update BBD Token Rate</mat-card-title>
+        <mat-card-content class="card-pad">
+            <form [formGroup]="updateAddressForm" #formDir="ngForm" (ngSubmit)="onSubmit()">
+                <mat-form-field>
+                    <mat-label>Choose Address Type</mat-label>
+                    <mat-select formControlName="selectAdress">
+                        <mat-option [value]="2">Creator Address</mat-option>
+                        <mat-option [value]="3">Creator Address 2</mat-option>
+                        <mat-option [value]="4">Marketing Address</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Enter New Address</mat-label>
+                    <input matInput formControlName="address" />
+                    <mat-error>
+                        <app-text-validation-message fieldName="address"
+                            [formGroupDirective]="formDir"></app-text-validation-message>
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="d-flex justify-content-center">
+                    <button mat-raised-button color="primary" type="submit">Update</button>
+                </div>
+            </form>
+
+        </mat-card-content>
+    </mat-card>
+</div>

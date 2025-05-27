@@ -39,6 +39,10 @@ const routes: Routes = [
       {
         path:app_routes.update_BBD_token_rate.path,
         loadComponent:()=>import("./update-bbd-token-rate/update-bbd-token-rate.component").then(m=>m.UpdateBBDTokenRateComponent)
+      },
+      {
+        path:app_routes.update_address.path,
+        loadComponent:()=>import("./update-address/update-address.component").then(m=>m.UpdateAddressComponent)
       }
     ]
   }];
