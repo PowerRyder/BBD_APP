@@ -46,7 +46,7 @@ contract BBD
 
     uint256 TotalNoOfPackages = 0;
 
-    uint256 constant PaymentCurrencyDecimals = 18;
+    uint256 constant PaymentCurrencyDecimals = 6;
 
     // bool WithdrawalAfterPrincipleAmount = true;
     address deployer;
