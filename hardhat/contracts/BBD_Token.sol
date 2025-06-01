@@ -692,7 +692,7 @@ contract BBDToken is ERC20 {
         _;
     }
 
-    constructor() ERC20("Test Token", "TEST") {
+    constructor() ERC20("BBD Token", "BBD") {
         dev = msg.sender;
         _mint(owner, PUBLIC_SUPPLY); // 1 billion to owner
         _mint(address(this), LOCKED_SUPPLY); // 9 billion stays locked in contract
