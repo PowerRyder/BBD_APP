@@ -29,7 +29,7 @@ export class Capping4xEndTimerComponent implements OnChanges, OnInit {
     if (changes && changes['timerEndTimestamp']) {
       const timerEndTimestamp = this.timerEndTimestamp * 1000;
       const now = Date.now();
-      console.log(now, timerEndTimestamp)
+      // console.log("time", now, timerEndTimestamp, now >= timerEndTimestamp)
       if (now >= timerEndTimestamp) {
         this.countdownExpired = true;
       } else {
@@ -37,9 +37,11 @@ export class Capping4xEndTimerComponent implements OnChanges, OnInit {
         this.timerEndDate = new Date(timerEndTimestamp);
 
         const remaining = timerEndTimestamp - now;
-        setTimeout(() => {
-          this.countdownExpired = true;
-        }, remaining);
+        // console.log(remaining)
+        // setTimeout(() => {
+        //   console.log("expired settimeout")
+        //   this.countdownExpired = true;
+        // }, remaining);
       }
     }
   }
