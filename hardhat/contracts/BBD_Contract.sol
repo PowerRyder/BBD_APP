@@ -24,7 +24,7 @@ interface ISecurityFund {
     function TransferTokens(address token, address user, uint256 amount) external;
 }
 
-contract TestBB
+contract BBD
 {
     uint256 public TotalUsers = 0;
     uint256 public TotalInvestment = 0;
@@ -37,7 +37,7 @@ contract TestBB
     address public SecurityFundContract = address(0);
 
 
-    address constant USDTContractAddress = 0xbe923b00582b773aB812b44d8F6bE5002959399a; //0x541Db716243C6168911e1F406f520Ce67C0d4725; //0x570A5D26f7765Ecb712C0924E4De545B89fD43dF;
+    address constant USDTContractAddress = 0xc2132D05D31c914a87C6611C10748AEb04B58e8F; //0xbe923b00582b773aB812b44d8F6bE5002959399a;
 
     uint256 LevelIncome_LevelCount = 0;
     uint256 TotalRanksCount = 0;
@@ -1150,7 +1150,7 @@ contract TestBB
 
     function GetCapping4X_QualificationEndTimestamp(address userAddress) internal view returns (uint256)
     {
-        return map_Users[userAddress].FirstActivationTimestamp + 45 minutes;
+        return map_Users[userAddress].FirstActivationTimestamp + 45 days;
     }
 
     function GetContractBalance() internal view returns (uint256) 
@@ -1161,7 +1161,7 @@ contract TestBB
     function ReactivateInternal(address userAddress, uint block_timestamp, uint256 currentDepositAmount) internal returns (bool)
     {
         uint noOfDays = 10 + (map_UserTransactionCount[userAddress].ReactivationCount/2);
-        uint expiryTimestamp = block_timestamp + (noOfDays * 1 minutes); // Convert days to seconds
+        uint expiryTimestamp = block_timestamp + (noOfDays * 1 days); // Convert days to seconds
 
         uint prev_LastActivationTimestamp = map_Users[userAddress].LastActivationTimestamp;
         uint prev_ActivationExpiryTimestamp = map_Users[userAddress].ActivationExpiryTimestamp;

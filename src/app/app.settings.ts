@@ -28,7 +28,7 @@ export class AppSettings {
     static CHAIN = this.IsTestNetworkEnabled ? Chain.BEP20.TestNet : Chain.Polygon.MainNet;
 
     public static readonly PaymentTokenSymbol = this.IsPaymentCurrencyDifferentThanNative ? "USDT" : this.CHAIN.NativeCurrency.Symbol;
-    public static readonly PaymentTokenContractAddress = this.IsTestNetworkEnabled ? '0x4622B46df102fD8648385bc96fd7a837111AeC61' : '0xbe923b00582b773aB812b44d8F6bE5002959399a';//'0x541Db716243C6168911e1F406f520Ce67C0d4725';
+    public static readonly PaymentTokenContractAddress = this.IsTestNetworkEnabled ? '0x4622B46df102fD8648385bc96fd7a837111AeC61' : '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'; //'0xbe923b00582b773aB812b44d8F6bE5002959399a';//'0x541Db716243C6168911e1F406f520Ce67C0d4725';
     public static readonly PaymentTokenABI: any = paymentTokenAbi;
     public static readonly PaymentTokenDecimals = 18;
 
