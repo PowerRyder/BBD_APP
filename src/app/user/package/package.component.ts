@@ -64,14 +64,14 @@ export class PackageComponent implements OnInit {
     this.selectedPackage = pack;
     if (!this.selectedPackage.HasRange) {
       // this.packageForm.controls['amount'].setValue(this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(Number(this.selectedPackage.Amount)));
-      this.packageForm.controls['amount'].value
+      // this.packageForm.controls['amount'].value
       this.packageForm.controls['amount'].disable();
       this.minAmount = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(this.selectedPackage.Amount);
       this.maxAmount = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(this.selectedPackage.Amount);
     }
     else {
       this.packageForm.controls['amount'].enable();
-      this.packageForm.controls['amount'].value;
+      // this.packageForm.controls['amount'].value;
       // this.packageForm.controls['amount'].setValue(this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(Number(this.selectedPackage.MinAmount)));
       this.minAmount = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(this.selectedPackage.MinAmount);
       this.maxAmount = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(this.selectedPackage.MaxAmount);
@@ -82,14 +82,17 @@ export class PackageComponent implements OnInit {
   onAmountChange() {
     // console.log("amount",this.packageForm.controls['amount'].value)
     // const _amount = 0;
-    this.packageCallback.emit({ packageId: this.selectedPackage.PackageId, amount: this.packageForm.controls['amount'].value})
-    console.log("amount", this.packageForm.controls['amount'].value)
+    setTimeout(() => {
+      this.packageCallback.emit({ packageId: this.selectedPackage.PackageId, amount: this.packageForm.controls['amount'].value})
+    }, 0);
+    // console.log("amount", this.packageForm.controls['amount'].value)
     // console.log("Amount ", _amount)
   }
 
   addAmount(amount: number) {
     if(!this.packageForm.controls['amount'].value){
       this.packageForm.controls['amount'].setValue(amount);
+      this.onAmountChange();
       return;
     }
     if (this.packageForm.controls['amount'].value + amount <= this.maxAmount) {
