@@ -49,8 +49,8 @@ export class DepositComponent {
   }
 
   async onDepositClick() {
+      // console.log(this.packageDetails)
     if (this.walletDetails.balance >= this.packageDetails.amount) {
-      console.log(this.packageDetails)
       let res = await this.deposit.redeposit(Number(this.packageDetails.packageId), this.packageDetails.amount);
       // console.log("register", res)
       if (res && res.success) {
