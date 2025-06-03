@@ -37,7 +37,7 @@ export class UpdateBBDTokenRateComponent implements OnInit{
   async onSubmit(){
     // console.log(this.updateBBDTokenRateForm.controls['amount'].value)
     let _amount = this.updateBBDTokenRateForm.controls['amount'].value
-    _amount = (1/_amount).toFixed(10);
+    _amount = (1/_amount).toFixed(18);
     let  convert_usd = this.details.contract.convertBBDRateToBase(_amount);
     let res = await this.details.setBBDTokenRate(AppSettings.ZeroAddress, 6, convert_usd);
     // console.log("result" , res)
