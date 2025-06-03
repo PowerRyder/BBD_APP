@@ -4,7 +4,6 @@ import { AppSettings } from 'src/app/app.settings';
 import { Web3ContractService } from 'src/app/services/web3-contract.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SharedService } from 'src/app/shared/shared.service';
-import { DepositService } from '../services/deposit.service';
 import { DetailsService } from '../services/details.service';
 @Component({
   selector: 'app-bbd-purchase-history',
@@ -28,7 +27,7 @@ export class BBDPurchaseHistoryComponent {
   defaultPageSize: number = AppSettings.pageDefaultSize;
   showFirstLastButtons = AppSettings.matPaginatorShowFirstLastButtons;
 
-  constructor(private deposit: DepositService, private details: DetailsService, private contract: Web3ContractService, private shared: SharedService) { }
+  constructor(private details: DetailsService, private contract: Web3ContractService, private shared: SharedService) { }
 
   async ngOnInit() {
     this.userAddress = sessionStorage.getItem('UserAddress');
@@ -45,7 +44,7 @@ export class BBDPurchaseHistoryComponent {
       this.dataSource.push({
         Srno: i + 1,
         AmountSpent: this.contract.convertAmountFromPaymentCurrencyBaseValue(d.AmountSpent),
-        BBDAmountReceived : this.contract.convertAmountFromPaymentCurrencyBaseValue(d.BBDAmountReceived),
+        BBDAmountReceived : this.contract.convertBBDTokenFromBase(d.BBDAmountReceived),
         Timestamp: this.shared.convertTimestampToDate(d.Timestamp),
        
       });

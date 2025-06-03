@@ -228,6 +228,11 @@ export class Web3ContractService {
     return amount;
   }
 
+  public convertBBDTokenFromBase(amount: number) {
+    amount = Number(Number(amount / Math.pow(10, AppSettings.BBDTokenDecimals)).toFixed(4));
+    return amount;
+  }
+
   public async sendTransaction(fromAddress: string, toAddress: string, value: string, gasPrice: string, gas: string, data: any) {
     try {
       var _gas = Math.ceil(Number(gas) + (Number(gas) * 0.02));
