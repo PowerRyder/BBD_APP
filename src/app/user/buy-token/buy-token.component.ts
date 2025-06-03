@@ -51,7 +51,7 @@ export class BuyTokenComponent implements OnInit {
       if (result?.success) {
         const tokenRate = result.data;
         // console.log("BBD Token Rate ->", tokenRate);
-        const readtokenRate = this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(tokenRate)
+        const readtokenRate = this.accounts.contract.convertBBDRateFromBase(tokenRate)
         this.buytokenForm.get('rateOfToken')?.setValue(readtokenRate)
         // console.log("read token value", tokenRate)
 

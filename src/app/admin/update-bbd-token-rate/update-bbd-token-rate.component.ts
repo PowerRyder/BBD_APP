@@ -38,7 +38,7 @@ export class UpdateBBDTokenRateComponent implements OnInit{
     // console.log(this.updateBBDTokenRateForm.controls['amount'].value)
     let _amount = this.updateBBDTokenRateForm.controls['amount'].value
     _amount = (1/_amount).toFixed(10);
-    let  convert_usd = this.details.contract.convertAmountToPaymentCurrencyBaseValue(_amount);
+    let  convert_usd = this.details.contract.convertBBDRateToBase(_amount);
     let res = await this.details.setBBDTokenRate(AppSettings.ZeroAddress, 6, convert_usd);
     // console.log("result" , res)
 
@@ -58,7 +58,7 @@ export class UpdateBBDTokenRateComponent implements OnInit{
       if (result?.success) {
         const tokenRate = result.data;
         // console.log("BBD Token Rate ->", tokenRate);
-        const readtokenRate = (1/this.accounts.contract.convertAmountFromPaymentCurrencyBaseValue(tokenRate)).toFixed(4);
+        const readtokenRate = (1/this.details.contract.convertBBDRateFromBase(tokenRate)).toFixed(4);
         this.updateBBDTokenRateForm.get('rateOfToken')?.setValue(readtokenRate)
         // console.log("read token value", tokenRate)
 
