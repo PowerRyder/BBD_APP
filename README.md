@@ -1,27 +1,144 @@
-# MLM
+# BBD_APP 🚀
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.4.
+A hybrid **Angular frontend** with **Solidity smart contracts**, generated using Angular CLI v15.0.4. Ideal for blockchain-based dashboard or dApp development.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🎯 Features
 
-## Code scaffolding
+- **Angular SPA** with TypeScript & SCSS  
+- **Solidity contracts** for on-chain interaction  
+- **Modular structure**: ready for components, services, directives  
+- **Testing-ready**: Unit tests (Karma + Jasmine), placeholder for E2E (Protractor/Cypress)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## 📁 Repository Structure
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+\`\`\`
+BBD_APP/
+├── src/               # Angular app source
+│   ├── app/           # Main module & components
+│   ├── assets/
+│   ├── environments/  # env .ts for dev/production
+│   └── ...
+├── contracts/         # Solidity smart contracts (create this)
+├── README.md
+├── angular.json
+├── package.json
+├── tsconfig*.json
+└── ...
+\`\`\`
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## 🛠 Requirements
 
-## Running end-to-end tests
+- Node.js v16+ & npm v8+  
+- Angular CLI v15+  
+- Truffle or Hardhat (for contract development)  
+- Ethereum client / Testnet access (Ganache, Infura, etc.)
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## 🚧 Quickstart Guide
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### 1. Setup
+
+\`\`\`bash
+git clone https://github.com/PowerRyder/BBD_APP.git
+cd BBD_APP
+npm install
+\`\`\`
+
+### 2. Angular Development
+
+Start local dev server:
+
+\`\`\`bash
+ng serve
+\`\`\`
+
+Navigate to \`http://localhost:4200\`. The app auto-reloads upon changes.
+
+### 3. Smart Contracts (if using Hardhat)
+
+\`\`\`bash
+cd contracts
+npm install
+npx hardhat compile
+npx hardhat test
+npx hardhat node   # for local network
+\`\`\`
+
+Deploy contracts:
+
+\`\`\`bash
+npx hardhat run scripts/deploy.js --network localhost
+\`\`\`
+
+### 4. Frontend Integration
+
+- Update \`environment.ts\` with deployed contract address  
+- Use \`ethers.js\` or \`web3.js\` in Angular services to interact with contracts  
+- Inject providers like \`Web3Provider\`, \`Signer\` for wallet interaction
+
+---
+
+## 🧪 Testing
+
+- **Unit tests**:  
+  \`\`\`bash
+  ng test
+  \`\`\`
+- **E2E tests**: (e.g., Cypress)  
+  \`\`\`bash
+  npm run e2e
+  \`\`\`
+
+---
+
+## 📦 Build for Production
+
+\`\`\`bash
+ng build --prod
+\`\`\`
+
+Results in a production-ready build at \`dist/\`. Serve via any static server.
+
+---
+
+## 🧩 Code Generation
+
+To scaffold a new Angular component:
+
+\`\`\`bash
+ng generate component MyComponent
+\`\`\`
+
+---
+
+## 💡 Contributions & Support
+
+Contributions are welcome:
+
+1. Fork the repo  
+2. Create a feature branch  
+3. Commit with meaningful message  
+4. Submit a pull request
+
+For guidance on Angular or smart contract architecture, please open an issue.
+
+---
+
+## 📄 License
+
+Specify your license here (e.g. MIT).  
+
+---
+
+## 📚 Further Reading
+
+- [Angular CLI Documentation](https://angular.io/cli)  
+- [Truffle](https://www.trufflesuite.com) or [Hardhat](https://hardhat.org) for contract dev  
+- Learn blockchain dev basics: Web3, Metamask, Infura
